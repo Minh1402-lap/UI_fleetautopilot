@@ -150,3 +150,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:600px){.attention-review .modal-heading{padding:20px 20px 0}.attention-review .modal-heading h2{font-size:21px}.attention-review>#modal-copy{padding:5px 20px 18px}.attention-review #modal-content{padding:0 20px}.attention-review .modal-actions{padding:14px 20px;flex-wrap:wrap}.attention-note{flex:1 1 180px;line-height:1.7}.attention-item h3{font-size:14px}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#modal.attention-review{background:var(--dialog)}}
 @media(prefers-reduced-transparency:reduce){#modal.attention-review{background:var(--dialog);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}#modal.attention-review::backdrop{backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* Approved title typography; records, quantities and controls retain Be Vietnam Pro. */
+h1,.panel-heading h2,.attention-review .modal-heading h2,#modal.assignment-review .modal-heading h2{font-family:'Newsreader',Georgia,serif;font-style:italic;font-weight:600;font-optical-sizing:auto}
+.page-heading h1,.workspace-head h1{font-size:36px;line-height:1.35;text-transform:uppercase;letter-spacing:.7px}
+.panel-heading h2{font-size:20px}
+.panel-heading h2,.attention-review .modal-heading h2,#modal.assignment-review .modal-heading h2{font-style:normal}
+.nav-label,.crumb{text-transform:uppercase}
+.attention-count{font-family:var(--font);font-style:normal}
+@media(max-width:600px){.page-heading h1,.workspace-head h1{font-size:26px;letter-spacing:.3px}.panel-heading h2{font-size:17px}}

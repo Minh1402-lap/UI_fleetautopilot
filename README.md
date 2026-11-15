@@ -111,4 +111,4 @@ Bốn giao diện vẫn là phương án thử nghiệm. Chỉ chuyển sang **F
 
 `workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
 
-Giao diện dùng font **Be Vietnam Pro** lưu trong kho mã nguồn. Xem [SIL Open Font License](assets/fonts/OFL.txt) cho giấy phép font.
+Giao diện dùng **Newsreader** cho tiêu đề (tên trang in hoa nghiêng, tiêu đề khối chữ đứng) và **Be Vietnam Pro** cho nội dung, mã đơn và số liệu; tên trang được viết hoa. Cả hai font được lưu trong kho mã nguồn. Xem giấy phép [Be Vietnam Pro](assets/fonts/OFL.txt) và [Newsreader](assets/fonts/Newsreader-OFL.txt).
