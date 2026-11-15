@@ -124,3 +124,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:600px){.workspace-head{padding:22px 0;flex-direction:column;gap:18px}.workspace-head h1{font-size:26px}.workspace-head p:not(.eyebrow){font-size:12px;line-height:1.8}.workspace-actions{gap:9px}.workspace-head .workspace-actions{justify-content:flex-start}.workspace-head .primary,.secondary{min-height:44px}.filter-bar{gap:12px}.filter-bar>.field{flex:1;min-width:130px}.filter-bar>.search-field{flex-basis:100%}.filter-bar>.secondary{flex-shrink:0}.field input,.field select{min-height:44px}.results-heading{align-items:flex-start;flex-direction:column;gap:6px}.data-table button{min-height:44px}.data-table td{padding:12px 8px}.workspace-columns,.workspace-columns.equal,.gps-workspace,.settings-grid{gap:14px;margin-bottom:14px}.workspace-stats{margin-bottom:14px}.distribution-row{grid-template-columns:100px minmax(0,1fr) 20px;gap:10px;font-size:11px}.report-filters .subtle{margin:0;flex-basis:100%;line-height:1.8}.report-bars{gap:12px}.gps-vehicle-list{grid-template-columns:1fr 1fr;gap:4px}.gps-vehicle{padding:10px 8px}.gps-vehicle .badge{font-size:9px}.gps-vehicle strong{font-size:12px}.workspace-map{height:310px;min-height:310px}.gps-summary{gap:16px}.gps-summary>div{flex-basis:calc(50% - 8px)}.detail-grid,.editor-form{grid-template-columns:1fr}.full-field{grid-column:auto}.connection-row{flex-wrap:wrap}.dispatch-picker{align-items:flex-start;flex-direction:column;gap:6px}.dispatch-picker select{max-width:100%;width:100%;min-height:44px}.workspace-timeline strong{font-size:12px}.workspace-timeline p{font-size:11px}}
 
 @media(max-width:600px){.fleet-marker:not(.chosen) rect,.fleet-marker:not(.chosen) text{display:none}.fleet-marker.chosen rect{x:-77px;y:15px;width:154px;height:35px}.fleet-marker.chosen text{font-size:22px;y:39px}}
+
+/* Approved attention dialog: shared glass, prioritized issues and direct actions. */
+#modal.attention-review{width:660px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);padding:0;border-radius:16px;background-color:var(--face);background-image:var(--face-image);border:1px solid var(--rim);border-top-color:var(--rim-top);border-left-color:var(--rim-left);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);color:var(--ink);box-shadow:0 24px 80px rgba(12,24,30,.16);overflow:auto}
+#modal.attention-review::backdrop{background:rgba(24,36,42,.26);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.attention-review .modal-heading{padding:26px 28px 0;align-items:flex-start}
+.attention-review .modal-heading h2{display:flex;align-items:center;gap:12px;font-size:24px;letter-spacing:-.6px;color:var(--ink)}
+.attention-count{font-size:12px;letter-spacing:0;font-weight:500;padding:3px 8px;border-radius:6px;background:var(--nested);border:1px solid var(--line);white-space:nowrap}
+.attention-review .modal-heading button{margin:-5px -7px 0 0;flex-shrink:0}
+.attention-review>#modal-copy{margin:0;padding:4px 28px 21px;font-size:12px;line-height:1.8;color:var(--muted)}
+.attention-review #modal-content{padding:0 28px}
+.attention-item{padding:22px 0 23px;border-top:1px solid var(--line)}
+.attention-priority{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:#926019}
+.attention-priority i{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.attention-priority.watch{color:#78652c}
+.attention-item h3{margin:10px 0 7px;font-size:16px;letter-spacing:-.2px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.attention-item p{margin:0;font-size:12px;color:var(--muted);line-height:1.8}
+.attention-link{display:inline-flex;gap:9px;align-items:center;margin-top:9px;min-height:44px;padding:4px 0;font-size:12px;font-weight:600;text-decoration:none;color:var(--ink)}
+.attention-link:hover{text-decoration:underline;text-underline-offset:4px}.attention-link svg{width:15px;height:15px}
+.attention-review .modal-actions{border-top:1px solid var(--line);margin:0;padding:17px 28px;display:flex;align-items:center;justify-content:space-between;background:var(--nested);gap:16px}
+.attention-note{font-size:11px;color:var(--muted);display:flex;gap:7px;align-items:center}.attention-note svg{width:14px;height:14px}
+.attention-review #cancel-modal{border:1px solid var(--line);background:var(--small-face);border-radius:6px;padding:9px 19px;min-height:44px;font-size:12px;flex-shrink:0}
+[data-theme=dark] .attention-priority,[data-theme=amber] .attention-priority,[data-theme=moss] .attention-priority{color:#e7bc73}
+[data-theme=dark] .attention-priority.watch,[data-theme=amber] .attention-priority.watch,[data-theme=moss] .attention-priority.watch{color:#ccb97a}
+@media(max-width:600px){.attention-review .modal-heading{padding:20px 20px 0}.attention-review .modal-heading h2{font-size:21px}.attention-review>#modal-copy{padding:5px 20px 18px}.attention-review #modal-content{padding:0 20px}.attention-review .modal-actions{padding:14px 20px;flex-wrap:wrap}.attention-note{flex:1 1 180px;line-height:1.7}.attention-item h3{font-size:14px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#modal.attention-review{background:var(--dialog)}}
+@media(prefers-reduced-transparency:reduce){#modal.attention-review{background:var(--dialog);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}#modal.attention-review::backdrop{backdrop-filter:none;-webkit-backdrop-filter:none}}

@@ -41,14 +41,27 @@
   function activeOrder(plate){return state.orders.find(o=>o.plate===plate&&['assigned','running'].includes(o.status));}
   function vehicleStatus(v){return activeOrder(v.plate)?.status||v.availability;}
   function counts(){return {pending:state.orders.filter(o=>o.status==='pending').length,running:state.orders.filter(o=>o.status==='running').length,completed:state.orders.filter(o=>o.status==='completed').length,ready:state.vehicles.filter(v=>vehicleStatus(v)==='ready').length};}
-  function alerts(){return state.vehicles.flatMap(v=>[...(v.availability==='maintenance'?[{title:v.plate+' đang bảo trì',text:'Kiểm tra trước khi đưa xe trở lại hoạt động.',plate:v.plate}]:[]),...(v.gps==='stale'?[{title:v.plate+' chưa cập nhật vị trí',text:'Vị trí trong sơ đồ là dữ liệu mẫu.',plate:v.plate}]:[])]);}
+  function alerts(){return state.vehicles.flatMap(v=>[...(v.availability==='maintenance'?[{kind:'maintenance',title:v.plate+' đang bảo trì',text:'Kiểm tra trước khi đưa xe trở lại hoạt động.',plate:v.plate}]:[]),...(v.gps==='stale'?[{kind:'stale',title:v.plate+' chưa cập nhật vị trí',text:'Vị trí trong sơ đồ là dữ liệu mẫu.',plate:v.plate}]:[])]);}
   function selectedOrder(){return state.orders.find(o=>o.id===state.selectedOrder&&o.status!=='cancelled')||state.orders.find(o=>o.status==='pending')||state.orders.find(o=>o.status!=='cancelled');}
   function candidates(o){return o?state.vehicles.filter(v=>vehicleStatus(v)==='ready'&&v.capacity>=o.quantity&&driver(v.driverId)?.status==='active').sort((a,b)=>a.eta-b.eta):[];}
   function openModal(name,text,extra=null,action=null,actionLabel='Xác nhận mô phỏng'){
-    modal.classList.remove('assignment-review');$('#cancel-modal').textContent='Đóng';confirm.textContent=actionLabel;title.textContent=name;copy.textContent=text;content.replaceChildren();if(extra)content.append(extra);onConfirm=action;confirm.hidden=!action;
+    modal.classList.remove('assignment-review','attention-review');modal.querySelector('.attention-note')?.remove();$('#cancel-modal').textContent='Đóng';confirm.textContent=actionLabel;title.textContent=name;copy.textContent=text;content.replaceChildren();if(extra)content.append(extra);onConfirm=action;confirm.hidden=!action;
     if(!modal.open)modal.showModal();
   }
   function htmlNode(html){const el=document.createElement('div');el.innerHTML=html;return el;}
+  function showAttention(){
+    const items=alerts().sort((a,b)=>Number(b.kind==='stale')-Number(a.kind==='stale'));
+    const rows=items.map(a=>{
+      const stale=a.kind==='stale',o=activeOrder(a.plate);
+      const context=stale?(o?`Đang thực hiện đơn <strong>${esc(o.id)}</strong> · ${esc(o.from)} → ${esc(o.to)}`:'Chưa có chuyến đang thực hiện.'):'Chưa sẵn sàng nhận phân công.';
+      return `<article class="attention-item"><div class="attention-priority${stale?'':' watch'}"><i aria-hidden="true"></i>${stale?'Cần kiểm tra':'Cần theo dõi'}</div><h3>Xe ${esc(a.title)}</h3><p>${context}</p><p>${stale?'Kiểm tra tín hiệu trước khi theo dõi tiến độ giao hàng.':'Kiểm tra tình trạng xe trước khi đưa trở lại hoạt động.'}</p>${actionButton(icon(stale?'pin':'truck')+(stale?'Xem hành trình':'Xem xe')+' <span aria-hidden="true">→</span>',stale?'track-vehicle':'detail-vehicle',a.plate,'attention-link')}</article>`;
+    }).join('');
+    openModal('Cần xử lý',items.length?'Kiểm tra các vấn đề ảnh hưởng đến điều phối.':'Hiện không có mục cần xử lý trong dữ liệu mẫu.',htmlNode(rows));
+    modal.classList.add('attention-review');
+    title.insertAdjacentHTML('beforeend',`<span class="attention-count">${items.length} mục</span>`);
+    const note=htmlNode(`<span class="attention-note">${icon('alert')}Dữ liệu mô phỏng · Chưa kết nối GPS thực tế</span>`).firstElementChild;
+    modal.querySelector('.modal-actions').prepend(note);
+  }
   function closeModal(){modal.close();onConfirm=null;}
   $('#close-modal').onclick=closeModal;$('#cancel-modal').onclick=closeModal;
   confirm.onclick=()=>{const action=onConfirm;if(action&&action()===false)return;closeModal();};
@@ -151,7 +164,7 @@
   $('#dispatch-order').onchange=e=>{state.selectedOrder=e.target.value;save();renderDispatch();};$('#assign').onclick=confirmAssignment;
   $('#suggest').onclick=()=>{const options=candidates(selectedOrder());if(options.length){state.selectedVehicle=options[0].plate;save();renderDispatch();toast('Đã chọn phương án mẫu theo thời gian minh họa.');}};
   $('#all-trips').onclick=()=>{orderStatus='all';setPage('orders',{focus:true});};
-  $$('[data-summary]').forEach(el=>el.onclick=()=>{if(el.dataset.summary==='Đơn chờ'){orderStatus='pending';setPage('orders',{focus:true});}else if(el.dataset.summary==='Chuyến đang chạy')setPage('gps',{focus:true});else if(el.dataset.summary==='Xe sẵn sàng')setPage('fleet',{focus:true});else openModal('Mục cần chú ý','Cảnh báo trong bộ dữ liệu mẫu.',htmlNode(alerts().map(a=>`<p class="modal-copy"><strong>${esc(a.title)}</strong><br>${esc(a.text)}</p>`).join('')));});
+  $$('[data-summary]').forEach(el=>el.onclick=()=>{if(el.dataset.summary==='Đơn chờ'){orderStatus='pending';setPage('orders',{focus:true});}else if(el.dataset.summary==='Chuyến đang chạy')setPage('gps',{focus:true});else if(el.dataset.summary==='Xe sẵn sàng')setPage('fleet',{focus:true});else showAttention();});
   $('#notifications').onclick=()=>openModal('Hoạt động gần đây','Các thay đổi mẫu trong trình duyệt này.',htmlNode(timeline(8)));
   $('#account').onclick=()=>{openModal(state.settings.dispatcher,'Không gian thử nghiệm · Chưa đăng nhập tài khoản thực.',htmlNode(`<div class="detail-actions">${actionButton('Mở cài đặt →','go-settings',null,'primary')}</div>`));};
   $('#reset-demo').onclick=()=>actions('reset-confirm');
