@@ -1,60 +1,114 @@
-# Fleet Autopilot — UI thử nghiệm
+# Fleet Autopilot
 
-Trạng thái: **chưa chốt, chưa đưa vào Final**. Bản UI nội bộ có đủ bảy trang trong menu, dùng chung dữ liệu mẫu và bốn nền đã duyệt.
+Giao diện quản lý điều phối vận chuyển vật liệu: tiếp nhận đơn hàng, phân xe và theo dõi quá trình thực hiện trong một không gian làm việc thống nhất.
 
-## Các trang
+> **Trạng thái: UI thử nghiệm.** Các thao tác sử dụng dữ liệu mẫu lưu trên trình duyệt. Chưa kết nối backend, AI, GPS thực tế, đăng nhập hoặc phân quyền.
 
-| Trang | Thao tác trong bản thử |
+![Tổng quan Fleet Autopilot với nền Rêu Lime](docs/images/overview.png)
+
+## Tính năng
+
+| Màn hình | Chức năng trong bản thử |
 | --- | --- |
-| Tổng quan | Số liệu từ dữ liệu mẫu, đơn cần theo dõi, cảnh báo và lịch sử hoạt động. |
-| Đơn hàng | Tạo/sửa đơn chờ, tìm không dấu, lọc trạng thái/ngày, chi tiết, hủy mẫu và xuất CSV. |
-| Điều phối | Chọn đơn, chọn xe mẫu, duyệt phân công, bắt đầu và hoàn thành chuyến mẫu. |
-| Xe & tài xế | Hai danh sách liên kết, thêm/sửa, lọc, xuất đúng CSV từng danh sách. |
-| GPS | Sơ đồ vị trí mẫu, chọn xe, lọc tín hiệu, zoom và cập nhật mô phỏng. |
-| Báo cáo | Khoảng ngày, số đơn, khối lượng đã giao, tỷ lệ hoàn thành, biểu đồ và CSV. |
-| Cài đặt | Tên hiển thị, nền, toast, chuyển động, tải JSON và khôi phục mẫu có xác nhận. |
+| Tổng quan | Số liệu vận hành, đơn cần xử lý, cảnh báo và hoạt động gần đây. |
+| Đơn hàng | Tạo/sửa đơn chờ, tìm kiếm không dấu, lọc trạng thái và ngày, xem chi tiết, hủy mẫu và xuất CSV. |
+| Điều phối | Chọn đơn và xe, xem trước phân công, bắt đầu và hoàn thành chuyến mẫu. |
+| Xe & tài xế | Hai danh sách liên kết, thêm/sửa, lọc và xuất CSV từng danh sách. |
+| GPS | Chọn xe, lọc tín hiệu, phóng to sơ đồ và cập nhật vị trí mô phỏng. |
+| Báo cáo | Tổng hợp số đơn, khối lượng đã giao và tỷ lệ hoàn thành theo khoảng ngày; biểu đồ và xuất CSV. |
+| Cài đặt | Tên hiển thị, giao diện, thông báo, chuyển động, xuất JSON và khôi phục dữ liệu mẫu. |
 
-Chạy từ `D:/projectcar/prompt`:
+## Chạy trên máy cá nhân
 
-```powershell
-node .10k/tools/preview.mjs UI --port 8083
+Dự án sử dụng HTML, CSS và JavaScript thuần, không cần cài thư viện hoặc chạy bước build.
+
+Tải mã nguồn về máy, mở terminal tại thư mục chứa `index.html`, rồi khởi động máy chủ tĩnh bằng Python 3:
+
+```bash
+python -m http.server 8083 --bind 127.0.0.1
 ```
 
-Mở http://127.0.0.1:8083/?page=overview. Các khóa trang: `overview`, `orders`, `dispatch`, `fleet`, `gps`, `reports`, `settings`. Trang mặc định khi không có `page` vẫn là Điều phối. URL và nút Back/Forward đồng bộ với trang/nền.
+Nếu máy dùng lệnh `python3`:
 
-## Bốn nền
+```bash
+python3 -m http.server 8083 --bind 127.0.0.1
+```
 
-**Sáng · Tối · Đen hổ phách · Rêu Lime**, tương ứng `?theme=light`, `dark`, `amber`, `moss`. Có thể kết hợp `?page=orders&theme=moss`. Lựa chọn nền được nhớ trên trình duyệt; điện thoại dùng danh sách chọn gọn.
+Mở [trang Tổng quan](http://127.0.0.1:8083/?page=overview) trên trình duyệt. Nhấn `Ctrl+C` trong terminal để dừng máy chủ.
 
-Bốn nền giữ lớp kính trong mờ, nền chuyển sắc phía sau và UI phủ sát mép trang. Menu máy tính thu gọn còn icon, mở khi hover hoặc có tiêu điểm bàn phím; thiết bị cảm ứng giữ tên mục. Có chế độ giảm chuyển động/giảm trong suốt.
+Có thể dùng máy chủ HTTP tĩnh khác thay Python. Ứng dụng không yêu cầu backend.
 
-## Dữ liệu và luồng thử
+## Bốn nền giao diện
 
-Bộ mẫu ban đầu có **5 đơn, 6 xe, 6 tài xế**, ngày minh họa 15–16/11/2026. Số liệu được tính từ dữ liệu này, không dùng các tổng giả riêng ở từng trang. Có thể thử:
+| Giao diện | Khóa URL | Đặc điểm |
+| --- | --- | --- |
+| Sáng | `light` | Trắng khói, chữ tối, lớp kính nhẹ. |
+| Tối | `dark` | Đen xám trung tính, chữ sáng. |
+| Đen hổ phách | `amber` | Nền tối kết hợp điểm nhấn hổ phách. |
+| Rêu Lime | `moss` | Nền rêu tối, điểm nhấn lime và lớp kính dịu. |
 
-1. Tạo đơn trong Đơn hàng, nhập vật liệu, lượng tính bằng tấn và hành trình.
-2. Bấm Phân xe, chọn phương án xe mẫu và Duyệt phân công.
-3. Mở Xem phân công để bắt đầu rồi hoàn thành chuyến mẫu.
-4. Xem thay đổi ở Tổng quan, đội xe và Báo cáo; tải CSV nếu cần.
+Các nền dùng chung bố cục, lớp kính trong mờ và nền chuyển sắc. Menu máy tính thu gọn thành biểu tượng, mở rộng khi di chuột hoặc điều hướng bằng bàn phím; thiết bị cảm ứng giữ tên mục. Có hỗ trợ giảm chuyển động và giảm độ trong suốt.
 
-Dữ liệu lưu ở localStorage (`fleet-autopilot-workspace-v2`), chỉ trên trình duyệt này. Có kiểm tra trường bắt buộc, lượng dương, biển số trùng và thông báo lỗi ngay trong form, kể cả khi tắt toast. Xe có đơn đang thực hiện giữ nguyên tài xế, tải trọng và tình trạng trong bản thử để tránh dữ liệu không nhất quán.
+Trạng thái chuyến dùng **chấm màu và chữ**, không dùng khung màu: xanh dương cho đang chạy, xanh lá cho hoàn thành và vàng cho chờ xử lý.
 
-Đây là **UI thử nghiệm**, chưa có backend, AI, bản đồ/GPS thật, đăng nhập hoặc phân quyền. Danh tính, vị trí, ETA, cảnh báo, trạng thái và quy tắc thao tác đều là ví dụ để thử UI. Báo cáo chỉ tổng hợp vận chuyển; chưa đưa giá cước, công nợ hoặc quyền nghiệp vụ chưa chốt vào đây. Sơ đồ không phải bản đồ thực tế. Thao tác không gửi thông báo tới tài xế hoặc tạo chuyến thực.
+## Điều hướng bằng URL
 
-## Quy tắc Final
+| Màn hình | Tham số `page` |
+| --- | --- |
+| Tổng quan | `overview` |
+| Đơn hàng | `orders` |
+| Điều phối | `dispatch` |
+| Xe & tài xế | `fleet` |
+| GPS | `gps` |
+| Báo cáo | `reports` |
+| Cài đặt | `settings` |
 
-**Chỉ cập nhật/chuyển vào Final khi người dùng nói rõ “đưa vào phần final” hoặc yêu cầu tương đương.** Việc dùng thử, duyệt màu hoặc yêu cầu hoàn thiện các trang UI không phải phê duyệt Final. Hiện không tạo hay thay đổi phần Final.
+Kết hợp màn hình và giao diện, ví dụ:
 
-## Tệp chính và kiểm tra
+```text
+http://127.0.0.1:8083/?page=orders&theme=moss
+```
 
-- `index.html`: khung chung, màn Điều phối, template duyệt và dialog.
-- `workspace.js`: dữ liệu chung, router và thao tác của bảy trang. Đây là script ứng dụng đang được nạp.
-- `workspace.css`: bố cục các trang quản lý và form.
-- `styles.css`, `amber.css`, `moss.css`, `translucent.css`: bố cục và bốn nền đã duyệt.
-- `theme.js`: chọn nền, URL, lưu lựa chọn và Back/Forward.
-- `assignment.css`: hộp Duyệt phân công.
-- `assets/fonts/`: Be Vietnam Pro tự lưu trữ, giấy phép OFL.
+Khi không có tham số `page`, ứng dụng mở màn Điều phối. Nút Back/Forward đồng bộ với trang và nền; lựa chọn nền được ghi nhớ trên trình duyệt.
 
-Bản Điều phối cũ trước khi mở rộng được lưu ở `review/UI/pre-workspace/`.
+## Luồng dùng thử
 
-Kiểm tra thao tác chính: `node .10k/tools/workspace-review.mjs`. Đã kiểm tra luồng tạo/sửa/phân công/bắt đầu/hoàn thành, báo cáo, CSV, xe/tài xế, GPS mô phỏng, cài đặt, lưu/reset và lỗi dữ liệu lưu. Bố cục đã kiểm tra bảy trang × bốn nền × bảy chiều rộng 320–1600px; ảnh tại `review/UI/workspace/`. Không cần build hoặc thư viện ngoài khi chạy UI.
+1. Vào **Đơn hàng**, tạo đơn với vật liệu, khối lượng tính bằng tấn và hành trình.
+2. Chọn **Phân xe**, xem các xe mẫu phù hợp và chọn xe thực hiện.
+3. Chọn **Duyệt phân công**, kiểm tra đơn và xe trước khi xác nhận mô phỏng.
+4. Bắt đầu rồi hoàn thành chuyến mẫu trong phần xem phân công.
+5. Xem số liệu thay đổi ở **Tổng quan**, **Xe & tài xế** và **Báo cáo**; xuất CSV nếu cần.
+
+Biểu mẫu kiểm tra trường bắt buộc, khối lượng dương và biển số trùng. Lỗi hiển thị ngay trong biểu mẫu, kể cả khi tắt thông báo nổi. Xe đang thực hiện đơn được giữ nguyên tài xế, tải trọng và tình trạng để dữ liệu mẫu nhất quán.
+
+## Dữ liệu mẫu và phạm vi
+
+Bộ dữ liệu ban đầu có **5 đơn hàng, 6 xe và 6 tài xế**, với ngày minh họa **15–16/11/2026**. Số liệu các màn hình được tính từ cùng một bộ dữ liệu.
+
+Dữ liệu lưu bằng `localStorage`, với khóa `fleet-autopilot-workspace-v2`, theo từng trình duyệt và địa chỉ truy cập. Tải lại trang giữ các thay đổi; xóa dữ liệu trang web sẽ xóa dữ liệu đã lưu. **Cài đặt** cho phép xuất JSON hoặc khôi phục bộ mẫu sau khi xác nhận. Khôi phục thay thế dữ liệu và các tùy chọn mẫu, giữ lựa chọn nền hiện tại.
+
+Vị trí, tín hiệu GPS, ETA, cảnh báo và gợi ý xe đều là mô phỏng. Phân công không gửi thông báo cho tài xế hoặc tạo chuyến thực tế. Báo cáo chỉ tổng hợp vận chuyển, chưa có giá cước hay công nợ. Quy trình nghiệp vụ và quyền người dùng cần được chốt trước khi kết nối hệ thống thật.
+
+Bốn giao diện vẫn là phương án thử nghiệm. Chỉ chuyển sang **Final** khi có yêu cầu phê duyệt rõ ràng. Xem trạng thái tại [DESIGN_STATUS.json](DESIGN_STATUS.json).
+
+## Cấu trúc mã nguồn
+
+```text
+.
+├── index.html          # Khung ứng dụng và màn Điều phối
+├── workspace.js        # Điều hướng, dữ liệu và thao tác của bảy màn hình
+├── workspace.css       # Bố cục trang quản lý và biểu mẫu
+├── theme.js            # Chọn nền, lưu lựa chọn và đồng bộ URL
+├── styles.css          # Kiểu chung, nền sáng/tối và thanh menu
+├── amber.css           # Nền Đen hổ phách
+├── moss.css            # Nền Rêu Lime
+├── translucent.css     # Lớp nền và hiệu ứng trong mờ
+├── assignment.css      # Hộp duyệt phân công
+├── assets/fonts/       # Font tự lưu trữ và giấy phép font
+├── docs/images/        # Ảnh giới thiệu trong README
+└── DESIGN_STATUS.json  # Trạng thái thử nghiệm và phạm vi hiện tại
+```
+
+`workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
+
+Giao diện dùng font **Be Vietnam Pro** lưu trong kho mã nguồn. Xem [SIL Open Font License](assets/fonts/OFL.txt) cho giấy phép font.
