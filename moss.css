@@ -11,10 +11,9 @@
 :root[data-theme=moss] .stat-icon,:root[data-theme=moss] .order-card,:root[data-theme=moss] .ai-button{border-top-color:var(--line)}
 :root[data-theme=moss] .theme-emphasis{color:#a6d941}
 :root[data-theme=moss]{--ink:#d9dbd5;--muted:#c0c3ba;--subtle:#b6bab0;--running-fg:#a9c9f4;--complete-fg:#a2d6bc}
-:root[data-theme=moss] body{font-weight:500}
-:root[data-theme=moss] h1,:root[data-theme=moss] h2,:root[data-theme=moss] h3,:root[data-theme=moss] .brand{font-weight:600}
+:root[data-theme=moss] h2{font-weight:600}
 :root[data-theme=moss] h2,:root[data-theme=moss] h2 svg,:root[data-theme=moss] .stat strong{color:#a6d941}
-:root[data-theme=moss] .theme-emphasis{color:#a6d941;font-style:italic}
+:root[data-theme=moss] .theme-emphasis{color:#a6d941}
 :root[data-theme=moss] .sidebar nav button,:root[data-theme=moss] .sidebar nav button:disabled,:root[data-theme=moss] .sidebar-foot,:root[data-theme=moss] .sidebar-foot small,:root[data-theme=moss] .list-label,:root[data-theme=moss] .eta,:root[data-theme=moss] .dispatch-note,:root[data-theme=moss] .subtle,:root[data-theme=moss] .stat>span:last-child,:root[data-theme=moss] .order-card p,:root[data-theme=moss] h3 span,:root[data-theme=moss] td,:root[data-theme=moss] td:last-child,:root[data-theme=moss] .text-button,:root[data-theme=moss] .timeline strong,:root[data-theme=moss] .timeline p,:root[data-theme=moss] .timeline time,:root[data-theme=moss] footer,:root[data-theme=moss] .map-caption,:root[data-theme=moss] .search input::placeholder,:root[data-theme=moss] .account,:root[data-theme=moss] .crumb,:root[data-theme=moss] .crumb span,:root[data-theme=moss] .crumb svg{color:#d0d3c9}
 :root[data-theme=moss] .vehicle strong,:root[data-theme=moss] td button{color:#d9dbd5}
 :root[data-theme=moss] .ai-button,:root[data-theme=moss] .theme-switch [aria-pressed=true],:root[data-theme=moss] .sidebar nav .active{color:#a6d941}
