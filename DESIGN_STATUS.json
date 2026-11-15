@@ -1,0 +1,24 @@
+{
+  "product": "Fleet Autopilot",
+  "status": "preview",
+  "finalApproved": false,
+  "screens": [
+    "overview",
+    "orders",
+    "dispatch",
+    "fleet",
+    "gps",
+    "reports",
+    "settings"
+  ],
+  "themes": [
+    "light",
+    "dark",
+    "amber",
+    "moss"
+  ],
+  "themeDecision": "provisional",
+  "promotionRule": "Only update Final after the user explicitly asks to put this into Final.",
+  "backendConnected": false,
+  "data": "shared browser-local sample orders, vehicles, drivers, activity and settings"
+}

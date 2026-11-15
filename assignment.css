@@ -1,0 +1,29 @@
+/* Approved review layout; shared behavior and theme-aware surfaces. */
+:root{--review-bg:#f4f8fa;--review-surface:#e8eff3;--review-line:#bdcbd4;--review-muted:#465968;--review-vehicle:rgba(69,95,112,.06)}
+[data-theme=dark],[data-theme=amber]{--review-bg:#12191e;--review-surface:#192229;--review-line:#303b43;--review-muted:#aab4bd;--review-vehicle:rgba(184,143,63,.055)}
+[data-theme=moss]{--review-bg:#1b2411;--review-surface:rgba(112,143,60,.08);--review-line:#384426;--review-muted:#c0c3ba;--review-vehicle:rgba(156,201,65,.055)}
+#modal.assignment-review{width:640px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);padding:28px;border:1px solid var(--review-line);border-radius:16px;background:var(--review-bg);color:var(--ink);overflow-y:auto}
+#modal.assignment-review::backdrop{background:var(--backdrop);backdrop-filter:blur(4px)}
+#modal.assignment-review .modal-heading{align-items:flex-start}
+#modal.assignment-review .modal-heading h2{display:block;font-size:24px;letter-spacing:-.6px;font-weight:600;color:var(--ink)}
+#modal.assignment-review .modal-heading h2::before{content:'ĐIỀU PHỐI';display:block;margin-bottom:7px;color:var(--review-muted);font-size:10px;font-weight:500;letter-spacing:1.7px}
+#modal.assignment-review .modal-heading button{margin-top:-6px;margin-right:-10px}
+#modal.assignment-review .modal-copy{margin:7px 0 24px;font-size:12px;line-height:1.5;color:var(--review-muted)}
+.review-order{padding:20px;border:1px solid var(--review-line);border-radius:10px;background:var(--review-surface)}
+.review-section-label{display:flex;justify-content:space-between;align-items:center;padding-bottom:17px;border-bottom:1px solid var(--review-line);font-size:12px}
+.review-section-label strong{font-weight:500}.review-id{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.review-label{display:flex;align-items:center;gap:6px;color:var(--review-muted);font-size:11px;line-height:1.5}.review-label svg{width:13px;height:13px}
+.review-material{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 0}
+#modal.assignment-review .review-material h3{margin:5px 0 0;font-size:21px;font-weight:500;color:var(--ink)}
+.review-weight{display:flex;align-items:baseline;gap:7px}.review-weight strong{font-size:34px;line-height:1;font-weight:500}.review-weight span{color:var(--review-muted);font-size:13px}
+.review-route{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;padding-top:17px;border-top:1px solid var(--review-line)}
+.review-route strong{display:block;margin-top:7px;font-size:13px;font-weight:500;overflow-wrap:anywhere}.review-route-arrow{color:var(--review-muted);font-size:20px}
+.review-vehicle{display:flex;align-items:center;gap:14px;margin-top:14px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--action) 32%,transparent);border-radius:10px;background:var(--review-vehicle)}
+.review-truck{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:8px;background:var(--nested);color:var(--action)}.review-truck svg{width:23px;height:23px}
+.review-vehicle strong{display:block;font-size:17px;font-weight:600;margin-top:3px;letter-spacing:.3px}.review-selection{margin-left:auto;font-size:11px;color:var(--action)}
+.review-note{display:flex;align-items:flex-start;gap:10px;margin:20px 0 24px;padding:0 2px;color:var(--review-muted)}.review-note svg{width:16px;height:16px;margin-top:2px}.review-note p{margin:0;font-size:11px;line-height:1.8}.review-note strong{font-weight:500;color:var(--ink)}
+#modal.assignment-review .modal-actions{justify-content:space-between;align-items:center;margin:0;padding-top:20px;border-top:1px solid var(--review-line)}
+#modal.assignment-review #confirm-modal{padding:13px 18px;min-height:44px;font-size:12px;font-weight:500}
+#modal.assignment-review #cancel-modal{font-size:12px;color:var(--ink)}
+@media(max-width:480px){#modal.assignment-review{padding:20px}#modal.assignment-review .modal-heading h2{font-size:21px}.review-order{padding:15px}.review-material{gap:10px}#modal.assignment-review .review-material h3{font-size:18px}.review-weight strong{font-size:29px}.review-route{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr)}.review-vehicle{padding:14px 12px;gap:10px}.review-selection{display:none}.review-vehicle strong{font-size:16px}#modal.assignment-review .modal-actions{gap:8px}#modal.assignment-review #confirm-modal{padding:11px;font-size:11px}#modal.assignment-review #cancel-modal{padding:8px;flex-shrink:0}}
+@media(prefers-reduced-transparency:reduce){#modal.assignment-review::backdrop{backdrop-filter:none}}

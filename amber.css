@@ -1,0 +1,31 @@
+/* Third experimental theme: obsidian surfaces and restrained amber accents. */
+[data-theme=amber]{
+  --canvas:#080a0c;--side:#101419;--surface:#11161c;--raised:#252c33;
+  --ink:#f0f1f2;--muted:#b4bdc5;--subtle:#9ba6af;--line:#293139;
+  --action:#e6b449;--action-hover:#f1c56b;--on-action:#1d170b;
+  --face:rgba(13,18,23,.9);--small-face:rgba(27,34,41,.65);--nested:rgba(56,65,73,.26);
+  --rim:rgba(146,165,178,.2);--rim-top:rgba(164,187,202,.36);--rim-left:rgba(146,165,178,.24);
+  --inner-top:rgba(159,182,197,.13);--inner-right:rgba(130,150,165,.05);--inner-bottom:rgba(130,150,165,.07);
+  --face-image:radial-gradient(ellipse at 8% 0%,rgba(131,160,181,.16),transparent 52%),linear-gradient(150deg,rgba(70,87,101,.08),transparent 60%);
+  --reflection:linear-gradient(180deg,rgba(170,193,209,.1),transparent 8px);--refraction:none;
+  --nested-image:linear-gradient(135deg,rgba(130,151,167,.08),transparent);
+  --map:#0b1014;--river:#202c35;--route:#e0b65a;--map-label:#151b20;--dialog:#151a20;
+  --canvas-image:radial-gradient(ellipse at 88% 5%,rgba(162,108,20,.035),transparent 55%);
+}
+[data-theme=amber] .sidebar{background:rgba(12,16,20,.62);border-right-color:rgba(135,157,175,.1)}
+[data-theme=amber] .sidebar nav .active{background:rgba(218,172,76,.09);color:#e7c47d}
+[data-theme=amber] .sidebar nav .active::before{background:#d8ad59}
+[data-theme=amber] .ai-button{color:#dfc185;border-color:rgba(203,165,91,.25)}
+[data-theme=amber] .stats .stat:last-child{background-image:radial-gradient(ellipse at 100% 0%,rgba(204,135,24,.13),transparent 68%)}
+[data-theme=amber] .stats .stat:last-child strong{color:#e6bd69}
+[data-theme=amber] h2{font-weight:600}
+[data-theme=amber] .theme-switch [aria-pressed=true]{color:#e7c47d;border-color:rgba(218,172,76,.32)}
+.theme-select{display:none}
+@media(max-width:600px){
+  .theme-switch{display:none}
+  .theme-select{display:block}
+  .theme-select select{width:142px;min-height:44px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font:11px var(--font)}
+}
+@media(max-width:420px){.account{display:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){[data-theme=amber] .sidebar{background:var(--side)}}
+@media(prefers-reduced-transparency:reduce){[data-theme=amber] .sidebar{background:var(--side);backdrop-filter:none;-webkit-backdrop-filter:none}}
