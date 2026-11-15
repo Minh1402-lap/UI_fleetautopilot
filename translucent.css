@@ -10,5 +10,36 @@ html{background:#4a6269}body{background:transparent;isolation:isolate}.ambient-b
 @media(max-width:900px){.app{margin-left:180px}}
 @media(min-width:601px) and (hover:hover) and (pointer:fine){.app{margin-left:76px}}
 @media(max-width:600px){body{padding:0}.glass-canvas{inset:0;border-radius:0}.sidebar{top:auto;left:auto;bottom:auto;border-radius:0}.app{margin:0;padding-top:0}}
+/* Approved shared glass: dark material geometry adapted to each palette. */
+:root[data-theme=light]{
+ --bevel:2px;--bevel-top:1px;--bevel-bottom:1px;--blur:24px;
+ --face:rgba(246,249,251,.16);--small-face:rgba(246,249,251,.23);
+ --rim:rgba(67,88,101,.28);--rim-top:rgba(255,255,255,.85);--rim-left:rgba(255,255,255,.64);
+ --inner-top:rgba(255,255,255,.42);--inner-right:rgba(75,98,112,.1);--inner-bottom:rgba(255,255,255,.28);
+ --face-image:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.08) 45%,rgba(255,255,255,.015));
+ --reflection:linear-gradient(180deg,rgba(255,255,255,.42),transparent 4px);
+ --refraction:none;
+ --nested:rgba(224,234,239,.17);
+ --nested-image:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.025));
+}
+:root[data-theme=light] .glass-canvas{background:rgba(232,240,242,.58)}
+/* Dark mode is the material reference: same bevel, edge hierarchy and reflection. */
+:root[data-theme=amber],:root[data-theme=moss]{
+ --bevel:2px;--bevel-top:1px;--bevel-bottom:1px;--blur:24px;
+ --rim:rgba(235,240,234,.24);--rim-top:rgba(245,248,240,.48);--rim-left:rgba(235,240,230,.32);
+ --inner-top:rgba(240,245,230,.2);--inner-right:rgba(230,238,216,.07);--inner-bottom:rgba(230,238,216,.11);
+ --reflection:linear-gradient(180deg,rgba(240,245,230,.14),transparent 4px);
+ --refraction:none;
+}
+:root[data-theme=amber]{
+ --face:rgba(13,24,30,.17);--small-face:rgba(25,40,48,.25);
+ --face-image:linear-gradient(135deg,rgba(226,238,245,.055),rgba(226,238,245,.01));
+}
+:root[data-theme=moss]{
+ --face:rgba(46,64,22,.17);--small-face:rgba(72,89,41,.25);
+ --face-image:linear-gradient(135deg,rgba(232,244,205,.055),rgba(232,244,205,.01));
+}
+:root[data-theme=moss] .panel::before,:root[data-theme=moss] .stat::before{border-radius:6px}
+
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root[data-theme] .glass-canvas{background:var(--canvas)}}
 @media(prefers-reduced-transparency:reduce){body{background:var(--canvas)}.ambient-backdrop{display:none}:root[data-theme] .glass-canvas{background:var(--canvas);backdrop-filter:none;-webkit-backdrop-filter:none}.panel,.stat,.search,.account,.heading-icon,.theme-switch{background:var(--surface);backdrop-filter:none;-webkit-backdrop-filter:none}}
