@@ -17,8 +17,20 @@
     "amber",
     "moss"
   ],
-  "themeDecision": "provisional",
+  "themeDecision": "four-theme-visual-baseline-approved",
   "promotionRule": "Only update Final after the user explicitly asks to put this into Final.",
   "backendConnected": false,
-  "data": "shared browser-local sample orders, vehicles, drivers, activity and settings"
+  "data": "shared browser-local sample orders, vehicles, drivers, activity and settings",
+  "visualBaseline": {
+    "approved": true,
+    "approvedOn": "2026-11-16",
+    "id": "ui-standard-2026-11-16",
+    "guide": "UI_STANDARD.md",
+    "images": "docs/ui-standard/2026-11-16",
+    "comparison": "docs/ui-standard/2026-11-16/four-themes.png",
+    "scope": "Visual standard for future UI pages; no Final promotion or business/backend approval."
+  },
+  "repositoryRole": "approved-ui-standard",
+  "canonicalRepository": "https://github.com/Minh1402-lap/UI_fleetautopilot",
+  "previewUrl": "https://minh1402-lap.github.io/UI_fleetautopilot/"
 }

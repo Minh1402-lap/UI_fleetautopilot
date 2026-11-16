@@ -1,0 +1,76 @@
+{
+  "baseline": "ui-standard-2026-11-16",
+  "approvedOn": "2026-11-16",
+  "approval": "User confirmed the current UI as the standard for future pages.",
+  "scope": "Visual UI baseline; business logic and Final promotion are separate.",
+  "page": "dispatch",
+  "desktop": {
+    "width": 1600,
+    "height": 1160
+  },
+  "mobile": {
+    "width": 390,
+    "height": 900
+  },
+  "themes": [
+    "light",
+    "dark",
+    "amber",
+    "moss"
+  ],
+  "checks": [
+    {
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "sourceHashes": {
+    "index.html": "b3d78b363919624f91fa4edf8d472f10cdbcc272268847dcb92982b7d44d9f1b",
+    "styles.css": "d01f20cb2ba560fe6f5425e9053df5c5dd38356e9755cdc7af5e5fca0916d816",
+    "amber.css": "09c59805119ff2268cbee083b07abea2484bb62f821a51bc02abe98b703097a1",
+    "amber-premium.css": "4eaf088f4ed2eb7f77fb846c517c61ecf4a864b80d751b56b06ab0ae109ec3e4",
+    "moss.css": "69df90e4eafd82856f94c2144b284508d19f2c900dea320a1258374b8665ea4e",
+    "translucent.css": "fb197b256475aaae7cdece9d4c52bf1956757470195b506b29553d97f670d80f",
+    "workspace.css": "b1c06884bc39f093ae12365c70e450c68ff8af012f598605c160b2ee43edba4b",
+    "assignment.css": "0fd74a3055fdc261deeddf69f227ef57ab11223b49064d0fbb0cce4bbc7d4979",
+    "theme.js": "722a481963cb96c82b1f4181a064584c3dff1b12fcffd68daedfb0e069c2deea",
+    "workspace.js": "e78ffc4235f06b3db06dedb62566c6e88d86708656926e1b645801a217134690"
+  }
+}

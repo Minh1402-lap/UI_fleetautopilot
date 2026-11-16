@@ -2,9 +2,13 @@
 
 Giao diện quản lý điều phối vận chuyển vật liệu: tiếp nhận đơn hàng, phân xe và theo dõi quá trình thực hiện trong một không gian làm việc thống nhất.
 
-> **Trạng thái: UI thử nghiệm.** Các thao tác sử dụng dữ liệu mẫu lưu trên trình duyệt. Chưa kết nối backend, AI, GPS thực tế, đăng nhập hoặc phân quyền.
+> **Kho UI chuẩn đã chốt.** Giao diện và bốn nền là chuẩn để phát triển các trang tiếp theo. Các thao tác hiện sử dụng dữ liệu mẫu lưu trên trình duyệt; chưa kết nối backend, AI, GPS thực tế, đăng nhập hoặc phân quyền.
 
-![Tổng quan Fleet Autopilot với nền Rêu Lime](docs/images/overview.png)
+![Bốn nền UI chuẩn Fleet Autopilot](docs/ui-standard/2026-11-16/four-themes.png)
+
+## UI chuẩn đã chốt
+
+Hình thức và cả bốn nền được chốt ngày 16/11/2026 làm chuẩn cho các trang tiếp theo. Xem [tài liệu UI chuẩn](UI_STANDARD.md) và [bộ ảnh bốn nền](docs/ui-standard/2026-11-16/four-themes.png). Kế thừa font, màu, lớp kính và thành phần hiện có khi thêm trang; các thay đổi thiết kế cần ảnh xem trước được duyệt.
 
 ## Tính năng
 
@@ -89,7 +93,7 @@ Dữ liệu lưu bằng `localStorage`, với khóa `fleet-autopilot-workspace-v
 
 Vị trí, tín hiệu GPS, ETA, cảnh báo và gợi ý xe đều là mô phỏng. Phân công không gửi thông báo cho tài xế hoặc tạo chuyến thực tế. Báo cáo chỉ tổng hợp vận chuyển, chưa có giá cước hay công nợ. Quy trình nghiệp vụ và quyền người dùng cần được chốt trước khi kết nối hệ thống thật.
 
-Bốn giao diện vẫn là phương án thử nghiệm. Chỉ chuyển sang **Final** khi có yêu cầu phê duyệt rõ ràng. Xem trạng thái tại [DESIGN_STATUS.json](DESIGN_STATUS.json).
+Hình thức của bốn giao diện đã được chốt làm UI chuẩn. Ứng dụng vẫn là bản thử nghiệm về chức năng; chỉ chuyển sang **Final** khi có yêu cầu phê duyệt rõ ràng. Xem trạng thái tại [DESIGN_STATUS.json](DESIGN_STATUS.json).
 
 ## Cấu trúc mã nguồn
 
