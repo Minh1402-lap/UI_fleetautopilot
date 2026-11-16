@@ -1,0 +1,30 @@
+/* Selected black amber theme: champagne reflections on deep obsidian glass. */
+:root[data-theme=amber]{
+ background:#0e1416;
+ --action:#d5b477;--action-hover:#e3c58f;--on-action:#211b12;
+ --face:rgba(11,15,17,.3);--small-face:rgba(32,36,36,.28);
+ --rim:rgba(203,190,164,.20);--rim-top:rgba(242,221,180,.43);--rim-left:rgba(223,208,178,.25);
+ --inner-top:rgba(246,226,190,.14);--inner-right:rgba(220,205,178,.045);--inner-bottom:rgba(220,205,178,.07);
+ --face-image:radial-gradient(ellipse at 0% 0%,rgba(235,202,146,.055),transparent 58%),linear-gradient(135deg,rgba(228,232,230,.025),transparent 70%);
+ --reflection:linear-gradient(180deg,rgba(240,217,177,.13),transparent 4px);
+ --route:#d5b477;
+}
+:root[data-theme=amber] .ambient-backdrop{
+ background:radial-gradient(ellipse at 5% 5%,#3d4646,transparent 60%),radial-gradient(ellipse at 92% 18%,#6c5638,transparent 55%),radial-gradient(ellipse at 30% 100%,#303e3e,transparent 62%),#1c2224;
+}
+:root[data-theme=amber] .ambient-backdrop::before{
+ background:linear-gradient(90deg,transparent 18%,rgba(229,215,188,.09) 18.2%,rgba(229,215,188,.09) 31%,transparent 31.2%,transparent 58%,rgba(8,14,17,.25) 58.2%,rgba(8,14,17,.25) 72%,transparent 72.2%);
+}
+:root[data-theme=amber] .glass-canvas{
+ background:radial-gradient(ellipse at 90% 12%,rgba(181,129,56,.065),transparent 54%),rgba(5,10,13,.60);
+}
+:root[data-theme=amber] .sidebar{background:rgba(10,14,16,.48);border-right-color:rgba(217,192,148,.09)}
+:root[data-theme=amber] .stats .stat:last-child{background-image:var(--face-image)}
+:root[data-theme=amber] .primary{
+ background:linear-gradient(120deg,#c4a06b,#dfc391 50%,#cbaa72);border:1px solid rgba(250,230,191,.45);box-shadow:inset 0 1px 0 rgba(255,243,215,.4),0 3px 12px rgba(0,0,0,.14);
+}
+:root[data-theme=amber] .panel,:root[data-theme=amber] .stat{box-shadow:0 8px 24px rgba(0,0,0,.12)}
+:root[data-theme=amber] .stats .stat:last-child strong{color:#dfc391}
+
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:root[data-theme=amber] .glass-canvas{background:var(--canvas)}}
+@media(prefers-reduced-transparency:reduce){:root[data-theme=amber] .glass-canvas{background:var(--canvas)}:root[data-theme=amber] .sidebar{background:var(--side)}:root[data-theme=amber] .panel,:root[data-theme=amber] .stat{background:var(--surface)}}

@@ -44,7 +44,7 @@ Có thể dùng máy chủ HTTP tĩnh khác thay Python. Ứng dụng không yê
 | --- | --- | --- |
 | Sáng | `light` | Trắng khói, chữ tối, lớp kính nhẹ. |
 | Tối | `dark` | Đen xám trung tính, chữ sáng. |
-| Đen hổ phách | `amber` | Nền tối kết hợp điểm nhấn hổ phách. |
+| Đen hổ phách | `amber` | Đen sâu, ánh hổ phách nhẹ, mép kính và nút champagne. |
 | Rêu Lime | `moss` | Nền rêu tối, điểm nhấn lime và lớp kính dịu. |
 
 Các nền dùng chung bố cục, lớp kính trong mờ và nền chuyển sắc. Menu máy tính thu gọn thành biểu tượng, mở rộng khi di chuột hoặc điều hướng bằng bàn phím; thiết bị cảm ứng giữ tên mục. Có hỗ trợ giảm chuyển động và giảm độ trong suốt.
@@ -100,7 +100,8 @@ Bốn giao diện vẫn là phương án thử nghiệm. Chỉ chuyển sang **F
 ├── workspace.css       # Bố cục trang quản lý và biểu mẫu
 ├── theme.js            # Chọn nền, lưu lựa chọn và đồng bộ URL
 ├── styles.css          # Kiểu chung, nền sáng/tối và thanh menu
-├── amber.css           # Nền Đen hổ phách
+├── amber.css           # Bảng màu cơ sở Đen hổ phách
+├── amber-premium.css   # Mẫu đen sâu và champagne đã chọn
 ├── moss.css            # Nền Rêu Lime
 ├── translucent.css     # Lớp nền và hiệu ứng trong mờ
 ├── assignment.css      # Hộp duyệt phân công
