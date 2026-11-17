@@ -26,7 +26,7 @@ Ngày chốt: **16/11/2026**. Người dùng yêu cầu tổng hợp bốn nền
 3. Tái sử dụng biến màu và thành phần của `styles.css`, `amber.css`, `moss.css`, `assignment.css`, `translucent.css`, `workspace.css`, `amber-premium.css`; giữ thứ tự nạp trong `index.html`. Không chép màu cố định riêng vào từng trang.
 4. Font tiêu đề trang: Newsreader 600 Italic, IN HOA. Tiêu đề khối: Newsreader 600 chữ đứng. Nội dung, điều hướng, bảng, mã đơn, biển số, biểu mẫu, số liệu: Be Vietnam Pro. Giữ kích thước và khoảng cách của các thành phần hiện có.
 5. Giữ lớp kính trong mờ, mép kính mảnh 2px, phản sáng nhẹ và nền phủ toàn màn hình. Đen hổ phách dùng mẫu đen sâu/champagne trong `amber-premium.css`; không dùng lại phương án nâu vàng phủ đậm đã bị từ chối.
-6. Trạng thái dùng chấm và chữ có màu, không khung màu: đang chạy xanh dương, hoàn thành xanh lá, chờ xử lý vàng. Không dùng màu giao diện để thay màu trạng thái nghiệp vụ.
+6. Trạng thái dùng chấm và chữ có màu, kèm khung cùng màu và nền màu nhẹ theo mẫu được duyệt ngày 17/11/2026: đang chạy xanh dương, hoàn thành/đã duyệt xanh lá, chờ xử lý vàng, đã hủy/mất tín hiệu đỏ. Dùng chung `status-badges.css` cho mọi vai trò; bo góc 6px, viền 1px, nền màu 10%, viền màu 45%. Không dùng màu giao diện để thay màu trạng thái nghiệp vụ.
 7. Menu máy tính thu gọn thành biểu tượng, mở rộng khi hover/focus; thiết bị cảm ứng giữ nhãn dễ đọc. Kiểm tra trang mới trên máy tính và điện thoại, không tràn ngang và không lỗi JavaScript.
 8. Nếu muốn đổi ngôn ngữ thiết kế, font, bảng màu hoặc hiệu ứng: dựng ảnh riêng để người dùng xem trước, chỉ áp dụng khi được chọn. Không coi ảnh trong `review/UI/` là chuẩn được duyệt; bộ ảnh trong tài liệu này là mốc chính thức cho công việc UI tiếp theo.
 

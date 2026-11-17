@@ -1,0 +1,439 @@
+{
+  "checks": [
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 390,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 390,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "approvals",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "activity",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "tickets",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "page": "maintenance",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "adminRouting": "URL, back/forward, reload, one visible heading",
+  "statusPreviewOnly": true
+}

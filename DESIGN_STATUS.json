@@ -78,6 +78,64 @@
       "first-login password change"
     ],
     "realAuthentication": false,
-    "realTimeChat": false
+    "realTimeChat": false,
+    "ticketReaders": [
+      "driver",
+      "dispatch",
+      "admin"
+    ]
+  },
+  "driverDevices": {
+    "supportedLayout": [
+      "phone",
+      "tablet",
+      "desktop"
+    ],
+    "wideBreakpoint": 760,
+    "maximumAppWidth": 1360,
+    "verified": "60 viewport/touch cases in Edge",
+    "physicalSafariTested": false,
+    "images": "docs/driver-responsive/2026-11-17"
+  },
+  "adminViewPermissions": [
+    "vehicle positions with assigned driver labels",
+    "dispatcher activity log",
+    "open and closed tickets read-only",
+    "review ordinary role changes"
+  ],
+  "adminPages": [
+    "overview",
+    "approvals",
+    "fleet",
+    "activity",
+    "tickets",
+    "maintenance"
+  ],
+  "adminNavigation": {
+    "queryParameter": "admin_page",
+    "history": true,
+    "verified": "72 page/theme/viewport cases; back/forward and reload"
+  },
+  "statusBadgePreview": {
+    "approved": true,
+    "applied": true,
+    "images": "docs/status-badge-preview/2026-11-17",
+    "approvedOn": "2026-11-17",
+    "stylesheet": "status-badges.css"
+  },
+  "governancePreview": {
+    "updatedOn": "2026-11-17",
+    "guide": "docs/governance-preview/README.md",
+    "images": "docs/governance-preview/2026-11-17",
+    "roleChange": "request -> operations approval -> system execution",
+    "adminGrantApproverConfigured": false,
+    "mfa": "UI preview only; channel undecided",
+    "realAuthorization": false,
+    "systemPages": [
+      "accounts",
+      "changes",
+      "maintenance",
+      "logs"
+    ]
   }
 }

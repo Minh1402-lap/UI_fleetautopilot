@@ -1,0 +1,16 @@
+/* Layout additions only; approved palette, typography and glass remain shared. */
+.governance-grid{display:grid;gap:20px;min-width:0}.governance-grid>.panel{min-width:0}
+.governance-actions{display:flex;flex-wrap:wrap;gap:4px 12px}.governance-actions button{min-height:44px}
+.governance-grid .role-row{flex-wrap:wrap;gap:12px}.governance-grid small,.admin-vehicle-list small{display:block;color:var(--muted);font-size:11px;margin-top:5px;line-height:1.6}
+.governance-grid .workflow-note,#role-view [data-admin-content=maintenance] .role-row{overflow-wrap:anywhere}
+#role-view [data-admin-content=maintenance] h3{margin:24px 0 12px;font-size:16px}
+#role-view [data-admin-content=maintenance] .role-row{flex-wrap:wrap;gap:12px}
+.admin-tracking-map .admin-marker[data-gps=stale] circle{fill:var(--pending-fg)}
+.admin-tracking-map .admin-marker[data-gps=offline] circle{fill:var(--muted);stroke-dasharray:3 2}
+.admin-tracking-map .admin-marker.chosen circle{stroke:var(--action);stroke-width:4}
+.admin-vehicle-list button{text-align:left}.admin-vehicle-list button>span:last-child{font-size:11px;text-align:right}
+.governance-history{margin-top:18px;font-size:12px}.governance-history summary{cursor:pointer;min-height:44px;padding:12px 0;color:var(--muted)}
+#admin-monitoring .workflow-grid{align-items:start}
+@media(min-width:1100px){#admin-monitoring .workflow-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}.admin-vehicle-list{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-tracking-map{height:430px}}
+#role-preview-label{overflow-wrap:anywhere;min-width:0}#role-preview{max-width:190px}
+@media(max-width:600px){.governance-grid{gap:16px}.governance-grid .role-toolbar{align-items:stretch}.governance-grid .role-toolbar input{width:100%;min-width:0}.admin-vehicle-list button{align-items:flex-start}.governance-grid .role-row>div{min-width:0;max-width:100%}}

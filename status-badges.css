@@ -1,0 +1,10 @@
+/* Status frames approved on 2026-11-17. Shared across roles and themes. */
+body .badge[data-status]{
+ padding:5px 10px;min-height:30px;border-radius:6px;
+ border:1px solid color-mix(in srgb,var(--status-fg,var(--ink)) 45%,transparent);
+ background:color-mix(in srgb,var(--status-fg,var(--ink)) 10%,transparent);
+ color:var(--status-fg,var(--ink));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+body .badge[data-status=neutral]{--status-fg:#edaaa5}
+:root[data-theme=light] body .badge[data-status=neutral]{--status-fg:#993c35}

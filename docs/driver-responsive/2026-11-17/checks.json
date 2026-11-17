@@ -1,0 +1,426 @@
+{
+  "checks": [
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone-small",
+      "width": 320,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "phone",
+      "width": 390,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-portrait",
+      "width": 768,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-air",
+      "width": 820,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "ipad-landscape",
+      "width": 1180,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "report",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "light"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "trip",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "capture",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "report",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "ticket",
+      "overflow": false,
+      "theme": "dark"
+    },
+    {
+      "device": "desktop",
+      "width": 1366,
+      "screen": "role-menu",
+      "overflow": false,
+      "theme": "dark"
+    }
+  ],
+  "errors": [],
+  "note": "Viewport and touch emulation in Edge; physical devices/Safari not tested."
+}

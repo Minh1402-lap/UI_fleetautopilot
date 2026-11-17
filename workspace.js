@@ -34,8 +34,8 @@
   function toast(text){if(!state.settings.toasts)return;clearTimeout(toastTimer);$('#toast').textContent=text;$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,3200);}
   function formError(text){const el=$('#editor-error');if(el){el.hidden=false;el.textContent=text;}}
   function save(){try{localStorage.setItem(key,JSON.stringify(state));storageFailed=false;}catch{storageFailed=true;$('#toast').hidden=false;$('#toast').textContent='Trình duyệt chưa lưu được dữ liệu. Thay đổi hiện chỉ ở phiên này.';}}
-  function log(text,detail=''){state.activity.unshift({text,detail,at:stamp()});state.activity=state.activity.slice(0,60);}
-  function commit(text,detail=''){if(text)log(text,detail);save();render();window.dispatchEvent(new CustomEvent('fleet:commit',{detail:{text,detail,actor:state.settings.dispatcher}}));}
+  function log(text,detail='',actor=state.settings.dispatcher){state.activity.unshift({text,detail,actor,at:stamp()});state.activity=state.activity.slice(0,60);}
+  function commit(text,detail='',actor=state.settings.dispatcher){if(text)log(text,detail,actor);save();render();window.dispatchEvent(new CustomEvent('fleet:commit',{detail:{text,detail,actor}}));}
   function order(id){return state.orders.find(o=>o.id===id);}
   function vehicle(plate){return state.vehicles.find(v=>v.plate===plate);}
   function driver(id){return state.drivers.find(d=>d.id===id);}

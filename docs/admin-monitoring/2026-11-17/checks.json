@@ -1,0 +1,72 @@
+{
+  "checks": [
+    {
+      "theme": "light",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "report radio selection",
+    "admin open/closed tickets read-only",
+    "dispatcher can still send and close",
+    "vehicle selection",
+    "dispatcher activity attribution"
+  ]
+}

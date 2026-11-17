@@ -1,0 +1,604 @@
+{
+  "checks": [
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "light",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "dark",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 320,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 820,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "amber",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 320,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 820,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin",
+      "page": "overview",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin",
+      "page": "fleet",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "accounts",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "changes",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "maintenance",
+      "overflow": false
+    },
+    {
+      "theme": "moss",
+      "width": 1600,
+      "role": "admin_system",
+      "page": "logs",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "ordinary provisioning without approval",
+    "no credential stored",
+    "request-review-execute",
+    "administrative grants blocked pending designated approver",
+    "bounded maintenance with no repeat",
+    "emergency lock and operations notification",
+    "driver and vehicle marker selection incl keyboard",
+    "MFA preview",
+    "route persistence"
+  ]
+}

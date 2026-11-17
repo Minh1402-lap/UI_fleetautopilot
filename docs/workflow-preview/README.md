@@ -8,7 +8,7 @@ Nguồn: `PROJECT_CONTEXT.md`, bản flow `review/workflow-2026-11-17/workflow-m
 | --- | --- |
 | Điều phối | Tiếp nhận đơn từ Sale qua kênh ngoài; đối chiếu tuyến/số chuyến tháng khi phân xe; tiếp nhận ticket và trao đổi; kiểm tra bằng chứng; xử lý ngoại lệ có lý do. |
 | Tài xế | Nhận/từ chối chuyến, xác nhận lượng lấy, gửi bằng chứng ảnh/GPS mẫu; báo sự cố mở ticket sau khi gửi thành công; đọc hồ sơ sau đóng. |
-| Admin | Giám sát vận hành và nhật ký dùng chung; yêu cầu bảo trì. Chưa tự mở quyền xem hội thoại ticket cho Admin khi chưa được chốt. |
+| Admin | Giám sát vận hành và nhật ký dùng chung; xem bản đồ/vị trí xe, hoạt động Điều phối và ticket/hội thoại ở chế độ chỉ đọc; yêu cầu bảo trì. |
 | admin_system | Cấp tên đăng nhập/vai trò và hiển thị mật khẩu ban đầu mẫu một lần; không lưu mật khẩu vào localStorage/nhật ký. |
 
 Biểu tượng Đăng nhập trên thanh đầu trang mở màn hình xem thử đăng nhập/đổi mật khẩu. Không xác thực hoặc lưu mật khẩu thật. Chỉ nhập dữ liệu thử.
@@ -16,6 +16,7 @@ Biểu tượng Đăng nhập trên thanh đầu trang mở màn hình xem thử
 ## Quyết định và giới hạn
 
 - Đã xác nhận trong lượt này: **Điều phối đóng ticket**, ghi kết quả; Tài xế trao đổi và đọc hồ sơ. Hội thoại không bị xóa khi đóng. Chưa làm mở lại/tự xóa theo lịch.
+- Bổ sung quyền Admin theo yêu cầu sau đó: xem đội xe trên bản đồ, nhật ký hoạt động Điều phối, ticket đang mở/đã đóng và hội thoại. Admin không gửi tin hoặc đóng ticket. Báo sự cố dùng hai radio Xe/Đường, không dùng popup native bị lỗi tương phản.
 - Không ghép đơn; chưa thiết kế chia đơn thành nhiều chuyến.
 - Số chuyến hoàn thành trong tháng chỉ là thống kê tham khảo, chưa phải điểm công bằng hoặc thuật toán chia việc được chốt.
 - Nhận/từ chối, lượng thực nhận, duyệt hoàn thành và xử lý ngoại lệ được đưa vào **luồng đề xuất** theo sơ đồ. Chưa chốt thời hạn phản hồi, ngưỡng bằng chứng và toàn bộ quyền.
