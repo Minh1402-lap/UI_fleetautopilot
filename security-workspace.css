@@ -1,0 +1,80 @@
+/* The investigation layout: quiet navy surfaces, cyan selection, semantic alerts. */
+body[data-role=admin_system] #security-monitor{--sec-red:#d3a0a5;--sec-yellow:#cbb58c;--sec-green:#a3b6ca;display:grid;gap:24px}
+body[data-role=admin_system] .sec-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;border-block:1px solid var(--line)}
+body[data-role=admin_system] .sec-kpi{position:relative;display:flex;align-items:center;gap:16px;padding:20px 24px;min-height:96px;border:0;border-right:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
+body[data-role=admin_system] .sec-kpi:last-child{border-right:0}
+body[data-role=admin_system] .sec-kpi::before{content:'';display:block;flex:none;width:8px;height:8px;border-radius:50%;background:var(--action)}
+body[data-role=admin_system] .sec-kpi[data-sec-level=high]::before{background:var(--sec-red)}
+body[data-role=admin_system] .sec-kpi[data-sec-level=medium]::before{background:var(--sec-yellow)}
+body[data-role=admin_system] .sec-kpi strong{font:500 36px/1.2 'Be Vietnam Pro',sans-serif;font-variant-numeric:tabular-nums;color:var(--ink)!important}
+body[data-role=admin_system] .sec-kpi>span{display:grid;gap:4px}
+body[data-role=admin_system] .sec-kpi b{font-weight:500;font-size:14px;line-height:1.6}
+body[data-role=admin_system] .sec-kpi small{font-size:12px;line-height:1.6;color:var(--muted)}
+body[data-role=admin_system] .sec-kpi[aria-pressed=true]{outline:0;background:var(--raised);box-shadow:inset 0 -2px var(--action)}
+body[data-role=admin_system] .sec-kpi:hover{background:var(--surface)}
+body[data-role=admin_system] .sec-kpi:focus-visible{outline:2px solid var(--action);outline-offset:-3px}
+body[data-role=admin_system] .sec-log-panel{padding:0;border:0;background:none}
+body[data-role=admin_system] .sec-filters{grid-template-columns:minmax(180px,1.8fr) repeat(3,minmax(112px,1fr)) auto;gap:12px;margin-bottom:24px}
+body[data-role=admin_system] .sec-filters label{font-size:12px;gap:8px}
+body[data-role=admin_system] .sec-filters :is(input,select){background:var(--raised);border-radius:6px;padding:8px 12px;min-height:40px;font-size:12px}
+body[data-role=admin_system] .sec-filters .secondary{margin:0;min-height:40px}
+body[data-role=admin_system] .sec-workspace{grid-template-columns:minmax(0,1.5fr) minmax(340px,1fr);gap:16px;align-items:start}
+body[data-role=admin_system] .sec-table-panel{border:1px solid var(--line);border-radius:8px;min-width:0;background:var(--surface);overflow:hidden}
+body[data-role=admin_system] .sec-panel-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--line)}
+body[data-role=admin_system] .sec-panel-heading h2{font-size:15px;line-height:1.6}
+body[data-role=admin_system] .sec-record-total{font-size:12px;color:var(--muted);white-space:nowrap}
+body[data-role=admin_system] .sec-table-scroll{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#46576a transparent;max-width:100%}
+body[data-role=admin_system] .sec-event-table{border-collapse:collapse;table-layout:fixed;width:100%;min-width:660px;font-size:12px}
+body[data-role=admin_system] .sec-event-table th{background:var(--raised);padding:12px;text-align:left;font-weight:500;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line)}
+body[data-role=admin_system] .sec-event-table th:nth-child(1){width:116px}
+body[data-role=admin_system] .sec-event-table th:nth-child(2){width:30%}
+body[data-role=admin_system] .sec-event-table th:nth-child(3){width:22%}
+body[data-role=admin_system] .sec-event-table th:nth-child(4){width:116px}
+body[data-role=admin_system] .sec-event-table th:nth-child(5){width:112px}
+body[data-role=admin_system] #sec-results{display:table-row-group}
+body[data-role=admin_system] .sec-event{display:table-row;width:auto;padding:0;border:0;border-radius:0;background:none!important;color:var(--ink);outline:0;cursor:default;overflow-wrap:anywhere}
+body[data-role=admin_system] .sec-event td{padding:12px;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.7}
+body[data-role=admin_system] .sec-event:last-child td{border-bottom:0}
+body[data-role=admin_system] .sec-event:hover{background:var(--raised)!important}
+body[data-role=admin_system] .sec-event.is-selected{background:var(--raised)!important;outline:0;box-shadow:inset 3px 0 var(--action)}
+body[data-role=admin_system] .sec-event-select{display:grid;gap:8px;padding:0;width:100%;min-height:44px;text-align:left;background:none;border:0;color:var(--ink);font-size:12px;line-height:1.7;cursor:pointer}
+body[data-role=admin_system] .sec-event-select strong{font-weight:500}
+body[data-role=admin_system] .sec-event-select span,body[data-role=admin_system] .sec-event td small{font-size:11px;line-height:1.7;color:var(--muted)}
+body[data-role=admin_system] .sec-event td small{display:block;margin-top:4px}
+body[data-role=admin_system] .sec-ip{font-family:Consolas,monospace;font-size:12px;white-space:nowrap}
+body[data-role=admin_system] .sec-event time{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+body[data-role=admin_system] .sec-badge{padding:3px 8px;border-radius:4px;font-size:11px;line-height:1.5;font-weight:500;background:#25303c;border-color:#4a5e70;color:#b0bfce;white-space:nowrap}
+body[data-role=admin_system] .sec-badge[data-level=high]{color:var(--sec-red);background:#2e1c29;border-color:#71404c}
+body[data-role=admin_system] .sec-badge[data-level=medium]{color:var(--sec-yellow);background:#2b261d;border-color:#6b5534}
+body[data-role=admin_system] .sec-review-status{font-size:11px;display:inline-block;padding:3px 6px;border:1px solid var(--line);border-radius:4px;color:var(--muted);white-space:nowrap}
+body[data-role=admin_system] .sec-review-status[data-status=reviewing]{color:#b0bfce;border-color:#4a5e70}
+body[data-role=admin_system] .sec-review-status[data-status=closed]{color:#91d8b3;border-color:#345a49}
+body[data-role=admin_system] #sec-result-count{padding:12px 20px;margin:0;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+body[data-role=admin_system] #sec-inspector{background:var(--surface);border-radius:8px;padding:20px;border-color:var(--line)}
+body[data-role=admin_system] .sec-detail-top{grid-template-columns:1fr auto;align-items:center;gap:8px}
+body[data-role=admin_system] .sec-detail-top h3{grid-column:1/-1;font-size:17px;margin:8px 0 0;line-height:1.6}
+body[data-role=admin_system] .sec-detail-top .report-eyebrow{font:500 18px/1.5 Consolas,monospace;color:var(--ink)}
+body[data-role=admin_system] .sec-detail-caution{border-left:2px solid var(--sec-red);padding-left:12px;margin:16px 0;font-size:12px;color:var(--muted);line-height:1.8}
+body[data-role=admin_system] .sec-details{margin:16px 0}
+body[data-role=admin_system] .sec-details>div{grid-template-columns:112px minmax(0,1fr);padding:8px 0;gap:12px;font-size:12px;line-height:1.7}
+body[data-role=admin_system] .sec-explanation h4,body[data-role=admin_system] #sec-review-form h4{margin:20px 0 8px;font-size:13px;font-weight:500}
+body[data-role=admin_system] .sec-explanation p{font-size:12px;line-height:1.8}
+body[data-role=admin_system] .sec-explanation p:first-of-type{border:1px solid var(--line);border-radius:4px;padding:12px;background:var(--raised);color:var(--ink)}
+body[data-role=admin_system] #sec-review-form{margin:20px 0;gap:12px}
+body[data-role=admin_system] #sec-review-form label{font-size:12px}
+body[data-role=admin_system] #sec-review-form :is(select,textarea){background:var(--raised);padding:8px 12px;border-radius:6px;font-size:12px;line-height:1.8}
+body[data-role=admin_system] #sec-review-form .primary{min-height:40px;padding:8px 16px;border-radius:6px;font-size:12px;justify-self:start}
+body[data-role=admin_system] .sec-history{padding-top:12px;font-size:12px}
+body[data-role=admin_system] .sec-audit-panel{padding:0;overflow:hidden}
+body[data-role=admin_system] .sec-audit-panel .table-wrap{padding:0 20px 12px}
+body[data-role=admin_system] .sec-scope{font-size:12px;color:var(--muted);line-height:1.8;border-top:1px solid var(--line);padding-top:16px}
+body[data-role=admin_system] .sec-scope summary{cursor:pointer;min-height:32px}
+body[data-role=admin_system] .sec-shortcut{background:var(--surface);border-left:2px solid #71404c;gap:16px}
+body[data-role=admin_system] .sec-shortcut .report-eyebrow{display:none}
+body[data-role=admin_system] .sec-shortcut h2{font-size:15px}
+body[data-role=admin_system] .sec-shortcut p{font-size:12px;margin:8px 0 0}
+@media(min-width:1800px){body[data-role=admin_system] .sec-workspace{grid-template-columns:minmax(0,1.6fr) minmax(400px,1fr)}}
+@media(max-width:1300px){body[data-role=admin_system] .sec-filters{grid-template-columns:repeat(4,minmax(0,1fr))}body[data-role=admin_system] .sec-filters>label:first-child{grid-column:1/-1}}
+@media(max-width:1099px){body[data-role=admin_system] .sec-workspace{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:800px){body[data-role=admin_system] .sec-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}body[data-role=admin_system] .sec-kpi{padding:16px 12px;gap:8px;flex-wrap:wrap;align-content:start}body[data-role=admin_system] .sec-kpi>span{width:100%}body[data-role=admin_system] .sec-kpi strong{font-size:28px}body[data-role=admin_system] .sec-kpi small{font-size:11px}body[data-role=admin_system] .sec-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:440px){body[data-role=admin_system] .sec-kpi{padding:16px 8px}body[data-role=admin_system] .sec-kpi b{font-size:12px}body[data-role=admin_system] .sec-kpi small{display:none}body[data-role=admin_system] .sec-filters{grid-template-columns:minmax(0,1fr)}body[data-role=admin_system] .sec-filters :is(input,select),body[data-role=admin_system] #sec-review-form :is(select,textarea){font-size:16px}body[data-role=admin_system] .sec-panel-heading{padding:16px;flex-wrap:wrap;gap:8px}body[data-role=admin_system] #sec-inspector{padding:16px}body[data-role=admin_system] .sec-details>div{grid-template-columns:minmax(0,1fr);gap:4px}body[data-role=admin_system] .sec-audit-panel .table-wrap{padding:0 16px 12px}}

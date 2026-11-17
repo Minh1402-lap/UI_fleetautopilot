@@ -1,0 +1,18 @@
+/* Native form dropdowns need explicit option colors, separate from glass fields.
+   Keep select semantics, keyboard controls, validation and FormData unchanged. */
+:root[data-theme] body select option,
+:root[data-theme] body select optgroup {
+  background-color:var(--surface,#f6f9fb);
+  color:var(--ink,#2d363f);
+}
+:root[data-theme] body select option:disabled {
+  color:var(--muted,#425563);
+}
+:root[data-theme=light] body:not([data-role=admin_system]) select {color-scheme:light}
+:root:is([data-theme=dark],[data-theme=amber],[data-theme=moss]) body select,
+:root[data-theme] body[data-role=admin_system] select {color-scheme:dark}
+@media(forced-colors:active){
+  :root[data-theme] body select option,
+  :root[data-theme] body select optgroup {background-color:Canvas;color:CanvasText}
+  :root[data-theme] body select option:disabled {color:GrayText}
+}

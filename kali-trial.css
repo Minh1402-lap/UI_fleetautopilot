@@ -1,0 +1,61 @@
+/* Kali-inspired CLI trial. Craft guidance: unslop by @heydamir, CC BY 4.0.
+   All rules are limited to the System Admin preview role. */
+body[data-role=admin_system][data-system-version=terminal]{--canvas:#080f1b;--side:#101723;--surface:#0d1523;--raised:#18263b;--line:#30435f;--ink:#e1e7f0;--muted:#a5b3c8;--action:#87b5eb;--on-action:#081321;--cli-font:Consolas,'Cascadia Mono','Liberation Mono',monospace;background:var(--canvas);font-family:var(--cli-font)}
+html:root body[data-role=admin_system][data-system-version=terminal] .sidebar,html:root body[data-role=admin_system][data-system-version=terminal] .sidebar:is(:hover,:focus-within){position:relative;inset:auto;width:100%;height:auto;min-height:0;padding:0 20px;overflow:visible;display:flex;flex-direction:column;border:0;border-bottom:1px solid var(--line);background:#101723;z-index:10;transition:none}
+html:root body[data-role=admin_system][data-system-version=terminal] .app,html:root body[data-role=admin_system][data-system-version=terminal] .sidebar:is(:hover,:focus-within)~.app{margin-left:0;width:100%;transition:none}
+body[data-role=admin_system][data-system-version=terminal] .sidebar .brand{height:48px;min-height:48px;padding:8px 0;margin:0;border:0;font-size:17px;width:max-content}
+body[data-role=admin_system][data-system-version=terminal] .brand-icon{font-size:0;width:36px;height:32px;background:url('assets/brand/kali-dragon.svg') center/contain no-repeat}
+body[data-role=admin_system][data-system-version=terminal] .brand-label{visibility:visible;opacity:1;max-width:none;width:auto;transform:none}
+body[data-role=admin_system][data-system-version=terminal] .sidebar .sidebar-foot{display:none}
+body[data-role=admin_system][data-system-version=terminal] .sidebar .role-nav{display:flex;flex-direction:row;gap:4px;overflow-x:auto;max-width:100%;padding:4px 0 10px;margin:0;scrollbar-width:thin}
+html:root body[data-role=admin_system][data-system-version=terminal] .sidebar .role-nav button{flex:0 0 auto;width:auto;height:36px;min-height:36px;padding:6px 12px;border-radius:3px;font-size:12px;white-space:nowrap}
+body[data-role=admin_system][data-system-version=terminal] .sidebar .role-nav svg{display:none}
+html:root body[data-role=admin_system][data-system-version=terminal] .sidebar .role-nav .nav-label{visibility:visible;opacity:1;max-width:none;width:auto;margin:0;white-space:nowrap;overflow:visible;transform:none;font-family:var(--cli-font)}
+html:root body[data-role=admin_system][data-system-version=terminal] .sidebar .role-nav button.active{background:#214a7a;color:#e6f0ff;border-color:#4675ab}
+html:root body[data-role=admin_system][data-system-version=terminal] header{min-height:48px;padding:8px 20px;margin:0 0 20px;background:#101723;gap:12px;flex-wrap:wrap}
+body[data-role=admin_system][data-system-version=terminal] header .crumb{font:12px/1.5 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] main{padding:0 20px 20px;max-width:1800px;margin:auto}
+body[data-role=admin_system][data-system-version=terminal] .page-heading{padding-bottom:16px}
+body[data-role=admin_system][data-system-version=terminal] .page-heading h1{font:500 22px/1.5 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] .page-heading p{font:12px/1.6 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] :is(h2,h3,h4,input,button,select,textarea){font-family:var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] .governance-grid{gap:20px;display:block}
+body[data-role=admin_system][data-system-version=terminal] .governance-grid>.panel{margin-bottom:16px}
+body[data-role=admin_system][data-system-version=terminal] .panel{border-radius:5px;background:var(--surface)}
+body[data-role=admin_system][data-system-version=terminal] .kali-desktop{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(300px,1fr);gap:16px;align-items:start}
+body[data-role=admin_system][data-system-version=terminal] .kali-desktop .system-terminal{padding:0;min-width:0;background:#0b1321;border:1px solid #38577f;border-radius:5px;overflow:hidden}
+body[data-role=admin_system][data-system-version=terminal] .terminal-title{background:#1a273b;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #38577f;font:13px/1.5 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] .terminal-title small{font-size:11px;margin:0}
+body[data-role=admin_system][data-system-version=terminal] .terminal-title>span{color:var(--ink);overflow-wrap:anywhere}
+body[data-role=admin_system][data-system-version=terminal] .terminal-body{padding:20px;min-height:440px;display:flex;flex-direction:column}
+body[data-role=admin_system][data-system-version=terminal] .terminal-output{max-height:320px;min-height:240px;overflow:auto;flex:1;scrollbar-width:thin}
+body[data-role=admin_system][data-system-version=terminal] .terminal-output pre{font:14px/1.85 var(--cli-font);color:#c1d4c9;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 24px;padding:0;background:none;border:0}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:20px}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row label{display:contents;font:14px/1.7 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row label span:first-child{grid-column:1/-1;color:#8ab4e5;overflow-wrap:anywhere}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row label span:last-child{color:#8ab4e5}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row input{width:100%;min-width:0;border:0;border-bottom:1px solid #3b5271;border-radius:0;padding:10px 4px;background:transparent;color:#eef3fa;font:14px var(--cli-font);box-shadow:none}
+body[data-role=admin_system][data-system-version=terminal] .terminal-input-row button{font:12px var(--cli-font);background:#244e80;border:1px solid #4675ab;color:#edf4ff;min-height:40px;padding:8px 12px;border-radius:3px}
+body[data-role=admin_system][data-system-version=terminal] .terminal-comment{font:11px/1.8 var(--cli-font);color:var(--muted);margin-top:12px}
+body[data-role=admin_system][data-system-version=terminal] .kali-tools{min-width:0;display:grid;gap:16px}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide{padding:0;background:#0b1321;border:1px solid #38577f;border-radius:5px;overflow:hidden}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide summary{padding:12px 16px;background:#1a273b;color:var(--ink);font:500 14px/1.5 var(--cli-font);cursor:pointer;min-height:44px}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide-grid{display:grid;grid-template-columns:minmax(0,1fr);padding:8px 16px;gap:0}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide-grid button{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,1.1fr);gap:12px;align-items:center;padding:12px 0;border:0;border-bottom:1px solid #24344a;border-radius:0;background:none;min-height:52px;text-align:left}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide-grid button:hover{background:#16273e}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide-grid code{font:12px var(--cli-font);color:#a4c5ef}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide-grid span{font:12px/1.6 var(--cli-font);color:var(--muted)}
+body[data-role=admin_system][data-system-version=terminal] .terminal-guide>p{font:11px/1.8 var(--cli-font);padding:0 16px 16px;margin:0;color:var(--muted)}
+body[data-role=admin_system][data-system-version=terminal] .kali-task-window{background:#0b1321;border:1px solid #38577f;border-radius:5px;overflow:hidden}
+body[data-role=admin_system][data-system-version=terminal] .kali-task-window h2{font:500 14px/1.5 var(--cli-font);padding:12px 16px;margin:0;background:#1a273b}
+body[data-role=admin_system][data-system-version=terminal] .kali-task{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px;border-bottom:1px solid #24344a}
+body[data-role=admin_system][data-system-version=terminal] .kali-task strong{font:13px/1.6 var(--cli-font);color:#d6b574}
+body[data-role=admin_system][data-system-version=terminal] .kali-task-window>.text-button{margin:12px 16px;min-height:32px}
+body[data-role=admin_system][data-system-version=terminal] .kali-wallpaper{height:180px;background:url('assets/brand/kali-dragon.svg') right center/contain no-repeat;opacity:.25;pointer-events:none}
+body[data-role=admin_system][data-system-version=terminal] .kali-reports{margin-top:20px;border-top:1px solid var(--line)}
+body[data-role=admin_system][data-system-version=terminal] .kali-reports>summary{cursor:pointer;font:13px/1.5 var(--cli-font);padding:16px 0;color:var(--action);min-height:48px}
+body[data-role=admin_system][data-system-version=terminal] .kali-report-content{display:grid;gap:20px}
+body[data-role=admin_system][data-system-version=terminal] .system-page-meta{font:11px/1.6 var(--cli-font)}
+body[data-role=admin_system][data-system-version=terminal] footer{font:11px/1.7 var(--cli-font)}
+@media(max-width:1000px){body[data-role=admin_system][data-system-version=terminal] .kali-desktop{grid-template-columns:minmax(0,1fr)}body[data-role=admin_system][data-system-version=terminal] .kali-tools{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}body[data-role=admin_system][data-system-version=terminal] .kali-wallpaper{display:none}body[data-role=admin_system][data-system-version=terminal] .terminal-body{min-height:420px}}
+@media(max-width:650px){html:root body[data-role=admin_system][data-system-version=terminal] .sidebar{padding-inline:12px}body[data-role=admin_system][data-system-version=terminal] main{padding-inline:12px}body[data-role=admin_system][data-system-version=terminal] .kali-tools{grid-template-columns:minmax(0,1fr)}body[data-role=admin_system][data-system-version=terminal] .terminal-body{padding:16px;min-height:380px}body[data-role=admin_system][data-system-version=terminal] .terminal-title{flex-wrap:wrap;gap:4px}body[data-role=admin_system][data-system-version=terminal] .terminal-output pre{font-size:12px}body[data-role=admin_system][data-system-version=terminal] .terminal-input-row{grid-template-columns:24px minmax(0,1fr)}body[data-role=admin_system][data-system-version=terminal] .terminal-input-row button{grid-column:2;justify-self:start}body[data-role=admin_system][data-system-version=terminal] .page-heading h1{font-size:20px}}
