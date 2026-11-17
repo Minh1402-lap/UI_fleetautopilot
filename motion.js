@@ -7,9 +7,12 @@
   const themeOrigins=[['top-right','100% 0%'],['bottom-left','0% 100%'],['top-left','0% 0%'],['bottom-right','100% 100%'],['right','100% 50%'],['left','0% 50%'],['top','50% 0%'],['bottom','50% 100%']];
   let themeStep=0;
   let active=null,pending=false,updating=false,queue=[];
-  function incoming(){const main=document.querySelector('#main');if(main&&!reduced.matches)main.animate?.([{opacity:.92},{opacity:1}],{duration:900,easing:'ease-in-out'});}
+  let pageAnimation;
+  function incoming(){const main=document.querySelector('#main');pageAnimation?.cancel();if(main&&!reduced.matches)pageAnimation=main.animate?.([{opacity:.96},{opacity:1}],{duration:240,easing:'ease-out'});}
   function flush(){const batch=queue.splice(0);pending=false;updating=true;try{for(const update of batch)update();}finally{updating=false;}}
   function transition(update,kind='page'){
+    // Render navigation synchronously into one live DOM. Never blend two text snapshots.
+    if(kind==='page'){active?.skipTransition();delete document.documentElement.dataset.motion;update();incoming();return;}
     if(reduced.matches||!document.startViewTransition){update();if(!reduced.matches)incoming();return;}
     active?.skipTransition();queue.push(update);if(pending)return;
     pending=true;document.documentElement.dataset.motion=kind;
@@ -63,5 +66,5 @@
       content.animate?.([{opacity:.85,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'cubic-bezier(.22,1,.36,1)'});
     }).observe(content,{childList:true});
   });
-  reduced.addEventListener('change',()=>{if(reduced.matches)active?.skipTransition();});
+  reduced.addEventListener('change',()=>{if(reduced.matches){active?.skipTransition();pageAnimation?.cancel();}});
 })();

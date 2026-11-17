@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "five navigation routes render synchronously",
+    "no page snapshot capture",
+    "one incoming animation cancelled on next navigation",
+    "240ms without text translation",
+    "reduced motion cancels current fade",
+    "main has no page snapshot name"
+  ],
+  "browserVisualCheck": "Unavailable: browser launch failure in this environment"
+}

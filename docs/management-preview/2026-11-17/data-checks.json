@@ -1,0 +1,20 @@
+{
+  "passed": [
+    "125 tonnes from shared sample orders",
+    "2 of 5 completed = 40 percent",
+    "completed and tonnes drilldown counts",
+    "empty month and matching scope label",
+    "escaped user content",
+    "all technical pages explicitly sample",
+    "no business mutation while rendering",
+    "12 monthly columns and status ring",
+    "6-month range updates",
+    "month drilldown returns five orders",
+    "zero month returns empty state",
+    "system monitoring dashboard and bounded counts",
+    "no invented infrastructure telemetry",
+    "daily labels removed"
+  ],
+  "syntax": "node --check passed",
+  "browser": "Monthly chart and system dashboard changes are verified by data/render checks only. Native browser visual and responsive verification pending for this revision."
+}

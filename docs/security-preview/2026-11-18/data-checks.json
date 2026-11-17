@@ -1,0 +1,15 @@
+{
+  "passed": [
+    "8 fixture groups; 4 red",
+    "IP search",
+    "operational errors not red",
+    "request details",
+    "review history and session persistence",
+    "escaped review HTML",
+    "empty result state",
+    "role guard",
+    "module initialization order and navigation integration"
+  ],
+  "browser": "Edge launch failed (crashpad pipe); responsive and visual checks pending",
+  "liveDetection": false
+}

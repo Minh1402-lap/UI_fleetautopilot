@@ -39,6 +39,8 @@
     blocks.forEach(element => {
       if (seen.has(element) || !element.getClientRects().length) return;
       seen.add(element);
+      // Management pages have their own role-specific reveal sequence.
+      if (element.closest('#role-view') && ['admin','admin_system'].includes(window.FleetRoles?.role())) return;
       // Page transitions already animate the snapshot; avoid a second animation on each panel.
       if (document.documentElement.dataset.motion) return;
       const rect = element.getBoundingClientRect();

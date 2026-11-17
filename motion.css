@@ -1,15 +1,15 @@
 /* Shared visual standard; theme changes reveal from eight alternating origins. */
 :root{view-transition-name:none}
-#main{view-transition-name:fleet-page}
+#main{view-transition-name:none}
 html[data-motion=theme]{view-transition-name:fleet-theme}
 html[data-motion=theme] #main{view-transition-name:none}
 ::view-transition{pointer-events:none}
 ::view-transition-group(*){animation-duration:600ms;animation-timing-function:cubic-bezier(.22,1,.36,1)}
 ::view-transition-group(fleet-page){animation:none}
 ::view-transition-image-pair(fleet-page){isolation:isolate}
-::view-transition-old(fleet-page){animation:none;opacity:1;mix-blend-mode:normal}
+::view-transition-old(fleet-page){animation:none;opacity:0;mix-blend-mode:normal}
 ::view-transition-new(fleet-page){mix-blend-mode:normal}
-::view-transition-new(fleet-page){animation:fleet-page-in 900ms ease-in-out both}
+::view-transition-new(fleet-page){animation:none;opacity:1}
 ::view-transition-group(fleet-theme){animation:none}
 ::view-transition-image-pair(fleet-theme){isolation:isolate}
 ::view-transition-old(fleet-theme){animation:none;mix-blend-mode:normal;opacity:1;z-index:1}

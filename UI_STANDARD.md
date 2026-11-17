@@ -1,5 +1,9 @@
 # UI chuẩn Fleet Autopilot
 
+### Bộ chọn nền trên màn hình nhỏ — 18/11/2026
+
+Menu chọn nền dùng HTML với nền đặc và màu chữ theo theme; lựa chọn có dấu chọn, hỗ trợ bàn phím và vùng bấm tối thiểu 44px. Không hiển thị popup select native vì ảnh phản hồi cho thấy nền trắng/chữ sáng khó đọc. Giữ cầu nối `#theme-select` ẩn cho luồng đổi nền/animation hiện hành; Tài xế chỉ Sáng/Tối, Admin System dùng theme riêng và ẩn bộ chọn. Desktop giữ nhóm nút chọn nền hiện có. Thay thế ghi chú trước đây về việc giữ native popup.
+
 Kho chuẩn: [Minh1402-lap/UI_fleetautopilot](https://github.com/Minh1402-lap/UI_fleetautopilot).
 
 Xem trực tiếp: [Fleet Autopilot](https://minh1402-lap.github.io/UI_fleetautopilot/).
@@ -33,6 +37,20 @@ Ngày chốt: **16/11/2026**. Người dùng yêu cầu tổng hợp bốn nền
 Bộ chọn nền và vai trò trên điện thoại dùng chung lớp kính/biến màu qua `mobile-controls.css`, bỏ nền đặc và appearance mặc định của select. Giữ native select cho thao tác cảm ứng; popup lựa chọn do hệ điều hành quản lý. Không đổi bộ màu đã chốt.
 
 ## Phạm vi chốt
+
+Quyết định mới nhất 17/11/2026: Admin System có **một nền Security đen xanh riêng**, scoped bằng `body[data-role=admin_system]` trong `system-security.css`, thay việc chọn bốn nền cho role này. Các role khác giữ theme hiện có; đổi role không ghi đè lựa chọn đã lưu. Panel/kính/font đọc vẫn thống nhất, console monospace xanh. Terminal nhận bộ lệnh trạng thái định sẵn, có Guide mở sẵn và nút điền lệnh, không shell thật hoặc nền nhấp nháy. Các ghi chú bốn nền Admin System và console không có input bên dưới là lịch sử trước quyết định này.
+
+Điểm nhấn mới 17/11/2026 theo yêu cầu chữ Linux xanh: console Admin System dùng nền đen xanh và chữ monospace xanh, chỉ trong khối `.system-terminal`; trạng thái mẫu, chỉ đọc, không shell thật. Không đổi màu các trang khác và không thêm nhấp nháy liên tục.
+
+Cập nhật 17/11/2026: chart Admin chuyển từ ngày sang **6/12 tháng** để tránh nhãn chồng; nhãn T1…T12, tên đầy đủ tháng/năm khi đối chiếu, cột rộng tối thiểu 42px và cuộn trong khung hẹp. Admin System có trang mặc định **Tổng quan hệ thống** với hero giám sát, KPI tài khoản/job/yêu cầu, lưới thành phần và chart nhật ký; dùng màu sáng nhấn theo theme, giữ kính/font chuẩn và animation nhẹ. Số liệu là dữ liệu mẫu hiện có, không bịa chỉ số hạ tầng. Đã kiểm chứng nội dung native Edge, chưa kiểm tra đủ ảnh/responsive.
+
+Thử nghiệm khối phóng/thu mới nhất 17/11/2026 theo yêu cầu người dùng: Admin luân phiên nở từ tâm 0.94→1, thu từ ngoài 1.018→1, nở từ cạnh (dịch 6px), 440ms/lệch tối đa 105ms. Admin System 0.98→1 hoặc 1.008→1, 280ms/lệch tối đa 40ms. Các khối kích hoạt khi cuộn tới, chỉ một lớp chữ, không lặp khi nhập liệu trên cùng trang; chart Admin 480ms. Giữ reduced-motion, chuyển trang một DOM và palette/font/kính. Các thông số này thay entrance 340ms trong ghi chú lịch sử; chưa kiểm chứng trực quan phiên bản animation này.
+
+Thử nghiệm theo video V14 được người dùng yêu cầu ngày 17/11/2026: giữ lớp kính/màu/font, áp dụng riêng Admin entrance khối 340ms (dịch 6px, lệch tối đa 128ms), hình học chart 520ms và hover thẻ nhấc 4px/180ms. Luôn một lớp nội dung, không blend snapshot trang cũ/mới; Admin System giữ nhẹ, reduced-motion bỏ animation. Dashboard bổ sung cột chồng 7/14 ngày và vòng trạng thái có đối chiếu dữ liệu. Đã kiểm chứng nội dung native Edge, chưa xác nhận đầy đủ hình ảnh/chuyển động/responsive.
+
+Ưu tiên cập nhật mới nhất 17/11/2026: người dùng báo chữ chồng và animation chậm. Chuyển trang/vai trò/tab/Back/Forward dùng một DOM thật, cập nhật ngay rồi fade nhẹ 240ms (0.96→1), không dùng snapshot trang cũ/mới hoặc translate chữ. Chỉ giữ View Transitions cho đổi nền. Bỏ reveal từng panel quản trị và bỏ morph bố cục có chữ, chỉ animate thanh biểu đồ 420ms. Dashboard Admin dùng thẻ tổng lớn, nhóm KPI nhỏ và cột chồng số đơn theo ngày theo ảnh người dùng gửi, kế thừa palette/kính/font hiện có. Mục này thay thông số 900ms/950ms/1100ms/850ms ở các ghi chú lịch sử dưới đây. Chưa kiểm chứng trực quan trong browser; đã qua kiểm tra dữ liệu và sự kiện điều hướng.
+
+Cập nhật 17/11/2026 cho trang quản trị: Admin là sếp, có thống kê đơn hàng kèm cách tính và danh sách đối chiếu, animation nổi bật hơn qua `management.js/css` (reveal 950ms, thanh biểu đồ 1100ms, đổi bố cục Anime.js 850ms). Admin System thêm công cụ bảo trì mô phỏng, reveal nhẹ 380ms. Giữ chuyển trang tại chỗ 900ms theo phản hồi mới nhất về mỏi mắt, không dùng lại thông số trượt ngang lịch sử bên dưới; giữ giảm chuyển động và tránh reveal chung trùng với reveal riêng. Chưa kiểm chứng trực quan/responsive các trang mới vì trình duyệt kiểm thử không khởi chạy được trong phiên này.
 
 Chuyển động được người dùng yêu cầu và làm rõ ngày 17/11/2026: dùng chung `motion.js`/`motion.css`. Đổi nền lan/quét 760ms, tự luân phiên 4 góc + 4 cạnh, bắt đầu góc trên phải. Chuyển trang: cũ trượt trái 16px/mờ 240ms, mới trượt từ phải 24px/hiện 420ms. Hộp thoại và nút giữ hiệu ứng ngắn. Giữ nguyên màu, font và kính. Tôn trọng `prefers-reduced-motion`, không thêm animation lặp hoặc chờ animation để lưu nghiệp vụ. Có fallback khi không hỗ trợ View Transitions; cần thử Safari/iPad thật trước khi xác nhận hỗ trợ thiết bị đó.
 
