@@ -34,7 +34,7 @@
   function formError(text){const el=$('#editor-error')||$('#preferences-error');if(el){el.hidden=false;el.textContent=text;}}
   function save(){try{localStorage.setItem(key,JSON.stringify(state));storageFailed=false;}catch{storageFailed=true;$('#toast').hidden=false;$('#toast').textContent='Trình duyệt chưa lưu được dữ liệu. Thay đổi hiện chỉ ở phiên này.';}}
   function log(text,detail=''){state.activity.unshift({text,detail,at:stamp()});state.activity=state.activity.slice(0,60);}
-  function commit(text,detail=''){if(text)log(text,detail);save();render();}
+  function commit(text,detail=''){if(text)log(text,detail);save();render();window.dispatchEvent(new CustomEvent('fleet:commit',{detail:{text,detail,actor:state.settings.dispatcher}}));}
   function order(id){return state.orders.find(o=>o.id===id);}
   function vehicle(plate){return state.vehicles.find(v=>v.plate===plate);}
   function driver(id){return state.drivers.find(d=>d.id===id);}
@@ -64,7 +64,7 @@
   }
   function closeModal(){modal.close();onConfirm=null;}
   $('#close-modal').onclick=closeModal;$('#cancel-modal').onclick=closeModal;
-  confirm.onclick=()=>{const action=onConfirm;if(action&&action()===false)return;closeModal();};
+  confirm.onclick=()=>{const action=onConfirm;if(action&&action()===false)return;if(action===reset)window.dispatchEvent(new Event('fleet:reset'));closeModal();};
   modal.addEventListener('close',()=>{onConfirm=null;});
   for(const dialog of [modal,searchModal])dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
   function setPage(next,{push=true,focus=false}={}){if(!routeKeys.includes(next))return;page=next;if(push){const url=new URL(location.href);url.searchParams.set('page',next);history.pushState(null,'',url);}render();window.scrollTo(0,0);if(focus)$('#main').focus({preventScroll:true});}
@@ -114,6 +114,7 @@
     document.title=routes[page]+' — Fleet Autopilot · Bản thử';
     $$('#workspace-view .table-wrap').forEach(w=>{w.tabIndex=0;w.setAttribute('role','region');w.setAttribute('aria-label','Bảng dữ liệu có thể cuộn ngang');const hint=document.createElement('p');hint.className='table-scroll-hint';hint.textContent='Cuộn ngang để xem đầy đủ →';hint.hidden=w.scrollWidth<=w.clientWidth+1;w.insertAdjacentElement('beforebegin',hint);});
     if(focusedId)document.getElementById(focusedId)?.focus({preventScroll:true});
+    window.dispatchEvent(new Event('fleet:render'));
   }
   function details(o){if(!o)return;const extra=htmlNode(`<dl class="detail-grid"><div><dt>Khách hàng</dt><dd>${esc(o.customer)}</dd></div><div><dt>Vật liệu / khối lượng</dt><dd>${esc(o.material)} · ${o.quantity} tấn</dd></div><div><dt>Điểm lấy</dt><dd>${esc(o.from)}</dd></div><div><dt>Điểm giao</dt><dd>${esc(o.to)}</dd></div><div><dt>Ngày / giờ giao mẫu</dt><dd>${date(o.day)} · ${esc(o.slot||'Chưa đặt giờ')}</dd></div><div><dt>Xe</dt><dd>${esc(o.plate||'Chưa phân xe')}</dd></div></dl><div class="trip-status"><span>Trạng thái mẫu</span>${badge(o.status)}</div>${o.note?`<p class="modal-copy">${esc(o.note)}</p>`:''}<div class="detail-actions">${o.status==='pending'?actionButton('Chỉnh sửa','edit-order',o.id,'secondary')+actionButton('Chuyển sang Điều phối →','dispatch-order',o.id,'primary'):o.status==='assigned'?actionButton('Bắt đầu chuyến mẫu','start-order',o.id,'primary'):o.status==='running'?actionButton('Hoàn thành chuyến mẫu','complete-order',o.id,'primary'):''}${o.status==='pending'?actionButton('Hủy đơn mẫu','cancel-order',o.id,'text-button danger-text'):''}</div>`);openModal('Chi tiết '+o.id,'Thông tin dùng để xem thử giao diện.',extra);}
   function vehicleDetail(v){if(!v)return;const o=activeOrder(v.plate),d=driver(v.driverId);openModal('Xe '+v.plate,'Thông tin và vị trí đều là dữ liệu mẫu.',htmlNode(`<dl class="detail-grid"><div><dt>Loại xe</dt><dd>${esc(v.type)}</dd></div><div><dt>Tải trọng mẫu</dt><dd>${v.capacity} tấn</dd></div><div><dt>Tài xế</dt><dd>${esc(d?.name||'Chưa gán')}</dd></div><div><dt>Đơn đang thực hiện</dt><dd>${esc(o?.id||'Chưa có')}</dd></div></dl><div class="detail-actions">${badge(vehicleStatus(v))}${badge(v.gps)}${actionButton('Chỉnh sửa thông tin','edit-vehicle',v.plate,'secondary')}${actionButton('Xem trên sơ đồ →','track-vehicle',v.plate,'primary')}</div>`));}
@@ -179,5 +180,6 @@
   document.fonts.ready.then(centerMobileNav);
   // Theme events run after theme.js has applied the selected palette.
   document.addEventListener('click',e=>{if(e.target.closest('[data-theme-option]')&&page==='settings')render();});
+  window.FleetPreview={snapshot:()=>state,openModal,toast,render};
   render();
 })();

@@ -1,0 +1,397 @@
+{
+  "errors": [],
+  "checks": [
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Trung tâm điều phối"
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Giám sát vận hành"
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Quản trị hệ thống"
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 320,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 390,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false,
+      "heading": "Chuyến của tôi"
+    }
+  ]
+}

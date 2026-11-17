@@ -1,0 +1,35 @@
+/* Role views inherit all approved glass, palette and font tokens unchanged. */
+body[data-role]:not([data-role=dispatch]) #dispatch-view,body[data-role]:not([data-role=dispatch]) #workspace-view{display:none!important}
+.role-selector{position:relative;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+#role-preview{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:118px;max-width:170px;min-height:44px;border:1px solid var(--line);border-top-color:var(--rim-top);border-radius:6px;background:var(--nested);padding:8px 12px;color:var(--ink);font:inherit}
+#role-menu{position:absolute;z-index:100;right:0;top:calc(100% + 8px);width:210px;max-width:calc(100vw - 32px);padding:6px;border:1px solid var(--line);border-top-color:var(--rim-top);border-radius:8px;background:var(--surface);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+#role-menu[hidden]{display:none}
+#role-menu button{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:44px;padding:10px 12px;border-radius:5px;text-align:left;font:inherit;font-size:12px;color:var(--ink);background:transparent}
+#role-menu button:hover,#role-menu button:focus-visible,#role-menu button[aria-checked=true]{background:var(--nested)}
+#role-menu .role-check{visibility:hidden;color:var(--action)}#role-menu [aria-checked=true] .role-check{visibility:visible}
+.role-nav{display:none}.role-switch-active .sidebar nav:not(.role-nav){display:none}.role-switch-active .role-nav{display:flex;flex-direction:column}
+.driver-brand{display:none}body[data-role=driver] .driver-brand{display:block;width:100%;font-size:21px;font-weight:600;padding-bottom:16px}
+#account{display:none}
+.role-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;margin-bottom:20px}
+.role-grid>*{min-width:0}.role-grid .panel{margin:0}.role-wide{grid-column:1/-1}
+.role-table{width:100%;font-size:12px;min-width:560px;border-collapse:collapse}.role-table th{text-align:left;color:var(--muted);font-size:11px;font-weight:500;padding:12px 8px;border-bottom:1px solid var(--line)}
+.role-table td{padding:14px 8px;border-bottom:1px solid var(--line);line-height:1.7}.role-table button{min-height:36px}.role-table tr[aria-selected=true]{background:var(--nested)}
+.role-table td:last-child .text-button{padding:4px 6px;margin:0 3px}
+.role-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0 18px}.role-toolbar input,.role-toolbar select{border:1px solid var(--line);border-radius:6px;background:var(--nested);padding:10px;min-height:42px;max-width:100%;min-width:0}.role-toolbar input{flex:1}
+.role-details{margin:0;font-size:12px}.role-details>div{display:grid;grid-template-columns:minmax(90px,.8fr) minmax(0,1.2fr);gap:16px;padding:11px 0;border-bottom:1px solid var(--line)}.role-details dt{color:var(--muted)}.role-details dd{margin:0;overflow-wrap:anywhere}.role-details+.primary{margin-top:18px}
+.role-row{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding:16px 0;font-size:12px}.role-row small{display:block;margin-top:7px;color:var(--muted)}
+.role-form{display:grid;gap:16px}.role-form label{display:grid;gap:8px;font-size:12px}.role-form input,.role-form textarea,.role-form select{width:100%;min-height:44px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--nested)}
+.role-form textarea{resize:vertical}.role-form .primary{justify-content:center}.role-form .form-error{margin:0}.role-hint{font-size:11px;line-height:1.8;color:var(--muted)}
+.driver-layout{max-width:590px;margin:auto}.driver-layout .page-heading{text-align:left;padding:22px 0}.driver-layout h1{font-size:30px}.driver-layout .panel{margin-bottom:16px}.driver-layout .badge{min-width:0}
+.driver-identity{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin:0 0 20px}.driver-identity svg{width:20px;height:20px}
+.driver-order{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}.driver-order p{font-size:12px;color:var(--muted)}
+.driver-map.map{height:310px;margin-top:8px}.driver-map .map-art{width:100%;height:100%}.driver-map .driver-route{stroke:var(--running-fg)!important;fill:none}.driver-map .driver-location{fill:var(--running-fg)!important;stroke:var(--ink)!important}
+.driver-actions{display:grid;gap:12px;margin-top:20px}.driver-actions button,.driver-actions label{width:100%;min-height:48px;justify-content:center}.driver-actions svg{width:20px;height:20px}
+.driver-photo{width:100%;max-height:300px;object-fit:contain;border-radius:6px;background:var(--nested)}.driver-tabs{display:flex;gap:12px;padding:12px 0}.driver-tabs button{flex:1;min-height:46px}.driver-tabs [aria-current=page]{background:var(--nested);border-color:var(--action)}
+body[data-role=driver] .sidebar,body[data-role=driver] .search,body[data-role=driver] #notifications,body[data-role=driver] #account,body[data-role=driver] #open-search{display:none}
+body[data-role=driver] .app{margin:0;max-width:660px;margin-inline:auto}body[data-role=driver] header{height:auto;padding:24px 28px;gap:12px;flex-wrap:wrap}body[data-role=driver] .header-actions{width:100%;justify-content:space-between;flex-wrap:wrap}body[data-role=driver] .crumb{display:none}
+body[data-role=driver] [data-theme-option=amber],body[data-role=driver] [data-theme-option=moss],body[data-role=driver] #theme-select option[value=amber],body[data-role=driver] #theme-select option[value=moss]{display:none}
+body[data-role]:not([data-role=dispatch]) #account{display:none}
+@media(max-width:1000px){.role-grid{grid-template-columns:1fr}.role-wide{grid-column:auto}}
+@media(max-width:600px){header{height:auto;min-height:64px;flex-wrap:wrap;padding-block:12px}.header-actions{flex:1;min-width:0;flex-wrap:wrap;justify-content:flex-end}.role-switch-active .role-nav{flex-direction:row}body[data-role=driver] header{padding:20px 16px!important}}
+@media(max-width:600px){.role-selector{margin-left:auto}.role-selector>span{display:none}.role-selector select{max-width:145px}.role-grid{gap:16px}.role-table{font-size:11px}.driver-map.map{height:260px}.driver-layout h1{font-size:27px}.driver-layout .panel{padding:16px}.driver-order{flex-wrap:wrap}.driver-layout .page-heading p{font-size:12px}.role-toolbar{gap:8px}.role-details>div{gap:10px}.role-row{flex-wrap:wrap}.role-row>.primary{width:100%}.role-switch-active .role-nav{overflow-x:auto}.role-switch-active .sidebar .brand{margin-bottom:8px}body[data-role=driver] header{padding:16px 0}body[data-role=driver] .header-actions{width:100%;justify-content:space-between}.role-form .primary{width:100%}}

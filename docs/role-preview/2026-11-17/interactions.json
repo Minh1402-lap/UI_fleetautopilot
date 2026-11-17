@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "requests",
+    "create/delete/restore",
+    "incidents",
+    "evidence",
+    "theme restriction",
+    "history",
+    "reload",
+    "reset",
+    "role menu transitions across themes",
+    "keyboard",
+    "outside click"
+  ],
+  "errors": []
+}
