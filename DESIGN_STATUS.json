@@ -137,5 +137,36 @@
       "maintenance",
       "logs"
     ]
+  },
+  "motionPreview": {
+    "approvedOn": "2026-11-17",
+    "themeMs": 760,
+    "pageMs": 420,
+    "reducedMotion": true,
+    "progressiveFallback": true,
+    "checks": "docs/motion-preview/2026-11-17/checks.json",
+    "physicalSafariTested": false,
+    "themeEffect": "directional circular reveal",
+    "themeOrigins": [
+      "top-right",
+      "bottom-left",
+      "top-left",
+      "bottom-right",
+      "right",
+      "left",
+      "top",
+      "bottom"
+    ],
+    "directionalChecks": "docs/motion-preview/2026-11-17/directional-checks.json"
+  },
+  "sidebarPreview": {
+    "updatedOn": "2026-11-17",
+    "behavior": "push content on desktop hover/focus",
+    "closedWidth": 76,
+    "openWidth": 288,
+    "durationMs": 280,
+    "checks": "docs/navigation-preview/2026-11-17/checks.json",
+    "verifiedCases": 48,
+    "stableMenuItemGeometry": true
   }
 }

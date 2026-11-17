@@ -27,9 +27,11 @@ Ngày chốt: **16/11/2026**. Người dùng yêu cầu tổng hợp bốn nền
 4. Font tiêu đề trang: Newsreader 600 Italic, IN HOA. Tiêu đề khối: Newsreader 600 chữ đứng. Nội dung, điều hướng, bảng, mã đơn, biển số, biểu mẫu, số liệu: Be Vietnam Pro. Giữ kích thước và khoảng cách của các thành phần hiện có.
 5. Giữ lớp kính trong mờ, mép kính mảnh 2px, phản sáng nhẹ và nền phủ toàn màn hình. Đen hổ phách dùng mẫu đen sâu/champagne trong `amber-premium.css`; không dùng lại phương án nâu vàng phủ đậm đã bị từ chối.
 6. Trạng thái dùng chấm và chữ có màu, kèm khung cùng màu và nền màu nhẹ theo mẫu được duyệt ngày 17/11/2026: đang chạy xanh dương, hoàn thành/đã duyệt xanh lá, chờ xử lý vàng, đã hủy/mất tín hiệu đỏ. Dùng chung `status-badges.css` cho mọi vai trò; bo góc 6px, viền 1px, nền màu 10%, viền màu 45%. Không dùng màu giao diện để thay màu trạng thái nghiệp vụ.
-7. Menu máy tính thu gọn thành biểu tượng, mở rộng khi hover/focus; thiết bị cảm ứng giữ nhãn dễ đọc. Kiểm tra trang mới trên máy tính và điện thoại, không tràn ngang và không lỗi JavaScript.
+7. Menu máy tính thu gọn thành biểu tượng (76px), mở rộng khi hover/focus (288px); khi mở, nội dung chính dịch sang bên và co chiều rộng để nhường chỗ, không mở đè. Dùng chung `navigation.css` để đồng bộ chuyển động 280ms; nhãn dài xuống dòng để đọc đủ. Thiết bị cảm ứng giữ nhãn dễ đọc. Kiểm tra trang mới trên máy tính và điện thoại, không tràn ngang và không lỗi JavaScript.
 8. Nếu muốn đổi ngôn ngữ thiết kế, font, bảng màu hoặc hiệu ứng: dựng ảnh riêng để người dùng xem trước, chỉ áp dụng khi được chọn. Không coi ảnh trong `review/UI/` là chuẩn được duyệt; bộ ảnh trong tài liệu này là mốc chính thức cho công việc UI tiếp theo.
 
 ## Phạm vi chốt
+
+Chuyển động được người dùng yêu cầu và làm rõ ngày 17/11/2026: dùng chung `motion.js`/`motion.css`. Đổi nền lan/quét 760ms, tự luân phiên 4 góc + 4 cạnh, bắt đầu góc trên phải. Chuyển trang: cũ trượt trái 16px/mờ 240ms, mới trượt từ phải 24px/hiện 420ms. Hộp thoại và nút giữ hiệu ứng ngắn. Giữ nguyên màu, font và kính. Tôn trọng `prefers-reduced-motion`, không thêm animation lặp hoặc chờ animation để lưu nghiệp vụ. Có fallback khi không hỗ trợ View Transitions; cần thử Safari/iPad thật trước khi xác nhận hỗ trợ thiết bị đó.
 
 Đã chốt **hình thức UI và bốn nền để phát triển tiếp**. Ứng dụng vẫn dùng dữ liệu mẫu; nghiệp vụ, backend, AI, GPS thực tế và quyền chưa được chốt bởi quyết định này. Chưa chuyển vào thư mục hoặc bản phát hành Final; chỉ làm vậy khi người dùng yêu cầu rõ.

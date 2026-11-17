@@ -1,0 +1,397 @@
+{
+  "checks": [
+    {
+      "width": 820,
+      "theme": "light",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "light",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "light",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "dark",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "dark",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "dark",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "amber",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "amber",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "amber",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "moss",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "moss",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 820,
+      "theme": "moss",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "light",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "light",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "light",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "dark",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "dark",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "dark",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "amber",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "amber",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "amber",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "moss",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "moss",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1024,
+      "theme": "moss",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "light",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "light",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "light",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "dark",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "dark",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "dark",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "amber",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "amber",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "amber",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "moss",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "moss",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1366,
+      "theme": "moss",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "light",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "light",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "light",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "dark",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "dark",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "dark",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "amber",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "amber",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "amber",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "moss",
+      "role": "dispatch",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "moss",
+      "role": "admin",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 1600,
+      "theme": "moss",
+      "role": "admin_system",
+      "overlap": false,
+      "overflow": false,
+      "clipped": []
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "menu reserves space",
+    "all labels fit",
+    "collapse restores width",
+    "keyboard navigation",
+    "reduced motion",
+    "phone and driver layouts retained"
+  ]
+}

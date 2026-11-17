@@ -1,0 +1,103 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "origin": "top-right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 0%)"
+    },
+    {
+      "width": 390,
+      "origin": "bottom-left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 100%)"
+    },
+    {
+      "width": 390,
+      "origin": "top-left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 0%)"
+    },
+    {
+      "width": 390,
+      "origin": "bottom-right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 100%)"
+    },
+    {
+      "width": 390,
+      "origin": "right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 50%)"
+    },
+    {
+      "width": 390,
+      "origin": "left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 50%)"
+    },
+    {
+      "width": 390,
+      "origin": "top",
+      "duration": 760,
+      "clipStart": "circle(0% at 50% 0%)"
+    },
+    {
+      "width": 390,
+      "origin": "bottom",
+      "duration": 760,
+      "clipStart": "circle(0% at 50% 100%)"
+    },
+    {
+      "width": 1600,
+      "origin": "top-right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 0%)"
+    },
+    {
+      "width": 1600,
+      "origin": "bottom-left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 100%)"
+    },
+    {
+      "width": 1600,
+      "origin": "top-left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 0%)"
+    },
+    {
+      "width": 1600,
+      "origin": "bottom-right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 100%)"
+    },
+    {
+      "width": 1600,
+      "origin": "right",
+      "duration": 760,
+      "clipStart": "circle(0% at 100% 50%)"
+    },
+    {
+      "width": 1600,
+      "origin": "left",
+      "duration": 760,
+      "clipStart": "circle(0% at 0% 50%)"
+    },
+    {
+      "width": 1600,
+      "origin": "top",
+      "duration": 760,
+      "clipStart": "circle(0% at 50% 0%)"
+    },
+    {
+      "width": 1600,
+      "origin": "bottom",
+      "duration": 760,
+      "clipStart": "circle(0% at 50% 100%)"
+    }
+  ],
+  "errors": [],
+  "pageDuration": 420,
+  "reducedMotion": true
+}

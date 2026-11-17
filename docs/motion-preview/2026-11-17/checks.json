@@ -1,0 +1,76 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "role": "admin",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "role": "admin_system",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "role": "driver",
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "role": "dispatch",
+      "overflow": false
+    },
+    {
+      "width": 820,
+      "role": "admin",
+      "overflow": false
+    },
+    {
+      "width": 820,
+      "role": "admin_system",
+      "overflow": false
+    },
+    {
+      "width": 820,
+      "role": "driver",
+      "overflow": false
+    },
+    {
+      "width": 820,
+      "role": "dispatch",
+      "overflow": false
+    },
+    {
+      "width": 1600,
+      "role": "admin",
+      "overflow": false
+    },
+    {
+      "width": 1600,
+      "role": "admin_system",
+      "overflow": false
+    },
+    {
+      "width": 1600,
+      "role": "driver",
+      "overflow": false
+    },
+    {
+      "width": 1600,
+      "role": "dispatch",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "theme button and select crossfade",
+    "navigation for all roles",
+    "rapid successive navigation",
+    "Back/Forward",
+    "role-switch theme restriction",
+    "dialog open/close",
+    "ticket sent once",
+    "reduced-motion bypass",
+    "fallback without View Transitions"
+  ]
+}

@@ -1,0 +1,17 @@
+/* Desktop menu reserves its own space; shared surfaces remain unchanged. */
+@media(min-width:601px) and (hover:hover) and (pointer:fine){
+  body:not([data-role=driver]){--rail-closed:76px;--rail-open:288px;--rail-speed:280ms;--rail-ease:cubic-bezier(.22,1,.36,1)}
+  body:not([data-role=driver]) .sidebar{width:var(--rail-closed);transition:width var(--rail-speed) var(--rail-ease)}
+  body:not([data-role=driver]) .sidebar:is(:hover,:focus-within){width:var(--rail-open)}
+  body:not([data-role=driver]) .app{margin-left:var(--rail-closed);min-width:0;transition:margin-left var(--rail-speed) var(--rail-ease)}
+  body:not([data-role=driver]) .sidebar:is(:hover,:focus-within)~.app{margin-left:var(--rail-open)}
+  .sidebar nav button{width:calc(var(--rail-open) - 28px);min-width:0;height:56px;min-height:56px;padding-block:8px;flex-shrink:0}
+  .sidebar nav svg{flex:0 0 20px}
+  .sidebar:is(:hover,:focus-within) .nav-label{flex:1;max-width:none;min-width:0;white-space:normal;overflow:visible;line-height:1.4;margin-left:12px}
+  .sidebar .brand{height:40px;min-height:40px}
+  .sidebar:is(:hover,:focus-within) .brand-label{white-space:nowrap}
+  body:not([data-role=driver]) header{height:auto;min-height:80px;flex-wrap:wrap;padding-block:16px}
+  body:not([data-role=driver]) .header-actions{min-width:0;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
+  body:not([data-role=driver]) header .search{min-width:120px}
+}
+@media(prefers-reduced-motion:reduce){body:not([data-role=driver]) .app{transition:none!important}}

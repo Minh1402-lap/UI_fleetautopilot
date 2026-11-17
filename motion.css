@@ -1,0 +1,28 @@
+/* Shared visual standard; theme changes reveal from eight alternating origins. */
+:root{view-transition-name:none}
+#main{view-transition-name:fleet-page}
+html[data-motion=theme]{view-transition-name:fleet-theme}
+html[data-motion=theme] #main{view-transition-name:none}
+::view-transition{pointer-events:none}
+::view-transition-group(*){animation-duration:420ms;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-old(fleet-page){animation:fleet-page-out 240ms ease-out both}
+::view-transition-new(fleet-page){animation:fleet-page-in 420ms cubic-bezier(.22,1,.36,1) both}
+::view-transition-group(fleet-theme){animation:none}
+::view-transition-image-pair(fleet-theme){isolation:isolate}
+::view-transition-old(fleet-theme){animation:none;mix-blend-mode:normal;opacity:1;z-index:1}
+::view-transition-new(fleet-theme){animation:fleet-theme-reveal 760ms cubic-bezier(.4,0,.2,1) both;mix-blend-mode:normal;z-index:2}
+@keyframes fleet-page-out{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-16px)}}
+@keyframes fleet-page-in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fleet-theme-reveal{from{clip-path:circle(0% at var(--theme-reveal-origin,100% 0%))}to{clip-path:circle(150% at var(--theme-reveal-origin,100% 0%))}}
+button{transition:scale 120ms ease,background-color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
+button:active:not(:disabled){scale:.975}
+dialog{opacity:0;transform:translateY(10px) scale(.985);transition:opacity 180ms ease,transform 220ms cubic-bezier(.22,1,.36,1),display 220ms allow-discrete,overlay 220ms allow-discrete}
+dialog[open]{opacity:1;transform:translateY(0) scale(1)}
+dialog::backdrop{opacity:0;transition:opacity 200ms ease,display 220ms allow-discrete,overlay 220ms allow-discrete}
+dialog[open]::backdrop{opacity:1}
+@starting-style{dialog[open]{opacity:0;transform:translateY(10px) scale(.985)}dialog[open]::backdrop{opacity:0}}
+@media(prefers-reduced-motion:reduce){
+  #main,html[data-motion=theme]{view-transition-name:none}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+  button,dialog,dialog::backdrop{transition:none!important;transform:none!important;scale:1!important}
+}
