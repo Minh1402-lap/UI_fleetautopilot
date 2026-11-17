@@ -168,5 +168,14 @@
     "checks": "docs/navigation-preview/2026-11-17/checks.json",
     "verifiedCases": 48,
     "stableMenuItemGeometry": true
+  },
+  "mobileControls": {
+    "updatedOn": "2026-11-17",
+    "stylesheet": "mobile-controls.css",
+    "nativeSelectAppearance": "none; shared glass tokens with role picker",
+    "checks": "docs/mobile-controls/2026-11-17/checks.json",
+    "verifiedCases": 42,
+    "physicalSafariTested": false,
+    "publishedInThisChange": false
   }
 }

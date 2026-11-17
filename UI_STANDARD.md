@@ -30,6 +30,8 @@ Ngày chốt: **16/11/2026**. Người dùng yêu cầu tổng hợp bốn nền
 7. Menu máy tính thu gọn thành biểu tượng (76px), mở rộng khi hover/focus (288px); khi mở, nội dung chính dịch sang bên và co chiều rộng để nhường chỗ, không mở đè. Dùng chung `navigation.css` để đồng bộ chuyển động 280ms; nhãn dài xuống dòng để đọc đủ. Thiết bị cảm ứng giữ nhãn dễ đọc. Kiểm tra trang mới trên máy tính và điện thoại, không tràn ngang và không lỗi JavaScript.
 8. Nếu muốn đổi ngôn ngữ thiết kế, font, bảng màu hoặc hiệu ứng: dựng ảnh riêng để người dùng xem trước, chỉ áp dụng khi được chọn. Không coi ảnh trong `review/UI/` là chuẩn được duyệt; bộ ảnh trong tài liệu này là mốc chính thức cho công việc UI tiếp theo.
 
+Bộ chọn nền và vai trò trên điện thoại dùng chung lớp kính/biến màu qua `mobile-controls.css`, bỏ nền đặc và appearance mặc định của select. Giữ native select cho thao tác cảm ứng; popup lựa chọn do hệ điều hành quản lý. Không đổi bộ màu đã chốt.
+
 ## Phạm vi chốt
 
 Chuyển động được người dùng yêu cầu và làm rõ ngày 17/11/2026: dùng chung `motion.js`/`motion.css`. Đổi nền lan/quét 760ms, tự luân phiên 4 góc + 4 cạnh, bắt đầu góc trên phải. Chuyển trang: cũ trượt trái 16px/mờ 240ms, mới trượt từ phải 24px/hiện 420ms. Hộp thoại và nút giữ hiệu ứng ngắn. Giữ nguyên màu, font và kính. Tôn trọng `prefers-reduced-motion`, không thêm animation lặp hoặc chờ animation để lưu nghiệp vụ. Có fallback khi không hỗ trợ View Transitions; cần thử Safari/iPad thật trước khi xác nhận hỗ trợ thiết bị đó.
