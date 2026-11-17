@@ -1,0 +1,134 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "role": "dispatch",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 320,
+      "role": "admin",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 320,
+      "role": "admin_system",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 320,
+      "role": "driver",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 390,
+      "role": "dispatch",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 390,
+      "role": "admin",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 390,
+      "role": "admin_system",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 390,
+      "role": "driver",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 600,
+      "role": "dispatch",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 600,
+      "role": "admin",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 600,
+      "role": "admin_system",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 600,
+      "role": "driver",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 820,
+      "role": "dispatch",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 820,
+      "role": "admin",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 820,
+      "role": "admin_system",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 820,
+      "role": "driver",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 1366,
+      "role": "dispatch",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 1366,
+      "role": "admin",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 1366,
+      "role": "admin_system",
+      "overflow": false,
+      "fields": true
+    },
+    {
+      "width": 1366,
+      "role": "driver",
+      "overflow": false,
+      "fields": true
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "Anime.js loaded locally",
+    "filter collapse/expand",
+    "order status filter",
+    "role switch",
+    "reduced motion",
+    "mobile filters collapsed initially; expand/collapse verified after final change"
+  ],
+  "physicalSafariTested": false
+}

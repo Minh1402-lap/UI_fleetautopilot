@@ -1,0 +1,77 @@
+/* Compact mobile shell. Keep the shared palette, glass and desktop rail. */
+@media(max-width:600px){
+  body:not([data-role=driver]) .sidebar{padding:12px 16px 0}
+  body:not([data-role=driver]) .sidebar .brand{font-size:17px;min-height:28px;margin-bottom:0}
+  body:not([data-role=driver]) .sidebar nav{margin-top:8px;padding-bottom:8px;gap:4px;scroll-padding-inline:8px}
+  body:not([data-role=driver]) .sidebar nav button{font-size:11px;min-height:44px;padding:8px 10px;gap:6px;white-space:nowrap}
+  body:not([data-role=driver]) .sidebar{padding:12px 16px 0;height:auto;min-height:0}
+  body:not([data-role=driver]) .sidebar .brand{height:32px;min-height:32px;margin:0;font-size:17px;gap:8px}
+  body:not([data-role=driver]) .sidebar .brand-icon{font-size:25px;width:24px;height:30px}
+  body:not([data-role=driver]) .sidebar nav{margin:10px -4px 0;padding:0 4px 8px;gap:4px;scroll-padding-inline:8px;scrollbar-width:thin}
+  body:not([data-role=driver]) .sidebar nav button{height:44px;min-height:44px;width:auto;padding:8px 10px;gap:6px;font-size:11px;line-height:1.3;white-space:nowrap}
+  body:not([data-role=driver]) .sidebar .nav-label{margin:0;max-width:none;white-space:nowrap;text-transform:none;letter-spacing:0}
+  body:not([data-role=driver]) header{padding:10px 16px;min-height:64px;height:auto;display:block}
+  body:not([data-role=driver]) header .crumb{display:none}
+  body:not([data-role=driver]) .header-actions{display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px 44px;gap:6px;align-items:center}
+  body:not([data-role=driver]) header [data-workflow-action=login]{grid-column:4;grid-row:1;width:44px;height:44px;padding:0;min-width:0}
+  body:not([data-role=driver]) header .theme-select{display:block;grid-column:1;grid-row:1;width:100%}
+  body:not([data-role=driver]) header .role-selector{grid-column:2;grid-row:1;width:100%;margin:0;min-width:0}
+  body:not([data-role=driver]) header .role-selector>span{display:none}
+  body:not([data-role=driver]) header .theme-select select,
+  body:not([data-role=driver]) header #role-preview{width:100%;max-width:none;min-width:0;min-height:44px;height:44px;font-size:12px;padding:8px 10px;gap:5px}
+  body:not([data-role=driver]) header .theme-select select{padding-right:26px}
+  body:not([data-role=driver]) header #open-search{grid-column:3;grid-row:1;display:flex;width:44px;height:44px;margin:0;justify-content:center;align-items:center}
+  body:not([data-role=driver]) header :is(.theme-switch,.search,#account,#notifications){display:none}
+  #role-menu{max-width:calc(100vw - 32px)}
+  .workspace-head{padding:18px 0;gap:14px}
+  .workspace-head h1{font-size:28px;line-height:1.15}
+  .workspace-head .eyebrow{margin-bottom:7px;font-size:9px}
+  .workspace-head p:not(.eyebrow){font-size:12px;line-height:1.6;margin-top:8px}
+  .workspace-head .workspace-actions{width:100%;display:flex;gap:8px}
+  .filter-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .filter-bar>.field{min-width:0;width:100%}
+  .filter-bar input,.filter-bar select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;font-size:16px}
+  .filter-bar>.search-field{grid-column:1/-1}
+  .filter-bar .field :is(input,select){box-sizing:border-box;min-width:0;max-width:100%;width:100%;font-size:16px;min-height:44px}
+  .filter-bar>.secondary{justify-self:start;min-height:44px}
+  .filter-bar :is(.filter-spacer,.filter-spacer){display:none}
+  .filter-bar input[type=date]{appearance:none;-webkit-appearance:none;display:block}
+  .workspace-head .workspace-actions>button{flex:1;justify-content:center;padding-inline:10px;font-size:12px}
+  .filter-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:end}
+  .filter-bar>.field{min-width:0;width:100%;margin:0}
+  .filter-bar>.search-field{grid-column:1/-1}
+  .filter-bar .field :is(input,select){box-sizing:border-box;width:100%;max-width:100%;min-width:0;min-height:46px;font-size:16px;padding-inline:10px}
+  .filter-bar input[type=date]{appearance:none;-webkit-appearance:none;display:block}
+  .filter-bar input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.4em}
+  .filter-bar>.secondary{justify-self:start;margin:0;min-height:44px}
+  .filter-bar>:is(.filter-spacer,.filter-spacer){display:none}
+  .results-heading{margin-top:16px}
+  .table-wrap{max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+  .panel,.field,.workspace-head>div{min-width:0}
+  body[data-role=driver] header .theme-select select,body[data-role=driver] #role-preview{font-size:16px}
+}
+@media(max-width:360px){
+  body:not([data-role=driver]) .header-actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px}
+  body:not([data-role=driver]) header [data-workflow-action=login]{grid-column:3;grid-row:2;justify-self:end}
+  body:not([data-role=driver]) header .role-selector{grid-column:1/3;grid-row:2}
+  body:not([data-role=driver]) header .theme-select{grid-column:1/3}
+  .filter-bar{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:359px){.filter-bar{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:360px){
+  .filter-bar{grid-template-columns:minmax(0,1fr)}
+  body:not([data-role=driver]) header .theme-select select,body:not([data-role=driver]) header #role-preview{font-size:11px;padding-left:8px}
+}
+/* Short interactions, inspired by component motion patterns; no persistent loops. */
+@media(prefers-reduced-motion:no-preference){
+  .primary,.secondary,.vehicle,.stat{transition:transform 160ms ease,background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease}
+  :is(.primary,.secondary,.vehicle,.stat):active:not(:disabled){transform:translateY(1px)}
+  #role-menu:not([hidden]){animation:fleet-menu-enter 300ms cubic-bezier(.22,1,.36,1) both;transform-origin:top right}
+  .toast:not([hidden]){animation:fleet-menu-enter 360ms ease-out both}
+  @keyframes fleet-menu-enter{from{opacity:.8;transform:translateY(-3px) scale(.995)}to{opacity:1;transform:translateY(0) scale(1)}}
+}
+
+.filter-toggle{display:none}
+@media(max-width:600px){.filter-bar>.filter-toggle{display:block;grid-column:1/-1;justify-self:start}.filters-collapsed>.field:not(.search-field),.filters-collapsed>.secondary:not(.filter-toggle){display:none}}
+
+@media(max-width:420px){.filter-bar{grid-template-columns:minmax(0,1fr)}}
