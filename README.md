@@ -20,7 +20,6 @@ Hình thức và cả bốn nền được chốt ngày 16/11/2026 làm chuẩn 
 | Xe & tài xế | Hai danh sách liên kết, thêm/sửa, lọc và xuất CSV từng danh sách. |
 | GPS | Chọn xe, lọc tín hiệu, phóng to sơ đồ và cập nhật vị trí mô phỏng. |
 | Báo cáo | Tổng hợp số đơn, khối lượng đã giao và tỷ lệ hoàn thành theo khoảng ngày; biểu đồ và xuất CSV. |
-| Cài đặt | Tên hiển thị, giao diện, thông báo, chuyển động, xuất JSON và khôi phục dữ liệu mẫu. |
 
 ## Chạy trên máy cá nhân
 
@@ -65,7 +64,6 @@ Trạng thái chuyến dùng **chấm màu và chữ**, không dùng khung màu:
 | Xe & tài xế | `fleet` |
 | GPS | `gps` |
 | Báo cáo | `reports` |
-| Cài đặt | `settings` |
 
 Kết hợp màn hình và giao diện, ví dụ:
 
@@ -89,7 +87,7 @@ Biểu mẫu kiểm tra trường bắt buộc, khối lượng dương và bi�
 
 Bộ dữ liệu ban đầu có **5 đơn hàng, 6 xe và 6 tài xế**, với ngày minh họa **15–16/11/2026**. Số liệu các màn hình được tính từ cùng một bộ dữ liệu.
 
-Dữ liệu lưu bằng `localStorage`, với khóa `fleet-autopilot-workspace-v2`, theo từng trình duyệt và địa chỉ truy cập. Tải lại trang giữ các thay đổi; xóa dữ liệu trang web sẽ xóa dữ liệu đã lưu. **Cài đặt** cho phép xuất JSON hoặc khôi phục bộ mẫu sau khi xác nhận. Khôi phục thay thế dữ liệu và các tùy chọn mẫu, giữ lựa chọn nền hiện tại.
+Dữ liệu lưu bằng `localStorage`, với khóa `fleet-autopilot-workspace-v2`, theo từng trình duyệt và địa chỉ truy cập. Tải lại trang giữ các thay đổi; xóa dữ liệu trang web sẽ xóa dữ liệu đã lưu. Nút **Khôi phục dữ liệu mẫu** ở cuối trang cho phép khôi phục bộ mẫu sau khi xác nhận. Khôi phục thay thế dữ liệu và các tùy chọn mẫu, giữ lựa chọn nền hiện tại.
 
 Vị trí, tín hiệu GPS, ETA, cảnh báo và gợi ý xe đều là mô phỏng. Phân công không gửi thông báo cho tài xế hoặc tạo chuyến thực tế. Báo cáo chỉ tổng hợp vận chuyển, chưa có giá cước hay công nợ. Quy trình nghiệp vụ và quyền người dùng cần được chốt trước khi kết nối hệ thống thật.
 
@@ -117,3 +115,7 @@ Hình thức của bốn giao diện đã được chốt làm UI chuẩn. Ứng
 `workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
 
 Giao diện dùng **Newsreader** cho tiêu đề (tên trang in hoa nghiêng, tiêu đề khối chữ đứng) và **Be Vietnam Pro** cho nội dung, mã đơn và số liệu; tên trang được viết hoa. Cả hai font được lưu trong kho mã nguồn. Xem giấy phép [Be Vietnam Pro](assets/fonts/OFL.txt) và [Newsreader](assets/fonts/Newsreader-OFL.txt).
+
+## Cập nhật 17/11/2026: bỏ Cài đặt
+
+Đã bỏ trang và menu Cài đặt theo yêu cầu người dùng. Điều phối còn sáu trang; đường dẫn `?page=settings` cũ quay về Điều phối. Bộ chọn nền và vai trò vẫn nằm trên thanh đầu trang.

@@ -1,0 +1,355 @@
+{
+  "checks": [
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "dispatch",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "amber",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "admin_system",
+      "theme": "moss",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "light",
+      "width": 1600,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "role": "driver",
+      "theme": "dark",
+      "width": 1600,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "flows": [
+    "report creates ticket once",
+    "two-way conversation",
+    "escaped text",
+    "dispatcher closes",
+    "closed read-only after reload",
+    "closing does not complete trip",
+    "pickup and delivery evidence",
+    "completion approval",
+    "vehicle readiness independent",
+    "decline/reassign/accept",
+    "provision without password storage",
+    "change password preview"
+  ]
+}

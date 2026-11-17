@@ -2,12 +2,35 @@
   "product": "Fleet Autopilot",
   "status": "preview",
   "rolePreviewApprovedOn": "2026-11-17",
-  "roles": ["dispatch", "admin", "admin_system", "driver"],
+  "roles": [
+    "dispatch",
+    "admin",
+    "admin_system",
+    "driver"
+  ],
   "roleThemes": {
-    "dispatch": ["light", "dark", "amber", "moss"],
-    "admin": ["light", "dark", "amber", "moss"],
-    "admin_system": ["light", "dark", "amber", "moss"],
-    "driver": ["light", "dark"]
+    "dispatch": [
+      "light",
+      "dark",
+      "amber",
+      "moss"
+    ],
+    "admin": [
+      "light",
+      "dark",
+      "amber",
+      "moss"
+    ],
+    "admin_system": [
+      "light",
+      "dark",
+      "amber",
+      "moss"
+    ],
+    "driver": [
+      "light",
+      "dark"
+    ]
   },
   "rolePreviewImages": "docs/role-preview/2026-11-17",
   "finalApproved": false,
@@ -17,8 +40,7 @@
     "dispatch",
     "fleet",
     "gps",
-    "reports",
-    "settings"
+    "reports"
   ],
   "themes": [
     "light",
@@ -41,5 +63,21 @@
   },
   "repositoryRole": "approved-ui-standard",
   "canonicalRepository": "https://github.com/Minh1402-lap/UI_fleetautopilot",
-  "previewUrl": "https://minh1402-lap.github.io/UI_fleetautopilot/"
+  "previewUrl": "https://minh1402-lap.github.io/UI_fleetautopilot/",
+  "workflowPreview": {
+    "updatedOn": "2026-11-17",
+    "guide": "docs/workflow-preview/README.md",
+    "images": "docs/workflow-preview/2026-11-17",
+    "ticketCloseRole": "dispatch",
+    "ticketConversation": "browser-local; closed tickets read-only",
+    "proposed": [
+      "driver acceptance",
+      "pickup quantities",
+      "completion approval",
+      "exception handling",
+      "first-login password change"
+    ],
+    "realAuthentication": false,
+    "realTimeChat": false
+  }
 }
