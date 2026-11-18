@@ -1,5 +1,9 @@
 # UI chuẩn Fleet Autopilot
 
+## Nhận diện logo thử nghiệm — 18/11/2026
+
+Sidebar dùng F rút gọn, nền sáng xanh rừng trên trắng, nền tối trắng ngà/xanh rêu dịu, Rêu Lime chỉ chấm nhấn nhỏ. Logo chính giữ F + xe ben + cẩu + vật liệu theo ảnh gốc. Quy tắc và bảng màu: assets/brand/README.md; code map/kiểm chứng: tests/test-cases/logo-preview.md. Chỉ áp dụng prototype này.
+
 ### Chốt kiểu chữ tròn theo ảnh thử — 18/11/2026
 
 Người dùng đã chốt ảnh thử kiểu chữ tròn, rộng và nét đều sau bản Manrope. Font thật dùng để triển khai là **Quicksand** (upright variable 300–700), tự lưu trữ ba tập ký tự Vietnamese / Latin Extended / Latin cùng giấy phép OFL. Quicksand được chọn để thể hiện hướng chữ của ảnh mô phỏng; không khẳng định đây là font chính xác trong ảnh tham chiếu. Quyết định này thay Manrope trong toàn UI; giữ bố cục, nút, lớp kính, bốn nền, thẻ số liệu chuẩn Điều phối và cảnh báo theo trạng thái.

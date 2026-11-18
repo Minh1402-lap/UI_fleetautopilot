@@ -2,6 +2,22 @@
 
 Scope: UI prototype only; user-supplied logo, not the separate Next.js product.
 
+## Current revision — unified identity
+
+Code map: `index.html` brand link → inline `.brand-monogram` / `.brand-f-primary` / `.brand-f-secondary` → theme tokens and accent in `brand-preview.css`. Existing link and menu handlers remain unchanged; no API or permission change. Canonical full logo: `assets/brand/fleet-logo-reference.png`; identity rules: `assets/brand/README.md`.
+
+| Case | Steps / expected | Current result |
+| --- | --- | --- |
+| Light phone | Load light at 390×844; forest F on white, label alongside, navigation unobstructed. | PASS: `tests/reports/logo-identity/mobile-light.png` inspected. |
+| Dark desktop | Load `?theme=dark` at 1440×900; ivory F and muted moss secondary stroke, dark tile, no construction detail at small size. | PASS: `tests/reports/logo-identity/desktop-dark.png` inspected. |
+| Moss phone | Load `?theme=moss` at 390×844; ivory/moss F, lime confined to small corner dot. | PASS: `tests/reports/logo-identity/mobile-moss.png` inspected. |
+| Amber regression | Load `?theme=amber` at 1440×900; legible ivory/moss F, approved surrounding amber UI retained. | PASS: `tests/reports/logo-identity/desktop-amber.png` inspected. |
+| Security/source regression | Review changed diff; SVG contains only fixed paths, decorative wrapper hidden from assistive technology, existing accessible brand name/link retained; no external resource/script/data mutation. | PASS: source review. API/server security N/A. |
+
+Browser captures used the existing `shoot.mjs` command below, with current output directory `tests/reports/logo-identity/`. Theme captures use a local HTTP server plus `--url http://127.0.0.1:8086/?theme=dark` (or `moss` / `amber`). First separate-server attempts timed out and were not counted as passes; final screenshots replaced those failed captures after moving server/browser into the same execution context. Expanded menu interaction, other roles and physical devices not retested. No new automated suite for this cosmetic change.
+
+## Earlier revision — cropped full app icon
+
 | Case | Steps / expected | Result |
 | --- | --- | --- |
 | Desktop rail | Load at 1440×900. Logo replaces F, fits the closed menu, leaves navigation unobstructed. | PASS: fresh browser screenshot inspected. |

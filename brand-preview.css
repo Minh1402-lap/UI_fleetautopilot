@@ -1,26 +1,63 @@
-/* Preview branding: show the app-icon tile from the user's unchanged reference board.
-   Crop coordinates: x=154, y=558, width=243, height=242 in the 1536×1024 source. */
+/* Sidebar: editable F monogram. Full construction logo: assets/brand/fleet-logo-reference.png.
+   Branding colors are isolated from the approved dashboard themes. */
+:root {
+  --brand-forest: #1A2A20;
+  --brand-moss: #2E4D3A;
+  --brand-lime: #8CCF4D;
+  --brand-ivory: #E6EDE8;
+  --brand-mark: var(--brand-forest);
+  --brand-secondary: var(--brand-moss);
+  --brand-surface: #fff;
+  --brand-rim: #E6EDE8;
+  --brand-accent: transparent;
+}
+
+[data-theme=dark], [data-theme=amber], [data-theme=moss] {
+  --brand-mark: var(--brand-ivory);
+  --brand-secondary: color-mix(in srgb, var(--brand-ivory) 60%, var(--brand-moss));
+  --brand-surface: #0B0F0D;
+  --brand-rim: var(--brand-moss);
+}
+
+[data-theme=moss] { --brand-accent: var(--brand-lime); }
+
 .sidebar .brand .brand-preview-icon {
   position: relative;
-  display: block;
+  display: grid;
+  place-items: center;
   flex: 0 0 40px;
   width: 40px;
   height: 40px;
   margin-left: 0;
   overflow: hidden;
+  border: 1px solid var(--brand-rim);
   border-radius: 9px;
+  background: var(--brand-surface);
 }
 
-.brand-preview-icon img {
+.brand-preview-icon .brand-monogram {
+  display: block;
+  width: 34px;
+  height: 34px;
+}
+
+.brand-f-primary { fill: var(--brand-mark); }
+.brand-f-secondary { fill: var(--brand-secondary); }
+
+/* Lime occupies only a small accent, never the entire F or tile. */
+.brand-preview-icon::after {
+  content: "";
   position: absolute;
-  width: 632.1%;
-  max-width: none;
-  height: 423.14%;
-  left: -63.37%;
-  top: -230.58%;
+  right: 4px;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brand-accent);
 }
 
 .sidebar .brand { min-height: 44px; height: 44px; }
+.sidebar .brand-label { color: var(--brand-mark); }
 
 @media (max-width: 600px) {
   body:not([data-role=driver]) .sidebar .brand .brand-preview-icon,
@@ -30,4 +67,6 @@
     height: 32px;
     border-radius: 7px;
   }
+  .brand-preview-icon .brand-monogram { width: 27px; height: 27px; }
+  .brand-preview-icon::after { right: 3px; bottom: 3px; width: 3px; height: 3px; }
 }
