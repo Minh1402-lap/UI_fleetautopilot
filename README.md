@@ -122,7 +122,7 @@ Hình thức của bốn giao diện đã được chốt làm UI chuẩn. Ứng
 
 `workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
 
-Từ 18/11/2026, UI thử nghiệm dùng **Manrope chữ đứng cho toàn bộ vai trò**: tiêu đề, bảng, nút, mã và số liệu. Ba tập ký tự Vietnamese / Latin Extended / Latin được lưu tại `assets/fonts/`, không tải font từ dịch vụ ngoài. Xem [giấy phép Manrope](assets/fonts/Manrope-OFL.txt).
+Từ 18/11/2026, UI thử nghiệm dùng **Quicksand chữ đứng cho toàn bộ vai trò**: tiêu đề, bảng, nút, mã và số liệu. Ba tập ký tự Vietnamese / Latin Extended / Latin được lưu tại `assets/fonts/`, không tải font từ dịch vụ ngoài. Xem [giấy phép Quicksand](assets/fonts/Quicksand-OFL.txt).
 
 System Admin chỉ còn giao diện chuẩn kế thừa bốn nền và lớp kính của Điều phối. Đã bỏ hai kiểu Terminal Kali / Hacker và bộ chọn phiên bản; các URL và lựa chọn Terminal cũ được dọn bằng `system-presentation.js`. Công cụ kiểm tra dữ liệu mẫu trong bản chuẩn vẫn được giữ.
 

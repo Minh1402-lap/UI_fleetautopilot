@@ -1,6 +1,10 @@
 # UI chuẩn Fleet Autopilot
 
-### Quyết định mới nhất: Manrope toàn UI, bỏ hai kiểu Terminal — 18/11/2026
+### Chốt kiểu chữ tròn theo ảnh thử — 18/11/2026
+
+Người dùng đã chốt ảnh thử kiểu chữ tròn, rộng và nét đều sau bản Manrope. Font thật dùng để triển khai là **Quicksand** (upright variable 300–700), tự lưu trữ ba tập ký tự Vietnamese / Latin Extended / Latin cùng giấy phép OFL. Quicksand được chọn để thể hiện hướng chữ của ảnh mô phỏng; không khẳng định đây là font chính xác trong ảnh tham chiếu. Quyết định này thay Manrope trong toàn UI; giữ bố cục, nút, lớp kính, bốn nền, thẻ số liệu chuẩn Điều phối và cảnh báo theo trạng thái.
+
+### Lịch sử: Manrope toàn UI, bỏ hai kiểu Terminal — 18/11/2026
 
 Người dùng đã chốt bản UI này và yêu cầu đẩy lên Git ngày 18/11/2026. Tiêu đề, nội dung, nút, bảng và số liệu toàn UI dùng Manrope chữ đứng, tự lưu trữ đủ dấu tiếng Việt. System Admin chỉ giữ giao diện chuẩn dùng bốn nền chung của Điều phối; bỏ bản Terminal Kali / Hacker và bộ chọn phiên bản. Lựa chọn lưu và URL Terminal cũ được dọn, không thay đổi dữ liệu nghiệp vụ. Quyết định này thay mục hai phiên bản bên dưới; vẫn là UI thử nghiệm, chưa chuyển sản phẩm sang Final.
 

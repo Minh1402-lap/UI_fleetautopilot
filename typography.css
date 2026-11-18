@@ -1,5 +1,5 @@
-/* Trial typography: Manrope throughout every role and all four shared themes. */
-html:root{--font:'Manrope','Segoe UI',Arial,sans-serif}
+/* Trial typography: Quicksand throughout every role and all four shared themes. */
+html:root{--font:'Quicksand','Segoe UI',Arial,sans-serif}
 html body,html body *{font-family:var(--font)!important;font-style:normal!important}
 html body :is(h1,h2,h3,h4){font-weight:600}
 html body :is(button,input,select,textarea){font-synthesis:none}

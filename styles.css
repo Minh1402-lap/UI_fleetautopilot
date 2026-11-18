@@ -1,7 +1,7 @@
 /* Shared composition; only the material and color tokens change between themes. */
 :root,[data-theme=light]{
   color-scheme:light;
-  --font:'Manrope','Segoe UI',Arial,sans-serif;
+  --font:'Quicksand','Segoe UI',Arial,sans-serif;
   --canvas:#d2dbe2;--side:#e1e7ec;--surface:#f6f9fb;--raised:#dde5eb;
   --ink:#2d363f;--muted:#425563;--subtle:#425563;--line:#bfcbd4;
   --action:#303a45;--action-hover:#43505d;--on-action:#fff;
