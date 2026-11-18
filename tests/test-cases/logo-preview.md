@@ -2,7 +2,21 @@
 
 Scope: UI prototype only; user-supplied logo, not the separate Next.js product.
 
-## Current revision — unified identity
+## Current revision — F combined with construction vehicles
+
+User correction: retain F + dump truck + crane + materials from the reference; the standalone F below is superseded.
+
+Code map: `index.html` brand link → `.brand-construction-mark` → crop/luminance mask in `brand-preview.css` → original `assets/brand/fleet-logo-reference.png`. Same link and theme handling. Phone/expanded desktop use a 68×40px emblem; closed rail uses 38×24px.
+
+| Case | Expected | Result |
+| --- | --- | --- |
+| Phone 390×844 | Combined emblem shows truck/crane/materials, brand text and navigation remain unobstructed. | PASS: fresh `tests/reports/logo-construction/mobile.png` inspected. |
+| Desktop 1440×900 | Closed rail contains combined emblem without covering menu. | PASS: fresh `tests/reports/logo-construction/desktop.png` inspected. |
+| Theme/security regression | Existing forest/ivory/moss tokens and small lime accent retained. Fixed local raster mask; no script/input/API/auth/data change. Decorative wrapper remains hidden from assistive technology and link keeps visible brand name. | PASS: scoped source review; theme browser results from the earlier SVG revision do not verify the new mask. |
+
+Used the existing screenshot commands below with outputs/profiles under `tests/reports/logo-construction/`. No persistent application server started. Moss/phone and dark/expanded desktop mask rendering also inspected in fresh `mobile-moss.png` and `desktop-dark-expanded.png`. Ignored HTML snapshots seed only the theme preference before the existing theme loader; dark snapshot focuses the real brand link on load to exercise :focus-within. Expanded logo/name fit with a visible keyboard focus ring. The screenshot tool reported a 19px bottom stitching gap on the expanded capture; that capture verifies the top logo/menu only. Amber and other roles not rerun. `git diff --check` passed before commit. API/backend tests N/A.
+
+## Earlier revision — standalone F (superseded)
 
 Code map: `index.html` brand link → inline `.brand-monogram` / `.brand-f-primary` / `.brand-f-secondary` → theme tokens and accent in `brand-preview.css`. Existing link and menu handlers remain unchanged; no API or permission change. Canonical full logo: `assets/brand/fleet-logo-reference.png`; identity rules: `assets/brand/README.md`.
 

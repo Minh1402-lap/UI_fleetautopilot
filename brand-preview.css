@@ -1,5 +1,5 @@
-/* Sidebar: editable F monogram. Full construction logo: assets/brand/fleet-logo-reference.png.
-   Branding colors are isolated from the approved dashboard themes. */
+/* Preserve the actual F + truck + crane + materials from the supplied artwork.
+   A luminance mask crops its main emblem without redrawing or editing the source. */
 :root {
   --brand-forest: #1A2A20;
   --brand-moss: #2E4D3A;
@@ -35,14 +35,26 @@
   background: var(--brand-surface);
 }
 
-.brand-preview-icon .brand-monogram {
+.brand-preview-icon .brand-construction-mark {
   display: block;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 24px;
+  background: linear-gradient(140deg, var(--brand-mark) 55%, var(--brand-secondary));
+  mask-image: url("assets/brand/fleet-logo-reference.png");
+  mask-mode: luminance;
+  /* Source crop x=202, y=142, w=552, h=332 in the unchanged 1536×1024 board. */
+  mask-size: 278.26% 308.43%;
+  mask-position: 20.53% 20.52%;
+  mask-repeat: no-repeat;
 }
 
-.brand-f-primary { fill: var(--brand-mark); }
-.brand-f-secondary { fill: var(--brand-secondary); }
+@media (min-width: 601px) and (hover: hover) and (pointer: fine) {
+  .sidebar:is(:hover, :focus-within) .brand .brand-preview-icon {
+    flex-basis: 72px;
+    width: 72px;
+  }
+  .sidebar:is(:hover, :focus-within) .brand-construction-mark { width: 68px; height: 40px; }
+}
 
 /* Lime occupies only a small accent, never the entire F or tile. */
 .brand-preview-icon::after {
@@ -62,11 +74,12 @@
 @media (max-width: 600px) {
   body:not([data-role=driver]) .sidebar .brand .brand-preview-icon,
   .sidebar .brand .brand-preview-icon {
-    flex-basis: 32px;
-    width: 32px;
-    height: 32px;
+    flex-basis: 72px;
+    width: 72px;
+    height: 44px;
     border-radius: 7px;
   }
-  .brand-preview-icon .brand-monogram { width: 27px; height: 27px; }
+  body:not([data-role=driver]) .sidebar .brand { height: 44px; min-height: 44px; }
+  .brand-preview-icon .brand-construction-mark { width: 68px; height: 40px; }
   .brand-preview-icon::after { right: 3px; bottom: 3px; width: 3px; height: 3px; }
 }
