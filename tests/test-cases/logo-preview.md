@@ -2,7 +2,20 @@
 
 Scope: UI prototype only; user-supplied logo, not the separate Next.js product.
 
-## Current revision — F combined with construction vehicles
+## Current revision — transparent native SVG
+
+Code map: `index.html` `.brand-construction-mark` SVG → `assets/brand/fleet-construction.svg#fleet-logo` → `currentColor` and `--brand-secondary` from `brand-preview.css`. Asset generation: `tools/trace-brand-logo.py` (Pillow/NumPy), source image preserved. Existing brand link and theme handlers remain unchanged.
+
+| Case | Expected | Current result |
+| --- | --- | --- |
+| Light phone 390×844 | Forest F/truck/crane/materials, no fixed white/dark tile, actual menu background visible through negative space. | PASS: fresh `tests/reports/logo-svg/mobile-light.png` inspected. |
+| Dark expanded desktop 1440×900 | Ivory/moss SVG colors inherited through external use, no fixed tile, name and focus ring visible. | PASS: fresh `tests/reports/logo-svg/desktop-dark.png` inspected at logo/menu. |
+| Moss phone 390×844 | Transparent backing, ivory/moss emblem and small lime accent. | PASS: fresh `tests/reports/logo-svg/mobile-moss.png` inspected. |
+| Asset/security | XML parse succeeds; viewBox correct; two native path elements; no embedded image, script, foreignObject or background rect. Static local asset only; no API/data/auth changes. | PASS: XML checks and source review. |
+
+Screenshot commands use the existing `shoot.mjs` below with outputs under `tests/reports/logo-svg/`. Dark/moss ignored snapshots seed only theme preference before the real loader, and dark focuses the real brand link. No persistent server started. Dark full-page stitching has the same 19px bottom gap as the previous capture, so only the top logo/menu is evidence. Amber, other roles, physical devices and interactive theme switching not retested. Backend/API N/A. No new test framework for this cosmetic change. `git diff --check` passed.
+
+## Earlier revision — raster mask (superseded)
 
 User correction: retain F + dump truck + crane + materials from the reference; the standalone F below is superseded.
 

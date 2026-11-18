@@ -1,5 +1,5 @@
-/* Preserve the actual F + truck + crane + materials from the supplied artwork.
-   A luminance mask crops its main emblem without redrawing or editing the source. */
+/* Native SVG retains F + truck + crane + materials, traced from the reference.
+   Transparent backing and inherited SVG colors follow the active UI theme. */
 :root {
   --brand-forest: #1A2A20;
   --brand-moss: #2E4D3A;
@@ -7,16 +7,12 @@
   --brand-ivory: #E6EDE8;
   --brand-mark: var(--brand-forest);
   --brand-secondary: var(--brand-moss);
-  --brand-surface: #fff;
-  --brand-rim: #E6EDE8;
   --brand-accent: transparent;
 }
 
 [data-theme=dark], [data-theme=amber], [data-theme=moss] {
   --brand-mark: var(--brand-ivory);
   --brand-secondary: color-mix(in srgb, var(--brand-ivory) 60%, var(--brand-moss));
-  --brand-surface: #0B0F0D;
-  --brand-rim: var(--brand-moss);
 }
 
 [data-theme=moss] { --brand-accent: var(--brand-lime); }
@@ -30,22 +26,17 @@
   height: 40px;
   margin-left: 0;
   overflow: hidden;
-  border: 1px solid var(--brand-rim);
   border-radius: 9px;
-  background: var(--brand-surface);
+  background: transparent;
 }
 
 .brand-preview-icon .brand-construction-mark {
   display: block;
   width: 38px;
   height: 24px;
-  background: linear-gradient(140deg, var(--brand-mark) 55%, var(--brand-secondary));
-  mask-image: url("assets/brand/fleet-logo-reference.png");
-  mask-mode: luminance;
-  /* Source crop x=202, y=142, w=552, h=332 in the unchanged 1536×1024 board. */
-  mask-size: 278.26% 308.43%;
-  mask-position: 20.53% 20.52%;
-  mask-repeat: no-repeat;
+  color: var(--brand-mark);
+  fill: currentColor;
+  stroke: none;
 }
 
 @media (min-width: 601px) and (hover: hover) and (pointer: fine) {
