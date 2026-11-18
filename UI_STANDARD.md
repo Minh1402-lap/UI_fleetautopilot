@@ -1,5 +1,15 @@
 # UI chuẩn Fleet Autopilot
 
+### Quyết định mới nhất: Manrope toàn UI, bỏ hai kiểu Terminal — 18/11/2026
+
+Người dùng đã chốt bản UI này và yêu cầu đẩy lên Git ngày 18/11/2026. Tiêu đề, nội dung, nút, bảng và số liệu toàn UI dùng Manrope chữ đứng, tự lưu trữ đủ dấu tiếng Việt. System Admin chỉ giữ giao diện chuẩn dùng bốn nền chung của Điều phối; bỏ bản Terminal Kali / Hacker và bộ chọn phiên bản. Lựa chọn lưu và URL Terminal cũ được dọn, không thay đổi dữ liệu nghiệp vụ. Quyết định này thay mục hai phiên bản bên dưới; vẫn là UI thử nghiệm, chưa chuyển sản phẩm sang Final.
+
+Thẻ số liệu System Admin dùng chính `.stats > .stat` và ô biểu tượng của Điều phối, không dùng thẻ riêng cao có dòng phụ. Khối Cần xử lý chỉ nhấn theo trạng thái dữ liệu mẫu: đỏ khi có tác vụ lỗi, vàng khi có yêu cầu quyền/bảo trì chờ, trung tính khi không có việc chờ; chữ và chấm màu cùng thể hiện trạng thái. Không thêm nhấp nháy. Các nút giữ hệ thống nút chung; số liệu và đích điều hướng không đổi. Chạy local bằng `npm run dev` tại thư mục UI, không cần cài thư viện.
+
+### Lịch sử Admin System: hai phiên bản — 18/11/2026
+
+Quyết định mới nhất của người dùng: Admin System chọn **Chuẩn / Terminal**. Chuẩn kế thừa bốn nền, font, kính và menu chung; Terminal có hai kiểu Kali / Hacker xanh. Bộ chọn lưu riêng `fleet-system-view-v1`, URL `system_version`/`terminal_style`. Đây là bản thử local đang kiểm chứng, chưa Final. Quyết định này thay quy định cũ “Admin System chỉ có nền Security riêng và ẩn bộ chọn nền” trong lịch sử dưới đây; quy định ẩn bộ chọn nền chỉ còn áp dụng bản Terminal. Xem mục đầu `PROJECT_CONTEXT.md` để biết file đã sửa, kiểm tra đã qua và việc chưa hoàn tất.
+
 ### Bộ chọn nền trên màn hình nhỏ — 18/11/2026
 
 Menu chọn nền dùng HTML với nền đặc và màu chữ theo theme; lựa chọn có dấu chọn, hỗ trợ bàn phím và vùng bấm tối thiểu 44px. Không hiển thị popup select native vì ảnh phản hồi cho thấy nền trắng/chữ sáng khó đọc. Giữ cầu nối `#theme-select` ẩn cho luồng đổi nền/animation hiện hành; Tài xế chỉ Sáng/Tối, Admin System dùng theme riêng và ẩn bộ chọn. Desktop giữ nhóm nút chọn nền hiện có. Thay thế ghi chú trước đây về việc giữ native popup.

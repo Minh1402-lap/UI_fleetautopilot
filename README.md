@@ -25,7 +25,15 @@ Hình thức và cả bốn nền được chốt ngày 16/11/2026 làm chuẩn 
 
 Dự án sử dụng HTML, CSS và JavaScript thuần, không cần cài thư viện hoặc chạy bước build.
 
-Tải mã nguồn về máy, mở terminal tại thư mục chứa `index.html`, rồi khởi động máy chủ tĩnh bằng Python 3:
+Mở terminal tại thư mục `UI`, chạy lệnh dưới đây. Máy cần Node/npm và Python 3; không cần `npm install`:
+
+```bash
+npm run dev
+```
+
+Mở [System Admin — Đen hổ phách](http://localhost:8083/?role=admin_system&theme=amber) hoặc [Điều phối — Đen hổ phách](http://localhost:8083/?role=dispatch&theme=amber). Giữ terminal mở; nhấn `Ctrl+C` để dừng.
+
+Hoặc khởi động trực tiếp bằng Python 3:
 
 ```bash
 python -m http.server 8083 --bind 127.0.0.1
@@ -114,7 +122,9 @@ Hình thức của bốn giao diện đã được chốt làm UI chuẩn. Ứng
 
 `workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
 
-Giao diện dùng **Newsreader** cho tiêu đề (tên trang in hoa nghiêng, tiêu đề khối chữ đứng) và **Be Vietnam Pro** cho nội dung, mã đơn và số liệu; tên trang được viết hoa. Cả hai font được lưu trong kho mã nguồn. Xem giấy phép [Be Vietnam Pro](assets/fonts/OFL.txt) và [Newsreader](assets/fonts/Newsreader-OFL.txt).
+Từ 18/11/2026, UI thử nghiệm dùng **Manrope chữ đứng cho toàn bộ vai trò**: tiêu đề, bảng, nút, mã và số liệu. Ba tập ký tự Vietnamese / Latin Extended / Latin được lưu tại `assets/fonts/`, không tải font từ dịch vụ ngoài. Xem [giấy phép Manrope](assets/fonts/Manrope-OFL.txt).
+
+System Admin chỉ còn giao diện chuẩn kế thừa bốn nền và lớp kính của Điều phối. Đã bỏ hai kiểu Terminal Kali / Hacker và bộ chọn phiên bản; các URL và lựa chọn Terminal cũ được dọn bằng `system-presentation.js`. Công cụ kiểm tra dữ liệu mẫu trong bản chuẩn vẫn được giữ.
 
 ## Cập nhật 17/11/2026: bỏ Cài đặt
 
