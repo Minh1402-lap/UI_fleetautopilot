@@ -1,0 +1,90 @@
+/* Phone có bố cục riêng; giữ nguyên PC và dùng màu/vật liệu từ theme chuẩn. */
+#driver-phone[hidden] { display: none; }
+body.driver-phone-active .app > header,
+body.driver-phone-active #main > :not(#driver-phone),
+body.driver-phone-active .sidebar { display: none !important; }
+body.driver-phone-active .app { margin: 0; width: 100%; max-width: none; padding: 0; }
+body.driver-phone-active #main { padding: 0; margin: 0; }
+#driver-phone {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  min-height: 100dvh;
+  color: var(--ink);
+  padding: max(12px, env(safe-area-inset-top)) 12px max(8px, env(safe-area-inset-bottom));
+  gap: 10px;
+}
+#driver-phone * { box-sizing: border-box; min-width: 0; }
+#driver-phone button { font: inherit; cursor: pointer; touch-action: manipulation; min-height: 48px; }
+#driver-phone button:disabled { opacity: .45; cursor: not-allowed; }
+#driver-phone svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.7; flex-shrink: 0; }
+.phone-topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 4px; }
+.phone-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-size: 16px; font-weight: 600; }
+#driver-phone .phone-brand svg { width: 56px; height: 34px; fill: currentColor; stroke: none; }
+.phone-brand small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
+.phone-glass {
+  background-color: var(--face);
+  background-image: var(--face-image);
+  border: 1px solid var(--rim);
+  border-top-color: var(--rim-top);
+  border-left-color: var(--rim-left);
+  box-shadow: inset 0 1px 0 var(--inner-top), inset 0 -1px 0 var(--inner-bottom);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 16px;
+}
+.phone-theme { display: grid; place-items: center; width: 48px; flex-shrink: 0; color: var(--ink); }
+#driver-phone .phone-title { font-size: clamp(23px, 6.4vw, 30px); line-height: 1.25; text-align: left; margin: 2px 4px 0; font-weight: 600; }
+.phone-content { display: flex; flex-direction: column; flex: 1; position: relative; }
+.phone-route { position: relative; flex: 1; min-height: max(240px, calc(100svh - 430px)); overflow: hidden; border-radius: 18px 18px 0 0; border: 1px solid var(--rim); background: var(--raised); }
+#driver-phone .phone-map { position: absolute; inset: 0; width: 100%; height: 100%; stroke: none; }
+.phone-map-ground { fill: var(--raised); }
+.phone-map-blocks { fill: var(--line); opacity: .36; }
+.phone-map-streets { stroke: var(--surface); stroke-width: 8; fill: none; opacity: .8; }
+.phone-map-river { stroke: var(--river); stroke-width: 44; fill: none; }
+.phone-route-edge { stroke: var(--surface); stroke-width: 10; fill: none; stroke-linejoin: round; }
+.phone-route-line { stroke: var(--route); stroke-width: 6; fill: none; stroke-linejoin: round; }
+.phone-route-marker { fill: var(--ink); stroke: var(--surface); stroke-width: 4; }
+.phone-map-label rect { fill: var(--surface); stroke: var(--rim); }
+.phone-map-label text { fill: var(--ink); font-size: 13px; font-weight: 600; text-anchor: middle; }
+.phone-map-truck { color: var(--ink); stroke: currentColor; stroke-width: 1.5; }
+.phone-map-truck rect { fill: var(--surface); stroke: var(--rim); }
+.phone-map-disclaimer { position: absolute; left: 12px; top: 12px; background: var(--surface); color: var(--ink); border: 1px solid var(--rim); border-radius: 24px; padding: 8px 12px; font-size: 11px; font-weight: 600; }
+.phone-map-tools { position: absolute; right: 10px; top: 12px; display: grid; gap: 8px; }
+.phone-map-tools button { width: 48px; border: 1px solid var(--rim); border-radius: 12px; background: var(--surface); color: var(--ink); display: grid; place-items: center; font-size: 26px !important; }
+.phone-trip-sheet { position: relative; z-index: 1; margin-top: -16px; padding: 14px; }
+.phone-trip-sheet summary { min-height: 44px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 600; cursor: pointer; list-style: none; }
+.phone-trip-sheet summary::-webkit-details-marker { display: none; }
+.phone-trip-sheet details[open] summary span { rotate: 180deg; }
+.phone-trip-sheet dl { font-size: 12px; margin: 4px 0 12px; }
+.phone-trip-sheet dl > div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.phone-trip-sheet dd { margin: 0; text-align: right; }
+#driver-phone .phone-connection { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0 0 12px; }
+.phone-camera-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.phone-camera-actions button,
+.phone-back,
+.phone-capture { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 8px; border: 1px solid var(--rim); border-radius: 12px; background: var(--nested); background-image: var(--nested-image); color: var(--ink); font-size: 12px !important; font-weight: 600 !important; }
+.phone-emergency { display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #a84040; color: #a02e2e; background: transparent; border-radius: 12px; width: 100%; font-weight: 600 !important; }
+:root[data-theme=dark] .phone-emergency { color: #ef9b9b; border-color: #c97878; }
+#driver-phone .phone-feedback { font-size: 12px; line-height: 1.6; margin: 10px 0 0; color: var(--ink); }
+.phone-feedback:empty { display: none; }
+.phone-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 6px; }
+.phone-nav button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 6px; font-size: 12px !important; }
+.phone-nav [aria-current=page] { color: var(--ink); background: var(--nested); border-color: var(--rim); font-weight: 600 !important; }
+.phone-secondary { padding: 28px 20px; flex: 1; display: flex; flex-direction: column; align-items: stretch; gap: 20px; text-align: center; }
+#driver-phone .phone-empty-icon svg { width: 42px; height: 42px; }
+.phone-secondary h2 { font-size: 21px; margin: 0; }
+.phone-secondary p { color: var(--muted); font-size: 14px; line-height: 1.7; margin: 0; }
+.phone-secondary .phone-emergency { margin-top: auto; }
+/* La bàn/vị trí chỉ đặt lại sơ đồ; không xin vị trí điện thoại hoặc giả GPS xe. */
+:root[data-theme=dark] .phone-map-ground { fill: #171a1c; }
+:root[data-theme=dark] .phone-map-streets { stroke: #55595b; opacity: .55; }
+:root[data-theme=dark] .phone-map-blocks { fill: #363a3c; }
+@media (max-width: 359px) {
+  #driver-phone { padding-inline: 8px; }
+  .phone-brand { font-size: 14px; gap: 6px; }
+  #driver-phone .phone-brand svg { width: 44px; }
+  .phone-camera-actions { gap: 6px; }
+  .phone-camera-actions button { gap: 5px; font-size: 11px !important; }
+}
+@media (prefers-reduced-transparency: reduce) { .phone-glass { background: var(--surface); backdrop-filter: none; } }
