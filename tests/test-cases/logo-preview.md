@@ -4,6 +4,8 @@ Scope: UI prototype only; user-supplied logo, not the separate Next.js product.
 
 ## Current revision — transparent native SVG
 
+Latest correction: remove the lime corner dot entirely. Removed `.brand-preview-icon::after` and unused accent variables; SVG paths/theme colors unchanged. Fresh Moss phone 390×844 screenshot `tests/reports/logo-svg/mobile-moss-no-dot.png` inspected: no corner dot, logo and brand name intact. Source search confirms no remaining brand accent pseudo-element; diff check passed. Security review: CSS deletion/cache version only, no new boundary or external input. Other themes not rerun for this removal. Earlier dot expectations below are historical.
+
 Code map: `index.html` `.brand-construction-mark` SVG → `assets/brand/fleet-construction.svg#fleet-logo` → `currentColor` and `--brand-secondary` from `brand-preview.css`. Asset generation: `tools/trace-brand-logo.py` (Pillow/NumPy), source image preserved. Existing brand link and theme handlers remain unchanged.
 
 | Case | Expected | Current result |

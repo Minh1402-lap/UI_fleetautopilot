@@ -11,7 +11,7 @@ Current user direction supersedes the earlier cropped app-icon tile:
 | Sidebar, all sizes | Actual F + truck + crane + materials from the reference. Compact desktop rail uses a small emblem; expanded menu and phone use a wider emblem. |
 | Light | Forest green `#1A2A20` / `#2E4D3A`; transparent backing shows the actual menu theme. |
 | Dark | Ivory `#E6EDE8` and muted moss; transparent backing shows the actual menu theme. |
-| Moss Lime | Same light mark with transparent backing; `#8CCF4D` limited to a 3–4px accent dot. |
+| Moss Lime | Ivory/moss mark with transparent backing; no accent dot (latest user correction). |
 | Existing Amber | Ivory/moss mark; retain the surrounding approved amber UI. |
 
 Suggested identity palette: `#0B0F0D`, `#1A2A20`, `#2E4D3A`, `#8CCF4D`, `#E6EDE8`. Branding tokens in `brand-preview.css` do not recolor the whole dashboard.

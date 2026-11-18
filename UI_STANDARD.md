@@ -2,7 +2,7 @@
 
 ## Nhận diện logo thử nghiệm — 18/11/2026
 
-Cập nhật SVG: dùng assets/brand/fleet-construction.svg gồm đường vector thật, nền trong suốt theo nền menu, màu chính/phụ kế thừa theme; bỏ tile nền cố định và raster mask. Sidebar phải giữ F kết hợp xe ben, cẩu và vật liệu từ ảnh gốc, không dùng F riêng. Thu gọn desktop dùng biểu tượng nhỏ; menu mở và điện thoại dùng bản rộng hơn. Nền sáng xanh rừng trên trắng, nền tối trắng ngà/xanh rêu dịu, Rêu Lime chỉ chấm nhấn nhỏ. Logo chính giữ F + xe ben + cẩu + vật liệu theo ảnh gốc. Quy tắc và bảng màu: assets/brand/README.md; code map/kiểm chứng: tests/test-cases/logo-preview.md. Chỉ áp dụng prototype này.
+Cập nhật SVG: dùng assets/brand/fleet-construction.svg gồm đường vector thật, nền trong suốt theo nền menu, màu chính/phụ kế thừa theme; bỏ tile nền cố định và raster mask. Sidebar phải giữ F kết hợp xe ben, cẩu và vật liệu từ ảnh gốc, không dùng F riêng. Thu gọn desktop dùng biểu tượng nhỏ; menu mở và điện thoại dùng bản rộng hơn. Nền sáng xanh rừng trên trắng, nền tối trắng ngà/xanh rêu dịu, Rêu Lime không có chấm nhấn ở góc logo theo yêu cầu mới nhất. Logo chính giữ F + xe ben + cẩu + vật liệu theo ảnh gốc. Quy tắc và bảng màu: assets/brand/README.md; code map/kiểm chứng: tests/test-cases/logo-preview.md. Chỉ áp dụng prototype này.
 
 ### Chốt kiểu chữ tròn theo ảnh thử — 18/11/2026
 
