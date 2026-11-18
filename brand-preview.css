@@ -1,0 +1,33 @@
+/* Preview branding: show the app-icon tile from the user's unchanged reference board.
+   Crop coordinates: x=154, y=558, width=243, height=242 in the 1536×1024 source. */
+.sidebar .brand .brand-preview-icon {
+  position: relative;
+  display: block;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin-left: 0;
+  overflow: hidden;
+  border-radius: 9px;
+}
+
+.brand-preview-icon img {
+  position: absolute;
+  width: 632.1%;
+  max-width: none;
+  height: 423.14%;
+  left: -63.37%;
+  top: -230.58%;
+}
+
+.sidebar .brand { min-height: 44px; height: 44px; }
+
+@media (max-width: 600px) {
+  body:not([data-role=driver]) .sidebar .brand .brand-preview-icon,
+  .sidebar .brand .brand-preview-icon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+  }
+}
