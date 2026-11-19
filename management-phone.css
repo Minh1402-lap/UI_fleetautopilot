@@ -1,4 +1,4 @@
-/* Phone Admin/System Admin dùng cùng bốn nền và logo chuẩn; PC giữ nguyên bố cục hiện hành. */
+/* Phone Điều phối/Admin/System Admin dùng cùng bốn nền và logo chuẩn; PC giữ nguyên bố cục hiện hành. */
 #management-phone[hidden] { display: none; }
 body.management-phone-active .app > header,
 body.management-phone-active #main > :not(#management-phone),
@@ -31,13 +31,14 @@ body.management-phone-active .management-topbar { position: absolute; z-index: 5
 .management-row small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; font-weight: 500; }
 .management-row b { color: var(--muted); font-size: 24px; font-weight: 400; }
 .management-map { position: relative; height: 172px; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--map); }
-.management-map > svg { width: 100%; height: 100%; stroke: none !important; }
+#management-phone .management-map > svg { width: 100%; height: 100%; stroke: none; }
 .management-map-ground { fill: var(--map); }
 .management-map-blocks { fill: var(--line); opacity: .24; }
-.management-map-roads { stroke: var(--route); stroke-width: 6; fill: none; opacity: .46; }
-.management-map-river { stroke: var(--river); stroke-width: 25; fill: none; }
+.management-map-roads { stroke: var(--route) !important; stroke-width: 6; fill: none; opacity: .52; }
+.management-map-river { stroke: var(--river) !important; stroke-width: 25; fill: none; }
 .management-map > span { position: absolute; left: 9px; bottom: 8px; padding: 5px 8px; border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 9px; }
 .management-copy { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.management-card-note { margin-top: 12px; }
 .management-quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .management-quick .management-row { grid-template-columns: 31px 1fr auto; min-height: 62px; }
 .management-quick .management-row-icon { width: 30px; height: 30px; }

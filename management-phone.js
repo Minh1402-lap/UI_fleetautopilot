@@ -1,4 +1,4 @@
-/* UI Phone riêng cho hai vai trò quản trị; chỉ trình bày trạng thái rỗng khi dịch vụ chưa kết nối. */
+/* UI Phone cho Điều phối và hai vai trò quản trị; chỉ trình bày trạng thái rỗng khi dịch vụ chưa kết nối. */
 (() => {
   'use strict';
 
@@ -17,13 +17,24 @@
   ];
 
   const roleConfig = {
+    dispatch: {
+      title: 'Tổng quan điều phối',
+      subtitle: 'Điều phối',
+      screens: ['overview', 'orders', 'assignment', 'more', 'new-order', 'fleet', 'gps', 'reports'],
+      navigation: [
+        ['overview', 'home', 'Tổng quan'],
+        ['orders', 'order', 'Đơn hàng'],
+        ['assignment', 'truck', 'Điều phối'],
+        ['more', 'gear', 'Thêm'],
+      ],
+    },
     admin: {
       title: 'Tổng quan vận hành',
       subtitle: 'Quản lý vận hành',
-      screens: ['overview', 'approvals', 'fleet', 'more', 'activity', 'tickets', 'maintenance'],
+      screens: ['overview', 'role-approvals', 'fleet', 'more', 'activity', 'tickets', 'maintenance'],
       navigation: [
         ['overview', 'home', 'Tổng quan'],
-        ['approvals', 'order', 'Duyệt'],
+        ['role-approvals', 'order', 'Duyệt quyền'],
         ['fleet', 'truck', 'Đội xe'],
         ['more', 'gear', 'Thêm'],
       ],
@@ -89,9 +100,37 @@
   }
 
   function adminOverview() {
-    const metrics = `<div class="management-metrics">${metric('Chờ duyệt')}${metric('Xe hoạt động')}${metric('Ticket mở')}</div>`;
-    const work = `<div class="management-rows">${actionRow('approvals', 'order', 'Duyệt phân công')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì')}${actionRow('tickets', 'alert', 'Ticket cần xem')}</div>`;
+    const metrics = `<div class="management-metrics">${metric('Đổi quyền chờ duyệt')}${metric('Xe hoạt động')}${metric('Ticket mở')}</div>`;
+    const work = `<div class="management-rows">${actionRow('role-approvals', 'order', 'Phê duyệt thay đổi quyền')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì')}${actionRow('tickets', 'alert', 'Ticket cần xem')}</div>`;
     return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Cần xử lý', work, 'layers')}${glassCard('Bản đồ đội xe', routeMap(), 'pin')}`;
+  }
+
+  function dispatchOverview() {
+    const metrics = `<div class="management-metrics">${metric('Đơn chờ')}${metric('Chuyến đang chạy')}${metric('Xe sẵn sàng')}</div>`;
+    const work = `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('assignment', 'truck', 'Duyệt phân công')}${actionRow('gps', 'pin', 'Theo dõi GPS')}</div>`;
+    return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Công việc chính', work, 'layers')}${glassCard('Theo dõi hành trình', routeMap(), 'pin')}`;
+  }
+
+  function dispatchOrders() {
+    return glassCard('Đơn hàng', `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('orders', 'search-icon', 'Danh sách đơn hàng', 'Chưa có dữ liệu')}</div><p class="management-copy management-card-note">Đơn hàng sẽ hiển thị khi kết nối nguồn dữ liệu vận hành.</p>`, 'order');
+  }
+
+  function dispatchMore() {
+    return glassCard('Chức năng Điều phối', `<div class="management-rows">${actionRow('fleet', 'truck', 'Xe & tài xế')}${actionRow('gps', 'pin', 'Theo dõi GPS')}${actionRow('reports', 'chart', 'Báo cáo')}</div>`, 'gear');
+  }
+
+  function dispatchScreen(screen) {
+    if (screen === 'overview') return dispatchOverview();
+    if (screen === 'orders') return dispatchOrders();
+    if (screen === 'gps') return `${glassCard('Theo dõi GPS', routeMap(), 'pin', 'management-map-card')}${glassCard('Trạng thái kết nối', '<p class="management-copy">Chưa có nguồn GPS để hiển thị xe hoặc hành trình.</p>', 'activity')}`;
+    if (screen === 'more') return dispatchMore();
+    const pages = {
+      assignment: ['Điều phối', 'Đơn chờ và xe đủ điều kiện sẽ hiển thị khi kết nối dịch vụ.', 'truck', 'overview'],
+      'new-order': ['Tiếp nhận đơn từ Sale', 'Biểu mẫu tiếp nhận cần nguồn lưu và quyền Điều phối phía máy chủ.', 'order', 'orders'],
+      fleet: ['Xe & tài xế', 'Danh sách xe và tài xế chưa được kết nối.', 'truck', 'more'],
+      reports: ['Báo cáo', 'Số liệu báo cáo sẽ hiển thị khi có nguồn dữ liệu được xác minh.', 'chart', 'more'],
+    };
+    return emptyPage(...pages[screen]);
   }
 
   function adminFleet() {
@@ -107,7 +146,7 @@
     if (screen === 'fleet') return adminFleet();
     if (screen === 'more') return adminMore();
     const pages = {
-      approvals: ['Duyệt phân công', 'Danh sách phân công cần duyệt sẽ hiển thị khi kết nối dịch vụ.', 'order', 'overview'],
+      'role-approvals': ['Phê duyệt thay đổi quyền', 'Yêu cầu đổi vai trò người dùng sẽ hiển thị khi kết nối dịch vụ. Admin không duyệt phân công vận hành.', 'order', 'overview'],
       activity: ['Hoạt động Điều phối', 'Nhật ký thao tác sẽ hiển thị khi có nguồn dữ liệu được xác minh.', 'activity', 'more'],
       tickets: ['Sự cố & ticket', 'Ticket và hội thoại chỉ đọc sẽ hiển thị khi kết nối dịch vụ.', 'alert', 'more'],
       maintenance: ['Yêu cầu bảo trì', 'Yêu cầu bảo trì chưa được tải từ dịch vụ.', 'gear', 'more'],
@@ -143,7 +182,12 @@
   }
 
   function navigation(role, screen) {
-    const active = ['activity', 'tickets', 'maintenance', 'recovery', 'connections', 'data', 'controls', 'backups', 'logs'].includes(screen) ? 'more' : screen;
+    const moreScreens = role === 'dispatch'
+      ? ['fleet', 'gps', 'reports']
+      : role === 'admin'
+        ? ['activity', 'tickets', 'maintenance']
+        : ['recovery', 'connections', 'data', 'controls', 'backups', 'logs'];
+    const active = moreScreens.includes(screen) ? 'more' : screen;
     return roleConfig[role].navigation.map(([id, iconName, label]) => `<button type="button" data-management-screen="${id}" ${active === id ? 'aria-current="page"' : ''}>${icon(iconName)}<span>${label}</span></button>`).join('');
   }
 
@@ -168,7 +212,7 @@
       </a>
       <label class="management-theme"><span class="sr-only">Chọn nền</span><select data-management-theme aria-label="Chọn một trong bốn nền">${themeOptions()}</select></label>
     </header>
-    <div class="management-content">${role === 'admin' ? adminScreen(screen) : systemScreen(screen)}</div>
+    <div class="management-content">${role === 'dispatch' ? dispatchScreen(screen) : role === 'admin' ? adminScreen(screen) : systemScreen(screen)}</div>
     <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}">${navigation(role, screen)}</nav>`;
   }
 
