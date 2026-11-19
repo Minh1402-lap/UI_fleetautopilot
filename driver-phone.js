@@ -1,4 +1,4 @@
-/* Giao diện Phone riêng của Tài xế; bản đồ và chuyến mới chỉ thể hiện trạng thái UI khi chưa có backend. */
+/* Giao diện Phone riêng của Tài xế; tách bản đồ khỏi nghiệp vụ chuyến để tuyến luôn dễ quan sát. */
 (() => {
   'use strict';
 
@@ -44,8 +44,7 @@
   }
 
   function newTripSheet() {
-    return `<section class="phone-trip-sheet phone-glass" aria-label="Phân công chuyến mới">
-      <span class="phone-sheet-handle" aria-hidden="true"></span>
+    return `<section class="phone-trip-card phone-glass" aria-label="Phân công chuyến mới">
       <header class="phone-assignment-heading"><span class="phone-assignment-icon">${icon('truck')}</span><div><h2>Có chuyến mới</h2><p>Điều phối đã gửi phân công</p></div></header>
       <dl class="phone-assignment-points"><div><dt>${icon('pin')}Điểm lấy hàng</dt><dd>—</dd></div><div><dt>${icon('pin')}Điểm giao hàng</dt><dd>—</dd></div></dl>
       <p class="phone-waiting">Chờ bạn phản hồi</p>
@@ -54,8 +53,23 @@
     </section>`;
   }
 
-  function trip() {
-    return `${routeMap()}<div class="phone-emergency-float">${emergency()}</div>${newTripSheet()}`;
+  function mapScreen() {
+    return `${routeMap()}<div class="phone-emergency-float">${emergency()}<p class="phone-feedback" role="status" id="phone-feedback"></p></div>`;
+  }
+
+  function tripScreen() {
+    return `<section class="phone-trip-page">
+      ${newTripSheet()}
+      <section class="phone-trip-tools phone-glass" aria-label="Xác nhận chuyến">
+        <h2>Xác nhận chuyến</h2>
+        <p>Ảnh và vị trí chỉ có thể gửi khi có chuyến được kết nối.</p>
+        <div class="phone-proof-actions">
+          <button type="button" data-phone-screen="pickup">${camera}<span>Ảnh lấy hàng</span></button>
+          <button type="button" data-phone-screen="delivery">${camera}<span>Ảnh giao hàng</span></button>
+        </div>
+        ${emergency()}
+      </section>
+    </section>`;
   }
 
   function secondaryScreen(screen) {
@@ -65,7 +79,7 @@
       <h2>${tickets ? 'Chưa tải được ticket' : 'Chưa có chuyến để gửi ảnh'}</h2>
       <p>${tickets ? 'Ticket và trao đổi với Điều phối sẽ hiển thị khi kết nối dịch vụ.' : 'Cần chuyến được giao và vị trí tại thời điểm chụp.'}</p>
       ${tickets ? '' : '<button class="phone-capture" type="button" disabled>Chụp ảnh xác nhận</button><p class="phone-connection">Ảnh và vị trí chưa được gửi.</p>'}
-      <button type="button" class="phone-back" data-phone-screen="trip">Về chuyến của tôi</button>
+      <button type="button" class="phone-back" data-phone-screen="${tickets ? 'map' : 'trip'}">${tickets ? 'Về bản đồ' : 'Về chuyến của tôi'}</button>
       ${emergency()}<p class="phone-feedback" role="status" id="phone-feedback"></p>
     </section>`;
   }
@@ -73,8 +87,8 @@
   function screenFromUrl() {
     const params = new URL(location.href).searchParams;
     const screen = params.get('phone_view');
-    if (['pickup', 'delivery', 'tickets'].includes(screen)) return screen;
-    return params.get('flow') === 'tickets' ? 'tickets' : 'trip';
+    if (['map', 'trip', 'pickup', 'delivery', 'tickets'].includes(screen)) return screen;
+    return params.get('flow') === 'tickets' ? 'tickets' : 'map';
   }
 
   function syncTheme() {
@@ -102,14 +116,15 @@
 
     activeScreen = screen;
     zoom = 1;
-    const title = { trip: 'Chuyến của tôi', pickup: 'Ảnh lấy hàng', delivery: 'Ảnh giao hàng', tickets: 'Ticket' }[screen];
+    const title = { map: 'Bản đồ', trip: 'Chuyến của tôi', pickup: 'Ảnh lấy hàng', delivery: 'Ảnh giao hàng', tickets: 'Ticket' }[screen];
     root.innerHTML = `<div class="phone-topbar phone-glass">
-      <a class="phone-brand" href="?role=driver" aria-label="Fleet Autopilot — Chuyến của tôi"><svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>${title}<small>Tài xế</small></span></a>
+      <a class="phone-brand" href="?role=driver&phone_view=map" aria-label="Fleet Autopilot — Bản đồ"><svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>${title}<small>Tài xế</small></span></a>
       <button type="button" class="phone-theme" data-phone-action="theme"></button>
     </div>
-    <div class="phone-content">${screen === 'trip' ? trip() : secondaryScreen(screen)}</div>
+    <div class="phone-content">${screen === 'map' ? mapScreen() : screen === 'trip' ? tripScreen() : secondaryScreen(screen)}</div>
     <nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế">
-      <button type="button" data-phone-screen="trip" ${screen !== 'tickets' ? 'aria-current="page"' : ''}>${icon('truck')}<span>Chuyến</span></button>
+      <button type="button" data-phone-screen="map" ${screen === 'map' ? 'aria-current="page"' : ''}>${icon('pin')}<span>Bản đồ</span></button>
+      <button type="button" data-phone-screen="trip" ${['trip', 'pickup', 'delivery'].includes(screen) ? 'aria-current="page"' : ''}>${icon('truck')}<span>Chuyến</span></button>
       <button type="button" data-phone-screen="tickets" ${screen === 'tickets' ? 'aria-current="page"' : ''}>${message}<span>Ticket</span></button>
     </nav>`;
     syncTheme();
