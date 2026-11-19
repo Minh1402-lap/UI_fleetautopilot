@@ -214,7 +214,10 @@
         <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
         <span>${config.title}<small>${config.subtitle}</small></span>
       </a>
-      <label class="management-theme"><span class="sr-only">Chọn nền</span><select data-management-theme aria-label="Chọn một trong bốn nền">${themeOptions()}</select></label>
+      <div class="management-topbar-actions">
+        <a class="management-role-switch" href="./" aria-label="Chọn vai trò xem thử" title="Chọn vai trò">${icon('switch-account')}<span>Vai trò</span></a>
+        <label class="management-theme"><span class="sr-only">Chọn nền</span><select data-management-theme aria-label="Chọn một trong bốn nền">${themeOptions()}</select></label>
+      </div>
     </header>
     <div class="management-content">${role === 'dispatch' ? dispatchScreen(screen) : role === 'admin' ? adminScreen(screen) : systemScreen(screen)}</div>
     <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}">${navigation(role, screen)}</nav>`;

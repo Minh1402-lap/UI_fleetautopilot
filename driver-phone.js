@@ -119,7 +119,10 @@
     const title = { map: 'Bản đồ', trip: 'Chuyến của tôi', pickup: 'Ảnh lấy hàng', delivery: 'Ảnh giao hàng', tickets: 'Ticket' }[screen];
     root.innerHTML = `<div class="phone-topbar phone-glass">
       <a class="phone-brand" href="?role=driver&phone_view=map" aria-label="Fleet Autopilot — Bản đồ"><svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>${title}<small>Tài xế</small></span></a>
-      <button type="button" class="phone-theme" data-phone-action="theme"></button>
+      <div class="phone-topbar-actions">
+        <a class="phone-role-switch" href="./" aria-label="Chọn vai trò xem thử" title="Chọn vai trò">${icon('switch-account')}<span>Vai trò</span></a>
+        <button type="button" class="phone-theme" data-phone-action="theme"></button>
+      </div>
     </div>
     <div class="phone-content">${screen === 'map' ? mapScreen() : screen === 'trip' ? tripScreen() : secondaryScreen(screen)}</div>
     <nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế">

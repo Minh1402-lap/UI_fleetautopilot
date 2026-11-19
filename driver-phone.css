@@ -15,6 +15,9 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-size: 17px; font-weight: 600; }
 #driver-phone .phone-brand svg { width: 54px; height: 34px; fill: currentColor; stroke: none; }
 .phone-brand small { display: block; margin-top: 1px; font-size: 11px; color: var(--muted); font-weight: 500; }
+.phone-topbar-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.phone-role-switch { width: 46px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); text-decoration: none; font-size: 8px; font-weight: 600; line-height: 1; touch-action: manipulation; }
+#driver-phone .phone-role-switch svg { width: 19px; height: 19px; fill: currentColor; stroke: none; }
 .phone-theme { display: grid; place-items: center; width: 46px; flex-shrink: 0; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); }
 .phone-content, .phone-route { position: absolute; inset: 0; }
 .phone-route { overflow: hidden; background: var(--raised); }
@@ -81,6 +84,8 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
   .phone-topbar { left: 8px; right: 8px; }
   .phone-brand { font-size: 15px; gap: 6px; }
   #driver-phone .phone-brand svg { width: 44px; }
+  .phone-topbar-actions { gap: 4px; }
+  .phone-role-switch, .phone-theme { width: 44px; }
   .phone-nav { left: 8px; right: 8px; }
   .phone-nav button { gap: 4px; font-size: 11px !important; }
   .phone-assignment-actions { gap: 7px; }
