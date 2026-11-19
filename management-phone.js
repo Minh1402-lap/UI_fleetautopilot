@@ -57,6 +57,10 @@
     return Object.hasOwn(roleConfig, role) ? role : '';
   }
 
+  function roleInUrl(role) {
+    return role === 'admin_system' ? 'system_admin' : role;
+  }
+
   function screenFromUrl(role) {
     const requested = new URL(location.href).searchParams.get('phone_view');
     return roleConfig[role].screens.includes(requested) ? requested : 'overview';
@@ -206,7 +210,7 @@
     const screen = screenFromUrl(role);
     const config = roleConfig[role];
     root.innerHTML = `<header class="management-topbar management-glass">
-      <a class="management-brand" href="?role=${role}&phone_view=overview" aria-label="Fleet Autopilot — ${config.subtitle}">
+      <a class="management-brand" href="?role=${roleInUrl(role)}&phone_view=overview" aria-label="Fleet Autopilot — ${config.subtitle}">
         <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
         <span>${config.title}<small>${config.subtitle}</small></span>
       </a>

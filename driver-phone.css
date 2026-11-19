@@ -59,8 +59,8 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-proof-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .phone-proof-actions button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 82px !important; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); font-size: 12px !important; font-weight: 600 !important; }
 .phone-trip-tools .phone-emergency { width: 100%; margin-top: 12px; }
-.phone-nav { position: absolute; z-index: 6; left: 10px; right: 10px; bottom: max(7px, env(safe-area-inset-bottom)); height: 58px; border-radius: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 5px; }
-.phone-nav button { display: flex; align-items: center; justify-content: center; gap: 7px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 14px; padding: 5px; font-size: 12px !important; }
+.phone-nav { position: absolute; z-index: 6; left: 10px; right: 10px; bottom: max(7px, env(safe-area-inset-bottom)); height: 62px; border-radius: 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 4px; padding: 5px; }
+.phone-nav button { height: 100%; min-height: 0 !important; display: flex; align-items: center; justify-content: center; gap: 7px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 14px; padding: 5px; font-size: 12px !important; }
 .phone-nav [aria-current=page] { color: var(--ink); background: var(--nested); border-color: var(--rim); font-weight: 600 !important; }
 .phone-secondary { position: absolute; inset: 86px 12px 76px; border-radius: 22px; padding: 28px 20px; display: flex; flex-direction: column; align-items: stretch; gap: 20px; text-align: center; }
 #driver-phone .phone-empty-icon svg { width: 42px; height: 42px; }
@@ -74,8 +74,8 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 @media (max-height: 700px) {
   .phone-assignment-heading p { display: none; }
   .phone-assignment-points > div { min-height: 35px; }
-  .phone-nav { height: 52px; }
-  .phone-trip-page { bottom: 63px; }
+  .phone-nav { height: 56px; }
+  .phone-trip-page { bottom: 67px; }
 }
 @media (max-width: 359px) {
   .phone-topbar { left: 8px; right: 8px; }
