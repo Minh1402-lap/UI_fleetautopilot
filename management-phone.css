@@ -1,0 +1,73 @@
+/* Phone Admin/System Admin dùng cùng bốn nền và logo chuẩn; PC giữ nguyên bố cục hiện hành. */
+#management-phone[hidden] { display: none; }
+body.management-phone-active .app > header,
+body.management-phone-active #main > :not(#management-phone),
+body.management-phone-active .sidebar { display: none !important; }
+body.management-phone-active .app { margin: 0; width: 100%; max-width: none; }
+body.management-phone-active #main { padding: 0; margin: 0; }
+#management-phone { position: relative; min-height: 100svh; min-height: 100dvh; overflow: hidden; color: var(--ink); background-color: var(--canvas); background-image: var(--canvas-image); }
+#management-phone * { box-sizing: border-box; min-width: 0; }
+#management-phone button, #management-phone select { font: inherit; min-height: 44px; touch-action: manipulation; }
+#management-phone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; flex-shrink: 0; }
+.management-glass { background-color: var(--small-face); background-image: var(--face-image); border: 1px solid var(--rim); border-top-color: var(--rim-top); border-left-color: var(--rim-left); box-shadow: var(--refraction); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
+body.management-phone-active .management-topbar { position: absolute; z-index: 5; top: max(10px, env(safe-area-inset-top)); left: 10px; right: 10px; width: auto; height: 68px; min-height: 0; border-radius: 20px; display: flex; flex-wrap: nowrap; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 9px 8px 12px; }
+.management-brand { display: flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.2; font-weight: 600; }
+#management-phone .management-brand > svg { width: 62px; height: 40px; fill: currentColor; stroke: none; }
+.management-brand small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 500; }
+.management-theme { flex: 0 0 104px; }
+.management-theme select { width: 100%; border: 1px solid var(--rim); border-radius: 13px; padding: 6px 8px; background: var(--nested); color: var(--ink); font-size: 10px; }
+.management-content { position: absolute; inset: 88px 0 72px; overflow-y: auto; padding: 2px 11px 20px; scrollbar-width: none; }
+.management-content::-webkit-scrollbar { display: none; }
+.management-card { border-radius: 20px; padding: 14px; margin-bottom: 11px; }
+.management-card h2 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--ink); }
+:root[data-theme=moss] .management-card h2, :root[data-theme=moss] .management-card h2 svg { color: var(--action); }
+.management-metrics, .management-system-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.management-metrics > div, .management-system-metrics > div { min-height: 77px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; border: 1px solid var(--line); border-radius: 13px; background: var(--nested); text-align: center; }
+.management-metrics strong, .management-system-metrics strong { font-size: 20px; line-height: 1; }
+.management-metrics span, .management-system-metrics span { color: var(--muted); font-size: 10px; line-height: 1.3; }
+.management-rows { display: grid; gap: 8px; }
+.management-row { width: 100%; display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 9px; border: 1px solid var(--line); border-radius: 13px; padding: 7px 10px; background: var(--nested); color: var(--ink); text-align: left; font-size: 12px; font-weight: 600; }
+.management-row-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: color-mix(in srgb, var(--nested) 70%, transparent); }
+.management-row small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; font-weight: 500; }
+.management-row b { color: var(--muted); font-size: 24px; font-weight: 400; }
+.management-map { position: relative; height: 172px; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--map); }
+.management-map > svg { width: 100%; height: 100%; stroke: none !important; }
+.management-map-ground { fill: var(--map); }
+.management-map-blocks { fill: var(--line); opacity: .24; }
+.management-map-roads { stroke: var(--route); stroke-width: 6; fill: none; opacity: .46; }
+.management-map-river { stroke: var(--river); stroke-width: 25; fill: none; }
+.management-map > span { position: absolute; left: 9px; bottom: 8px; padding: 5px 8px; border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 9px; }
+.management-copy { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.management-quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.management-quick .management-row { grid-template-columns: 31px 1fr auto; min-height: 62px; }
+.management-quick .management-row-icon { width: 30px; height: 30px; }
+.management-quick .management-row small { display: none; }
+.management-empty { min-height: min(540px, calc(100dvh - 180px)); border-radius: 22px; padding: 32px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.management-empty-icon { width: 58px; height: 58px; display: grid; place-items: center; border: 1px solid var(--rim); border-radius: 17px; background: var(--nested); }
+#management-phone .management-empty-icon svg { width: 30px; height: 30px; }
+.management-empty h1 { margin: 18px 0 7px; font-size: 21px; }
+.management-empty p { max-width: 290px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.management-empty button { margin-top: 24px; min-width: 150px; border: 1px solid var(--rim); border-radius: 13px; background: var(--nested); color: var(--ink); font-weight: 600; }
+.management-nav { position: absolute; z-index: 6; left: 9px; right: 9px; bottom: max(7px, env(safe-area-inset-bottom)); height: 59px; border-radius: 19px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; padding: 4px; }
+.management-nav button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1px solid transparent; border-radius: 13px; padding: 3px; background: transparent; color: var(--muted); font-size: 9px !important; }
+#management-phone .management-nav svg { width: 19px; height: 19px; }
+.management-nav [aria-current=page] { color: var(--ink); background: var(--nested); border-color: var(--rim); font-weight: 600; }
+:root[data-theme=amber] .management-nav [aria-current=page], :root[data-theme=amber] .management-row-icon { color: var(--action); }
+:root[data-theme=moss] .management-nav [aria-current=page], :root[data-theme=moss] .management-row-icon { color: var(--action); }
+@media (max-height: 700px) {
+  .management-content { inset-block: 84px 66px; }
+  .management-card { padding: 11px; }
+  .management-map { height: 140px; }
+  .management-nav { height: 53px; }
+}
+@media (max-width: 359px) {
+  .management-topbar { left: 7px; right: 7px; padding-left: 8px; }
+  #management-phone .management-brand > svg { width: 46px; }
+  .management-brand { gap: 5px; font-size: 11px; }
+  .management-theme { flex-basis: 100px; }
+  .management-content { padding-inline: 8px; }
+  .management-nav { left: 7px; right: 7px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .management-glass { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
