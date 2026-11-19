@@ -12,8 +12,8 @@
   let activeScreen = '';
 
   const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
-  const camera = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h4l2-3h6l2 3h4v13H3Z"/><circle cx="12" cy="13" r="4"/></svg>';
-  const message = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v13H9l-5 4Z M8 8h8 M8 12h5"/></svg>';
+  const camera = icon('camera');
+  const message = icon('message');
 
   function routeMap() {
     // Tuyến chỉ minh họa bố cục. Không dùng các điểm này như địa chỉ, GPS hoặc dữ liệu chuyến thật.
