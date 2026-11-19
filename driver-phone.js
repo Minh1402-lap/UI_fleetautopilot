@@ -10,6 +10,9 @@
 
   let zoom = 1;
   let activeScreen = '';
+  let transitionGeneration = 0;
+  let transitionTimer = 0;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
   const camera = icon('camera');
@@ -91,6 +94,135 @@
     return params.get('flow') === 'tickets' ? 'tickets' : 'map';
   }
 
+  function screenTitle(screen) {
+    return { map: 'Bản đồ', trip: 'Chuyến của tôi', pickup: 'Ảnh lấy hàng', delivery: 'Ảnh giao hàng', tickets: 'Ticket' }[screen];
+  }
+
+  function screenContent(screen) {
+    return screen === 'map' ? mapScreen() : screen === 'trip' ? tripScreen() : secondaryScreen(screen);
+  }
+
+  function tabIndex(screen) {
+    if (screen === 'map') return 0;
+    if (screen === 'tickets') return 2;
+    return 1;
+  }
+
+  function padPosition(index) {
+    // Pad rộng 25% thanh; các mốc giữ tâm pad thẳng với tâm của ba ô điều hướng.
+    return ['16.667%', '150%', '283.333%'][index];
+  }
+
+  function navigation(screen) {
+    const index = tabIndex(screen);
+    return `<nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế" style="--phone-pad-x:${padPosition(index)}">
+      <span class="phone-nav-indicator" aria-hidden="true"></span>
+      <button type="button" data-phone-screen="map" ${index === 0 ? 'aria-current="page"' : ''}>${icon('pin')}<span>Bản đồ</span></button>
+      <button type="button" data-phone-screen="trip" ${index === 1 ? 'aria-current="page"' : ''}>${icon('truck')}<span>Chuyến</span></button>
+      <button type="button" data-phone-screen="tickets" ${index === 2 ? 'aria-current="page"' : ''}>${message}<span>Ticket</span></button>
+    </nav>`;
+  }
+
+  function mountScreen(screen) {
+    root.innerHTML = `<div class="phone-topbar phone-glass">
+      <a class="phone-brand" href="?role=driver&phone_view=map" aria-label="Fleet Autopilot — Bản đồ"><svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span><span class="phone-screen-title">${screenTitle(screen)}</span><small>Tài xế</small></span></a>
+      <div class="phone-topbar-actions">
+        <a class="phone-role-switch" href="./" aria-label="Chọn vai trò xem thử" title="Chọn vai trò">${icon('switch-account')}<span>Vai trò</span></a>
+        <button type="button" class="phone-theme" data-phone-action="theme"></button>
+      </div>
+    </div>
+    <div class="phone-content"><div class="phone-page is-current" data-phone-page="${screen}">${screenContent(screen)}</div></div>
+    ${navigation(screen)}`;
+
+    requestAnimationFrame(() => root.querySelector('.phone-nav')?.classList.add('is-ready'));
+  }
+
+  function updateNavigation(screen, previousScreen) {
+    const nav = root.querySelector('.phone-nav');
+    if (!nav) return;
+
+    const nextIndex = tabIndex(screen);
+    const previousIndex = tabIndex(previousScreen);
+    const steps = Math.abs(nextIndex - previousIndex);
+    nav.style.setProperty('--phone-nav-duration', steps > 1 ? '440ms' : '300ms');
+    nav.style.setProperty('--phone-pad-x', padPosition(nextIndex));
+    nav.querySelectorAll('[data-phone-screen]').forEach(button => {
+      const selected = tabIndex(button.dataset.phoneScreen) === nextIndex;
+      if (selected) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
+  }
+
+  function settlePageTransition() {
+    clearTimeout(transitionTimer);
+    const content = root.querySelector('.phone-content');
+    if (!content) return;
+    const pages = [...content.querySelectorAll('.phone-page')];
+    const current = pages[pages.length - 1];
+    pages.forEach(page => {
+      if (page !== current) page.remove();
+    });
+    if (!current) return;
+    current.className = 'phone-page is-current';
+    current.removeAttribute('style');
+  }
+
+  function replacePage(screen) {
+    const content = root.querySelector('.phone-content');
+    if (!content) return;
+    content.innerHTML = `<div class="phone-page is-current" data-phone-page="${screen}">${screenContent(screen)}</div>`;
+  }
+
+  function transitionPage(previousScreen, screen) {
+    const content = root.querySelector('.phone-content');
+    if (!content) return;
+
+    settlePageTransition();
+    const current = content.querySelector('.phone-page.is-current');
+    const previousIndex = tabIndex(previousScreen);
+    const nextIndex = tabIndex(screen);
+    const steps = Math.abs(nextIndex - previousIndex);
+    if (!current || previousIndex === nextIndex || reducedMotion.matches) {
+      replacePage(screen);
+      return;
+    }
+
+    const generation = ++transitionGeneration;
+    const direction = nextIndex > previousIndex ? 1 : -1;
+    const distance = steps > 1 ? 118 : 100;
+    const duration = steps > 1 ? 440 : 300;
+    const incoming = document.createElement('div');
+    incoming.className = 'phone-page is-incoming';
+    incoming.dataset.phonePage = screen;
+    incoming.style.setProperty('--phone-page-duration', `${duration}ms`);
+    incoming.style.setProperty('--phone-enter-x', `${direction * distance}%`);
+    incoming.style.setProperty('--phone-exit-x', `${direction * -distance}%`);
+    incoming.innerHTML = screenContent(screen);
+    current.style.setProperty('--phone-page-duration', `${duration}ms`);
+    current.style.setProperty('--phone-exit-x', `${direction * -distance}%`);
+    content.append(incoming);
+
+    // Buộc ghi nhận vị trí xuất phát; không phụ thuộc requestAnimationFrame của tab đang ở nền.
+    incoming.getBoundingClientRect();
+    current.classList.remove('is-current');
+    current.classList.add('is-outgoing');
+    incoming.classList.remove('is-incoming');
+    incoming.classList.add('is-current');
+
+    const finishTransition = () => {
+      if (generation !== transitionGeneration) return;
+      settlePageTransition();
+      if (screen === 'map') updateZoom();
+    };
+    const handleTransitionEnd = event => {
+      if (event.propertyName !== 'transform') return;
+      incoming.removeEventListener('transitionend', handleTransitionEnd);
+      finishTransition();
+    };
+    incoming.addEventListener('transitionend', handleTransitionEnd);
+    transitionTimer = window.setTimeout(finishTransition, duration + 100);
+  }
+
   function syncTheme() {
     const dark = document.documentElement.dataset.theme === 'dark';
     const toggle = root.querySelector('[data-phone-action="theme"]');
@@ -104,6 +236,8 @@
     document.body.classList.toggle('driver-phone-active', enabled);
     root.hidden = !enabled;
     if (!enabled) {
+      transitionGeneration += 1;
+      clearTimeout(transitionTimer);
       activeScreen = '';
       return;
     }
@@ -114,22 +248,17 @@
       return;
     }
 
-    activeScreen = screen;
+    const previousScreen = activeScreen;
     zoom = 1;
-    const title = { map: 'Bản đồ', trip: 'Chuyến của tôi', pickup: 'Ảnh lấy hàng', delivery: 'Ảnh giao hàng', tickets: 'Ticket' }[screen];
-    root.innerHTML = `<div class="phone-topbar phone-glass">
-      <a class="phone-brand" href="?role=driver&phone_view=map" aria-label="Fleet Autopilot — Bản đồ"><svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>${title}<small>Tài xế</small></span></a>
-      <div class="phone-topbar-actions">
-        <a class="phone-role-switch" href="./" aria-label="Chọn vai trò xem thử" title="Chọn vai trò">${icon('switch-account')}<span>Vai trò</span></a>
-        <button type="button" class="phone-theme" data-phone-action="theme"></button>
-      </div>
-    </div>
-    <div class="phone-content">${screen === 'map' ? mapScreen() : screen === 'trip' ? tripScreen() : secondaryScreen(screen)}</div>
-    <nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế">
-      <button type="button" data-phone-screen="map" ${screen === 'map' ? 'aria-current="page"' : ''}>${icon('pin')}<span>Bản đồ</span></button>
-      <button type="button" data-phone-screen="trip" ${['trip', 'pickup', 'delivery'].includes(screen) ? 'aria-current="page"' : ''}>${icon('truck')}<span>Chuyến</span></button>
-      <button type="button" data-phone-screen="tickets" ${screen === 'tickets' ? 'aria-current="page"' : ''}>${message}<span>Ticket</span></button>
-    </nav>`;
+    activeScreen = screen;
+    if (!previousScreen || !root.querySelector('.phone-content')) {
+      mountScreen(screen);
+    } else {
+      const title = root.querySelector('.phone-screen-title');
+      if (title) title.textContent = screenTitle(screen);
+      updateNavigation(screen, previousScreen);
+      transitionPage(previousScreen, screen);
+    }
     syncTheme();
     if (root.querySelector('#phone-map-scene')) updateZoom();
   }
