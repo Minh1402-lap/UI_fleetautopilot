@@ -8,6 +8,12 @@
   root.hidden = true;
   document.querySelector('#main').append(root);
 
+  let activeRole = '';
+  let activeScreen = '';
+  let transitionGeneration = 0;
+  let transitionTimer = 0;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
   const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
   const themes = [
     ['light', 'Sáng'],
@@ -185,14 +191,34 @@
     return emptyPage(...pages[screen]);
   }
 
-  function navigation(role, screen) {
+  function activeNavigationId(role, screen) {
     const moreScreens = role === 'dispatch'
       ? ['fleet', 'gps', 'reports']
       : role === 'admin'
         ? ['activity', 'tickets', 'maintenance']
         : ['recovery', 'connections', 'data', 'controls', 'backups', 'logs'];
-    const active = moreScreens.includes(screen) ? 'more' : screen;
+    if (moreScreens.includes(screen)) return 'more';
+    if (role === 'dispatch' && screen === 'new-order') return 'orders';
+    return screen;
+  }
+
+  function navigationIndex(role, screen) {
+    const active = activeNavigationId(role, screen);
+    return Math.max(0, roleConfig[role].navigation.findIndex(([id]) => id === active));
+  }
+
+  function padPosition(index) {
+    // Pad rộng 19% thanh, tương đương khoảng ba phần tư một ô trong menu bốn tab.
+    return ['15.789%', '147.368%', '278.947%', '410.526%'][index];
+  }
+
+  function navigation(role, screen) {
+    const active = activeNavigationId(role, screen);
     return roleConfig[role].navigation.map(([id, iconName, label]) => `<button type="button" data-management-screen="${id}" ${active === id ? 'aria-current="page"' : ''}>${icon(iconName)}<span>${label}</span></button>`).join('');
+  }
+
+  function screenContent(role, screen) {
+    return role === 'dispatch' ? dispatchScreen(screen) : role === 'admin' ? adminScreen(screen) : systemScreen(screen);
   }
 
   function themeOptions() {
@@ -200,15 +226,9 @@
     return themes.map(([value, label]) => `<option value="${value}" ${value === current ? 'selected' : ''}>${label}</option>`).join('');
   }
 
-  function render() {
-    const role = currentRole();
-    const enabled = phone.matches && Boolean(role);
-    document.body.classList.toggle('management-phone-active', enabled);
-    root.hidden = !enabled;
-    if (!enabled) return;
-
-    const screen = screenFromUrl(role);
+  function mountScreen(role, screen) {
     const config = roleConfig[role];
+    const index = navigationIndex(role, screen);
     root.innerHTML = `<header class="management-topbar management-glass">
       <a class="management-brand" href="?role=${roleInUrl(role)}&phone_view=overview" aria-label="Fleet Autopilot — ${config.subtitle}">
         <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
@@ -219,8 +239,127 @@
         <label class="management-theme"><span class="sr-only">Chọn nền</span><select data-management-theme aria-label="Chọn một trong bốn nền">${themeOptions()}</select></label>
       </div>
     </header>
-    <div class="management-content">${role === 'dispatch' ? dispatchScreen(screen) : role === 'admin' ? adminScreen(screen) : systemScreen(screen)}</div>
-    <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}">${navigation(role, screen)}</nav>`;
+    <div class="management-content"><div class="management-page is-current" data-management-page="${screen}">${screenContent(role, screen)}</div></div>
+    <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}" style="--management-pad-x:${padPosition(index)}">
+      <span class="management-nav-indicator" aria-hidden="true"></span>${navigation(role, screen)}
+    </nav>`;
+
+    requestAnimationFrame(() => root.querySelector('.management-nav')?.classList.add('is-ready'));
+  }
+
+  function updateNavigation(role, screen, previousScreen) {
+    const nav = root.querySelector('.management-nav');
+    if (!nav) return;
+
+    const nextIndex = navigationIndex(role, screen);
+    const previousIndex = navigationIndex(role, previousScreen);
+    const steps = Math.abs(nextIndex - previousIndex);
+    const duration = steps > 2 ? 520 : steps > 1 ? 420 : 300;
+    nav.style.setProperty('--management-nav-duration', `${duration}ms`);
+    nav.style.setProperty('--management-pad-x', padPosition(nextIndex));
+    nav.querySelectorAll('[data-management-screen]').forEach(button => {
+      if (button.dataset.managementScreen === activeNavigationId(role, screen)) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
+  }
+
+  function settlePageTransition() {
+    clearTimeout(transitionTimer);
+    const content = root.querySelector('.management-content');
+    if (!content) return;
+    const pages = [...content.querySelectorAll('.management-page')];
+    const current = pages[pages.length - 1];
+    pages.forEach(page => {
+      if (page !== current) page.remove();
+    });
+    if (!current) return;
+    current.className = 'management-page is-current';
+    current.removeAttribute('style');
+  }
+
+  function replacePage(role, screen) {
+    const content = root.querySelector('.management-content');
+    if (!content) return;
+    content.innerHTML = `<div class="management-page is-current" data-management-page="${screen}">${screenContent(role, screen)}</div>`;
+  }
+
+  function transitionPage(role, previousScreen, screen) {
+    const content = root.querySelector('.management-content');
+    if (!content) return;
+
+    settlePageTransition();
+    const current = content.querySelector('.management-page.is-current');
+    const previousIndex = navigationIndex(role, previousScreen);
+    const nextIndex = navigationIndex(role, screen);
+    const steps = Math.abs(nextIndex - previousIndex);
+    if (!current || previousIndex === nextIndex || reducedMotion.matches) {
+      replacePage(role, screen);
+      return;
+    }
+
+    const generation = ++transitionGeneration;
+    const direction = nextIndex > previousIndex ? 1 : -1;
+    const distance = steps > 2 ? 130 : steps > 1 ? 115 : 100;
+    const duration = steps > 2 ? 520 : steps > 1 ? 420 : 300;
+    const incoming = document.createElement('div');
+    incoming.className = 'management-page is-incoming';
+    incoming.dataset.managementPage = screen;
+    incoming.style.setProperty('--management-page-duration', `${duration}ms`);
+    incoming.style.setProperty('--management-enter-x', `${direction * distance}%`);
+    incoming.style.setProperty('--management-exit-x', `${direction * -distance}%`);
+    incoming.innerHTML = screenContent(role, screen);
+    current.style.setProperty('--management-page-duration', `${duration}ms`);
+    current.style.setProperty('--management-exit-x', `${direction * -distance}%`);
+    content.append(incoming);
+
+    // Ghi nhận vị trí xuất phát để chuyển cảnh vẫn chạy khi tab trình duyệt vừa được kích hoạt lại.
+    incoming.getBoundingClientRect();
+    current.classList.remove('is-current');
+    current.classList.add('is-outgoing');
+    incoming.classList.remove('is-incoming');
+    incoming.classList.add('is-current');
+
+    const finishTransition = () => {
+      if (generation !== transitionGeneration) return;
+      settlePageTransition();
+    };
+    const handleTransitionEnd = event => {
+      if (event.propertyName !== 'transform') return;
+      incoming.removeEventListener('transitionend', handleTransitionEnd);
+      finishTransition();
+    };
+    incoming.addEventListener('transitionend', handleTransitionEnd);
+    transitionTimer = window.setTimeout(finishTransition, duration + 100);
+  }
+
+  function render() {
+    const role = currentRole();
+    const enabled = phone.matches && Boolean(role);
+    document.body.classList.toggle('management-phone-active', enabled);
+    root.hidden = !enabled;
+    if (!enabled) {
+      transitionGeneration += 1;
+      clearTimeout(transitionTimer);
+      activeRole = '';
+      activeScreen = '';
+      return;
+    }
+
+    const screen = screenFromUrl(role);
+    const previousRole = activeRole;
+    const previousScreen = activeScreen;
+    activeRole = role;
+    activeScreen = screen;
+    if (previousRole !== role || !previousScreen || !root.querySelector('.management-content')) {
+      transitionGeneration += 1;
+      clearTimeout(transitionTimer);
+      mountScreen(role, screen);
+      return;
+    }
+    if (previousScreen === screen) return;
+
+    updateNavigation(role, screen, previousScreen);
+    transitionPage(role, previousScreen, screen);
   }
 
   root.addEventListener('click', event => {
