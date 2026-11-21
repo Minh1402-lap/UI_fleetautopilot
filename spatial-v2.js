@@ -99,8 +99,22 @@
   if (mainEl && footerEl) mainEl.insertBefore(v2Root, footerEl);
   else mainEl?.append(v2Root);
 
+  // Khung gốc chứa bản Phone Mẫu 2 (<760px) cho 3 vai trò quản lý (không áp dụng Tài xế)
+  // Gắn trực tiếp vào body để không bị quy tắc ẩn con của #main trong management-phone.css chặn.
+  const v2Phone = document.createElement('section');
+  v2Phone.id = 'spatial-v2-phone';
+  v2Phone.setAttribute('aria-label', 'Giao diện điện thoại Mẫu 2');
+  v2Phone.hidden = true;
+  document.body.append(v2Phone);
+
+  let phoneTab = 'overview';
+
   function isDesktop() {
     return window.innerWidth >= 760;
+  }
+
+  function isPhone() {
+    return window.innerWidth < 760;
   }
 
   function isRoleHome() {
@@ -318,9 +332,20 @@
           <button type="button" class="v2-flt-btn" data-v2-action="go-tickets">${icon('alert')}<span>Ticket (${openTickets.length})</span></button>
         </div>
         <div class="v2-action-card v2-card-light">
-          <h4>Điều phối nhanh</h4>
+          <div class="v2-action-hd">
+            <h4>Điều phối nhanh</h4>
+            <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
+          </div>
           <div class="v2-action-l1">${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)}` : 'Chưa có đơn chờ'}</div>
           <div class="v2-action-l2">${focusOrder ? `${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Tạo đơn mới ở mục Đơn hàng'}</div>
+          <div class="v2-ai-picks">${readyVehicles
+            .slice(0, 3)
+            .map((v, idx) => {
+              const isChosen = (s.selectedVehicle || readyVehicles[0]?.plate) === v.plate;
+              return `<button type="button" class="v2-ai-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">${esc(v.plate)}<small>${idx === 0 ? 'AI đề xuất' : 'Sẵn sàng'}</small></button>`;
+            })
+            .join('')}</div>
+          <div class="v2-ai-note">AI đề xuất (V1) · Công bằng trước, tuyến sau · Điều phối duyệt</div>
           <button type="button" class="v2-action-btn" data-v2-action="quick-assign" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>Duyệt phân công</button>
         </div>
       </aside>`;
@@ -613,19 +638,253 @@
       </aside>`;
   }
 
+  // Gắn nút chuyển sang Mẫu 2 vào thanh trên của Phone Mẫu 1 (#management-phone)
+  function ensurePhoneV1Switch() {
+    const actions = document.querySelector('#management-phone .management-topbar-actions');
+    if (!actions || actions.querySelector('[data-ui-style-phone]')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'phone-style-toggle';
+    btn.dataset.uiStylePhone = 'v2';
+    btn.textContent = 'Mẫu 2';
+    btn.setAttribute('aria-label', 'Chuyển sang giao diện Mẫu 2');
+    actions.prepend(btn);
+  }
+
+  function renderPhoneV2(role) {
+    const s = api.snapshot();
+    const rSnap = roles.snapshot();
+    const wf = readJson(WF_KEY, { tickets: [] });
+    const gov = readJson(GOV_KEY, { changes: [], maintenance: [], jobs: [] });
+    const currentTheme = document.documentElement.dataset.theme || 'light';
+    const roleLabel = role === 'dispatch' ? 'Điều phối' : role === 'admin' ? 'Admin' : 'System Admin';
+
+    const pendingOrders = s.orders.filter((o) => o.status === 'pending');
+    const activeOrders = s.orders.filter((o) => ['assigned', 'running'].includes(o.status));
+    const readyVehicles = s.vehicles.filter(
+      (v) => v.availability === 'ready' && !activeOrders.some((o) => o.plate === v.plate)
+    );
+    const openTickets = (wf.tickets || []).filter((t) => t.status === 'open');
+    const pendingChanges = (gov.changes || []).filter((c) => ['pending', 'approved', 'designated'].includes(c.status));
+    const failedJobs = (gov.jobs || []).filter((j) => j.status === 'failed');
+
+    const mapCard = (title, countText) => `
+      <section class="v2p-card v2p-light v2p-hero">
+        <div class="v2p-hd"><h2>${esc(title)}</h2><span class="v2p-pill">${esc(countText)}</span></div>
+        <div class="v2p-map">
+          <svg viewBox="0 0 360 155" preserveAspectRatio="xMidYMid slice">
+            <g fill="none" stroke="var(--v2-map-road)" stroke-width="1.2">
+              <path d="M-10 42 L110 12 L230 52 L370 18"/>
+              <path d="M-10 105 L110 72 L240 112 L370 72"/>
+              <path d="M60 -5 L130 165 M185 -5 L245 165 M295 -5 L345 130"/>
+            </g>
+            <path d="M210 -10 C195 30 250 35 235 72 C220 105 265 120 275 165" fill="none" stroke="var(--v2-map-river)" stroke-width="18" stroke-linecap="round"/>
+            <path d="M68 48 C98 78 138 102 182 118 C220 96 258 72 302 52" fill="none" stroke="var(--v2-route)" stroke-width="3.2" stroke-linecap="round"/>
+            <circle cx="68" cy="48" r="5" fill="var(--v2-route)"/>
+            <circle cx="302" cy="52" r="5" fill="var(--v2-route)"/>
+          </svg>
+          <span class="v2p-pin" style="left:8%;top:12%">Mỏ Tân Hòa</span>
+          <span class="v2p-pin" style="right:6%;top:14%">Công trình Q.9</span>
+          <span class="v2p-pin" style="left:26%;bottom:12%"><span class="v2-dot v2-dot-green"></span>${esc(s.vehicles[0]?.plate || '51C-732.18')}</span>
+        </div>
+      </section>`;
+
+    let bodyHtml = '';
+    let navTabs = [];
+
+    if (role === 'dispatch') {
+      const focusOrder = pendingOrders.find((o) => o.id === s.selectedOrder) || pendingOrders[0];
+      navTabs = [
+        ['overview', 'home', 'Tổng quan'],
+        ['orders', 'order', 'Đơn hàng'],
+        ['assignment', 'layers', 'Điều phối'],
+        ['more', 'gear', 'Thêm'],
+      ];
+      bodyHtml = `
+        ${mapCard('Bản đồ đội xe', `${s.vehicles.filter((v) => v.availability !== 'maintenance').length} xe hoạt động`)}
+        <div class="v2p-kpis">
+          <div class="v2p-kpi v2-kpi-amber"><span>Chờ xe</span><strong>${String(pendingOrders.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-blue"><span>Đang chạy</span><strong>${String(activeOrders.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-green"><span>Sẵn sàng</span><strong>${String(readyVehicles.length).padStart(2, '0')}</strong></div>
+        </div>
+        <section class="v2p-card v2p-dark v2p-sec">
+          <div class="v2p-hd"><h3>Hàng chờ phân xe</h3><span class="v2-tag v2-tag-amber">${pendingOrders.length} đơn</span></div>
+          <div class="v2p-list">${
+            pendingOrders
+              .slice(0, 2)
+              .map(
+                (o) => `<button type="button" class="v2p-row" data-v2-action="dispatch-order" data-id="${esc(o.id)}">
+                  <div><strong>${esc(o.id)} · ${esc(o.material)} (${o.quantity} tấn mẫu)</strong><small>${esc(o.from)} → ${esc(o.to)}</small></div>
+                  <span class="v2-tag v2-tag-amber">Chờ xe</span>
+                </button>`
+              )
+              .join('') || '<div class="v2-item-sub">Chưa có đơn chờ phân xe.</div>'
+          }</div>
+        </section>
+        <div class="v2p-pair">
+          <div class="v2p-card v2p-light v2p-mini">
+            <strong>${esc(s.vehicles[0]?.plate || '51C-732.18')}</strong>
+            <small>Sẵn sàng nhận đơn</small>
+          </div>
+          <div class="v2p-card v2p-dark v2p-mini">
+            <strong>${esc(s.vehicles[3]?.plate || '51C-481.66')}</strong>
+            <small>Cần kiểm tra GPS</small>
+          </div>
+        </div>
+        <section class="v2p-card v2p-light v2p-act">
+          <div class="v2p-act-top">
+            <div><strong>Điều phối nhanh · ${esc(focusOrder?.id || '—')}</strong><small>${focusOrder ? `${esc(focusOrder.material)} · ${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Chưa có đơn chờ'}</small></div>
+            <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
+          </div>
+          <div class="v2p-ai-row">
+            ${readyVehicles
+              .slice(0, 3)
+              .map((v) => {
+                const isChosen = (s.selectedVehicle || readyVehicles[0]?.plate) === v.plate;
+                return `<button type="button" class="v2p-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">${esc(v.plate)}</button>`;
+              })
+              .join('')}
+            <button type="button" class="v2p-btn" data-v2-action="quick-assign" ${focusOrder ? '' : 'disabled'}>Duyệt</button>
+          </div>
+        </section>`;
+    } else if (role === 'admin') {
+      navTabs = [
+        ['overview', 'home', 'Tổng quan'],
+        ['role-approvals', 'switch-account', 'Duyệt quyền'],
+        ['fleet', 'pin', 'Đội xe'],
+        ['more', 'gear', 'Thêm'],
+      ];
+      const days = [...new Set(s.orders.map((o) => o.day))].sort();
+      const lastMonth = (days[days.length - 1] || '2026-11-16').slice(0, 7);
+      const months = Array.from({ length: 6 }, (_, i) => {
+        const d = new Date(`${lastMonth}-01T00:00:00Z`);
+        d.setUTCMonth(d.getUTCMonth() - 5 + i);
+        return d.toISOString().slice(0, 7);
+      });
+      const series = months.map((m) => ({
+        label: `T${Number(m.slice(5))}`,
+        total: s.orders.filter((o) => o.day.startsWith(m)).length,
+      }));
+      const peak = Math.max(2, ...series.map((x) => x.total));
+      bodyHtml = `
+        ${mapCard('Bản đồ đội xe toàn công ty', `${s.vehicles.filter((v) => v.availability !== 'maintenance').length} xe hoạt động`)}
+        <div class="v2p-kpis">
+          <div class="v2p-kpi v2-kpi-blue"><span>Tổng đơn</span><strong>${String(s.orders.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-amber"><span>Duyệt quyền</span><strong>${String(pendingChanges.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-green"><span>Ticket mở</span><strong>${String(openTickets.length).padStart(2, '0')}</strong></div>
+        </div>
+        <section class="v2p-card v2p-dark v2p-sec">
+          <div class="v2p-hd"><h3>Thống kê đơn 6 tháng (đơn)</h3><span class="v2-tag v2-tag-blue">Tổng ${s.orders.length}</span></div>
+          <div class="v2p-bars">${series
+            .map((x, idx) => `<div class="v2p-bcol ${idx === series.length - 1 ? 'act' : ''}"><b>${x.total}</b><div class="v2p-btr"><span style="height:${Math.max(Math.round((x.total / peak) * 100), x.total ? 16 : 6)}%"></span></div><i>${x.label}</i></div>`)
+            .join('')}</div>
+        </section>
+        <div class="v2p-pair">
+          <div class="v2p-card v2p-light v2p-mini"><strong>Đổi vai trò</strong><small>${pendingChanges.length} hồ sơ chờ duyệt</small></div>
+          <div class="v2p-card v2p-dark v2p-mini"><strong>Ticket (chỉ đọc)</strong><small>${openTickets.length} sự cố đang mở</small></div>
+        </div>
+        <section class="v2p-card v2p-light v2p-act">
+          <div class="v2p-act-top">
+            <div><strong>Đơn chưa phân xe (${pendingOrders.length})</strong><small>${pendingOrders[0] ? `${esc(pendingOrders[0].id)} · ${esc(pendingOrders[0].material)}` : 'Không có đơn chờ'}</small></div>
+            <button type="button" class="v2p-btn" data-v2-phone-open="role-approvals">Xem</button>
+          </div>
+        </section>`;
+    } else {
+      navTabs = [
+        ['overview', 'home', 'Tổng quan'],
+        ['accounts', 'switch-account', 'Tài khoản'],
+        ['requests', 'order', 'Yêu cầu'],
+        ['more', 'gear', 'Thêm'],
+      ];
+      const activeUsers = (rSnap.users || []).filter((u) => !u.deleted && u.active);
+      bodyHtml = `
+        <section class="v2p-card v2p-light v2p-hero">
+          <div class="v2p-hd"><h2>Giám sát hạ tầng</h2><span class="v2p-pill">Bản thử · 4 phần</span></div>
+          <div class="v2p-sys-2x2">
+            <div class="v2p-sys-tile"><span class="v2-tag v2-tag-blue">GPS Taris</span><b>Chu kỳ 10p</b><small>Chưa nối API thật</small></div>
+            <div class="v2p-sys-tile"><span class="v2-tag v2-tag-green">MongoDB</span><b>Dữ liệu mẫu</b><small>Sao lưu định kỳ</small></div>
+            <div class="v2p-sys-tile"><span class="v2-tag v2-tag-green">Cloudflare</span><b>Zero Trust</b><small>Đã chốt · Chưa cấu hình</small></div>
+            <div class="v2p-sys-tile"><span class="v2-tag v2-tag-amber">AI V1</span><b>Chờ duyệt</b><small>Lỗi mẫu: ${failedJobs.length}</small></div>
+          </div>
+        </section>
+        <div class="v2p-kpis">
+          <div class="v2p-kpi v2-kpi-blue"><span>Tài khoản</span><strong>${String(activeUsers.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-amber"><span>Đổi quyền</span><strong>${String(pendingChanges.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-red"><span>Tác vụ lỗi</span><strong>${String(failedJobs.length).padStart(2, '0')}</strong></div>
+        </div>
+        <section class="v2p-card v2p-dark v2p-sec">
+          <div class="v2p-hd"><h3>Nhật ký an ninh & thay đổi</h3><span class="v2-tag v2-tag-blue">${rSnap.system.length} mục</span></div>
+          <div class="v2p-list">${(rSnap.system || [])
+            .slice(0, 2)
+            .map(
+              (l) => `<div class="v2p-row"><div><strong>${formatShortTime(l.at)} · ${esc(l.action)}</strong><small>${esc(l.actor)} · ${esc(l.before || '—')} → ${esc(l.after || '—')}</small></div><span class="v2-tag v2-tag-blue">Log</span></div>`
+            )
+            .join('')}</div>
+        </section>
+        <div class="v2p-pair">
+          <div class="v2p-card v2p-light v2p-mini"><strong>Tài khoản nội bộ</strong><small>${activeUsers.length} đang hoạt động</small></div>
+          <div class="v2p-card v2p-dark v2p-mini"><strong>Passkey quản trị</strong><small>Admin & System Admin</small></div>
+        </div>
+        <section class="v2p-card v2p-light v2p-act">
+          <div class="v2p-act-top">
+            <div><strong>Quản lý tài khoản & khôi phục</strong><small>Cấp tài khoản thường · Không cần Admin duyệt</small></div>
+            <button type="button" class="v2p-btn" data-v2-phone-open="accounts">Mở</button>
+          </div>
+        </section>`;
+    }
+
+    v2Phone.innerHTML = `
+      <div class="v2p-topbar" role="banner">
+        <div class="v2p-brand">
+          <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
+          <span>${esc(roleLabel)}</span>
+        </div>
+        <div class="v2p-top-actions">
+          <button type="button" class="v2p-pill-btn" data-ui-style-phone="v1" aria-label="Chuyển về Mẫu 1">Mẫu 1</button>
+          <select class="v2p-theme-sel" aria-label="Chọn nền giao diện">
+            <option value="light" ${currentTheme === 'light' ? 'selected' : ''}>Sáng</option>
+            <option value="dark" ${currentTheme === 'dark' ? 'selected' : ''}>Tối</option>
+            <option value="amber" ${currentTheme === 'amber' ? 'selected' : ''}>Hổ phách</option>
+            <option value="moss" ${currentTheme === 'moss' ? 'selected' : ''}>Rêu Lime</option>
+          </select>
+          <a class="v2p-link-btn" href="./">Vai trò</a>
+        </div>
+      </div>
+      <div class="v2p-stack">${bodyHtml}</div>
+      <nav class="v2p-dock" aria-label="Điều hướng Phone Mẫu 2">
+        ${navTabs
+          .map(
+            ([id, ico, lbl]) => `<button type="button" class="v2p-dock-tab" data-v2-phone-tab="${id}" ${phoneTab === id ? 'aria-current="page"' : ''}>${icon(ico)}<span>${esc(lbl)}</span></button>`
+          )
+          .join('')}
+      </nav>`;
+  }
+
   function sync() {
     const role = roles.role();
-    const eligible = isDesktop() && !isRoleHome() && role !== 'driver';
-    const activeV2 = uiStyle === 'v2' && eligible;
-    const showBento = activeV2 && shouldShowBento();
+    const eligibleRole = !isRoleHome() && role !== 'driver';
+    const activeDesktopV2 = uiStyle === 'v2' && isDesktop() && eligibleRole;
+    const activePhoneV2 = uiStyle === 'v2' && isPhone() && eligibleRole;
+    const showBento = activeDesktopV2 && shouldShowBento();
 
     styleSwitch.querySelectorAll('[data-ui-style]').forEach((btn) => {
       btn.setAttribute('aria-pressed', String(btn.dataset.uiStyle === uiStyle));
     });
 
-    document.body.classList.toggle('ui-v2', activeV2);
+    document.body.classList.toggle('ui-v2', activeDesktopV2);
     document.body.classList.toggle('ui-v2-bento-active', showBento);
+    document.body.classList.toggle('ui-v2-phone', activePhoneV2);
     v2Root.hidden = !showBento;
+    v2Phone.hidden = !activePhoneV2;
+
+    if (isPhone() && eligibleRole) {
+      ensurePhoneV1Switch();
+    }
+
+    if (activePhoneV2) {
+      renderPhoneV2(role);
+      return;
+    }
 
     if (!showBento) return;
     if (role === 'dispatch') renderDispatchBento();
@@ -693,6 +952,16 @@
       $('#assign')?.click();
       return;
     }
+    if (action === 'ai-suggest') {
+      $('#suggest')?.click();
+      setTimeout(sync, 20);
+      return;
+    }
+    if (action === 'pick-vehicle') {
+      document.querySelector(`.vehicle[data-vehicle="${CSS.escape(id)}"]`)?.click();
+      setTimeout(sync, 20);
+      return;
+    }
     if (action === 'quick-assign') {
       $('#assign')?.click();
       return;
@@ -713,6 +982,64 @@
     if (action === 'system-page') {
       const nav = document.querySelector(`.role-nav [data-gov="system-page"][data-id="${CSS.escape(id)}"]`);
       nav?.click();
+    }
+  });
+
+  // Chuyển Mẫu 1 / Mẫu 2 trên Phone và xử lý sự kiện bên trong #spatial-v2-phone
+  document.addEventListener('click', (e) => {
+    const phoneToggle = e.target.closest('[data-ui-style-phone]');
+    if (phoneToggle) {
+      saveStyle(phoneToggle.dataset.uiStylePhone);
+      phoneTab = 'overview';
+      sync();
+      return;
+    }
+    const phoneTabBtn = e.target.closest('[data-v2-phone-tab],[data-v2-phone-open]');
+    if (phoneTabBtn) {
+      const target = phoneTabBtn.dataset.v2PhoneTab || phoneTabBtn.dataset.v2PhoneOpen;
+      if (target === 'overview') {
+        phoneTab = 'overview';
+        sync();
+        return;
+      }
+      // Chuyển tạm về màn con chi tiết của Phone để giữ trọn luồng nghiệp vụ hiện có
+      saveStyle('v1');
+      sync();
+      setTimeout(() => {
+        document.querySelector(`#management-phone [data-phone-screen="${CSS.escape(target)}"]`)?.click();
+      }, 30);
+      return;
+    }
+    if (v2Phone.contains(e.target)) {
+      const actBtn = e.target.closest('[data-v2-action]');
+      if (!actBtn) return;
+      const action = actBtn.dataset.v2Action;
+      const id = actBtn.dataset.id || '';
+      if (action === 'ai-suggest') {
+        $('#suggest')?.click();
+        setTimeout(sync, 20);
+      } else if (action === 'pick-vehicle') {
+        document.querySelector(`.vehicle[data-vehicle="${CSS.escape(id)}"]`)?.click();
+        setTimeout(sync, 20);
+      } else if (action === 'quick-assign' || action === 'dispatch-order') {
+        if (action === 'dispatch-order') {
+          const picker = $('#dispatch-order');
+          if (picker && [...picker.options].some((o) => o.value === id)) {
+            picker.value = id;
+            picker.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+        $('#assign')?.click();
+      }
+    }
+  });
+
+  v2Phone.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('v2p-theme-sel')) return;
+    const sel = $('#theme-select');
+    if (sel) {
+      sel.value = e.target.value;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
     }
   });
 
