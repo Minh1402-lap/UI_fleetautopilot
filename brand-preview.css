@@ -1,16 +1,32 @@
 /* Native SVG retains F + truck + crane + materials, traced from the reference.
    Transparent backing and inherited SVG colors follow the active UI theme. */
-:root {
+/* Đồng bộ màu logo (chính + phụ) theo từng nền giống Mẫu 2: Sáng, Tối, Đen hổ phách champagne, Rêu Lime. */
+:root,
+:root[data-theme="light"] {
   --brand-forest: #1A2A20;
   --brand-moss: #2E4D3A;
   --brand-ivory: #E6EDE8;
-  --brand-mark: var(--brand-forest);
-  --brand-secondary: var(--brand-moss);
+  --brand-mark: #1A2A20;
+  --brand-secondary: #2E4D3A;
 }
 
-[data-theme=dark], [data-theme=amber], [data-theme=moss] {
-  --brand-mark: var(--brand-ivory);
-  --brand-secondary: color-mix(in srgb, var(--brand-ivory) 60%, var(--brand-moss));
+:root[data-theme="dark"] {
+  --brand-mark: #f1f5f9;
+  --brand-secondary: #a9c5b4;
+}
+
+:root[data-theme="amber"] {
+  --brand-mark: #f3e6ce;
+  --brand-secondary: #d5b477;
+}
+
+:root[data-theme="moss"] {
+  --brand-mark: #e8eee0;
+  --brand-secondary: #a6d941;
+}
+
+.role-home-brand > svg {
+  color: var(--brand-mark);
 }
 
 .sidebar .brand .brand-preview-icon {
