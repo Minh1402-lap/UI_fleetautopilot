@@ -67,14 +67,11 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-proof-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .phone-proof-actions button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 82px !important; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); font-size: 12px !important; font-weight: 600 !important; }
 .phone-trip-tools .phone-emergency { width: 100%; margin-top: 12px; }
-/* Thanh điều hướng đáy Tài xế kiểu vòm chuông liền nét. Màu lấy --action của nền Sáng/Tối; vòm rộng đúng một cột và trượt theo --phone-nav-index. */
+/* Thanh điều hướng đáy Tài xế kiểu vòm chuông không đường đáy, hai chân vòm mờ dần xuống mép dưới dock. Màu lấy --action của nền Sáng/Tối; vòm rộng đúng một cột và trượt theo --phone-nav-index. */
 .phone-nav { --phone-nav-line: var(--action); --phone-nav-pad: 8px; --phone-nav-gap: 4px; position: absolute; z-index: 6; isolation: isolate; left: 10px; right: 10px; bottom: max(7px, env(safe-area-inset-bottom)); height: 62px; overflow: hidden; border-radius: 999px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: var(--phone-nav-gap); padding: 5px var(--phone-nav-pad); }
 .phone-nav::after { display: none; }
 .phone-nav-indicator { position: absolute; z-index: 1; top: 0; bottom: 0; left: var(--phone-nav-pad); width: calc((100% - 2 * var(--phone-nav-pad) - 2 * var(--phone-nav-gap)) / 3); pointer-events: none; transform: translate3d(calc(var(--phone-nav-index, 0) * (100% + var(--phone-nav-gap))), 0, 0); transition: none; }
-.phone-nav-indicator::before, .phone-nav-indicator::after { content: ''; position: absolute; z-index: 1; bottom: .5px; width: 100vw; height: 2.3px; background: var(--phone-nav-line); box-shadow: 0 0 8px color-mix(in srgb, var(--phone-nav-line) 50%, transparent); }
-.phone-nav-indicator::before { right: calc(86% - .6px); }
-.phone-nav-indicator::after { left: calc(86% - .6px); }
-#driver-phone .phone-nav svg.phone-nav-arch { position: absolute; top: 0; bottom: 0; left: 14%; width: 72%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--phone-nav-line) 42%, transparent)); }
+#driver-phone .phone-nav svg.phone-nav-arch { position: absolute; top: 0; bottom: 0; left: 14%; width: 72%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--phone-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
 .phone-nav-arch-fill { fill: color-mix(in srgb, var(--phone-nav-line) 15%, transparent); stroke: none; }
 .phone-nav-arch-stroke { fill: none; stroke: var(--phone-nav-line); stroke-width: 2.3px; stroke-linecap: round; stroke-linejoin: round; }
 .phone-nav.is-ready .phone-nav-indicator { transition: transform var(--phone-nav-duration, 300ms) cubic-bezier(.65, 0, .35, 1); }

@@ -57,15 +57,12 @@ body.management-phone-active .management-topbar { position: absolute; z-index: 5
 .management-empty h1 { margin: 18px 0 7px; font-size: 21px; }
 .management-empty p { max-width: 290px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
 .management-empty button { margin-top: 24px; min-width: 150px; border: 1px solid var(--rim); border-radius: 13px; background: var(--nested); color: var(--ink); font-weight: 600; }
-/* Thanh điều hướng đáy kiểu vòm chuông liền nét. Màu đường/vòm lấy đúng màu nhấn --action của từng nền (Sáng xám đá, Tối bạc, Hổ phách champagne, Rêu lime).
+/* Thanh điều hướng đáy kiểu vòm chuông không đường đáy, hai chân vòm mờ dần xuống mép dưới dock. Màu vòm lấy đúng màu nhấn --action của từng nền (Sáng xám đá, Tối bạc, Hổ phách champagne, Rêu lime).
    Vòm rộng đúng một cột lưới và trượt theo chỉ số tab (--management-nav-index) để tâm vòm luôn trùng tâm icon/chữ. */
 .management-nav { --management-nav-line: var(--action); --management-nav-pad: 8px; --management-nav-gap: 3px; position: absolute; z-index: 6; isolation: isolate; left: 9px; right: 9px; bottom: max(7px, env(safe-area-inset-bottom)); height: 61px; overflow: hidden; border-radius: 999px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--management-nav-gap); padding: 4px var(--management-nav-pad); }
 .management-nav::after { display: none; }
 .management-nav-indicator { position: absolute; z-index: 1; top: 0; bottom: 0; left: var(--management-nav-pad); width: calc((100% - 2 * var(--management-nav-pad) - 3 * var(--management-nav-gap)) / 4); pointer-events: none; transform: translate3d(calc(var(--management-nav-index, 0) * (100% + var(--management-nav-gap))), 0, 0); transition: none; }
-.management-nav-indicator::before, .management-nav-indicator::after { content: ''; position: absolute; z-index: 1; bottom: .5px; width: 100vw; height: 2.3px; background: var(--management-nav-line); box-shadow: 0 0 8px color-mix(in srgb, var(--management-nav-line) 50%, transparent); }
-.management-nav-indicator::before { right: calc(91% - .6px); }
-.management-nav-indicator::after { left: calc(91% - .6px); }
-#management-phone .management-nav svg.management-nav-arch { position: absolute; top: 0; bottom: 0; left: 9%; width: 82%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--management-nav-line) 42%, transparent)); }
+#management-phone .management-nav svg.management-nav-arch { position: absolute; top: 0; bottom: 0; left: 9%; width: 82%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--management-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
 .management-nav-arch-fill { fill: color-mix(in srgb, var(--management-nav-line) 15%, transparent); stroke: none; }
 .management-nav-arch-stroke { fill: none; stroke: var(--management-nav-line); stroke-width: 2.3px; stroke-linecap: round; stroke-linejoin: round; }
 .management-nav.is-ready .management-nav-indicator { transition: transform var(--management-nav-duration, 300ms) cubic-bezier(.65, 0, .35, 1); }
