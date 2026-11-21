@@ -241,7 +241,7 @@
     </header>
     <div class="management-content"><div class="management-page is-current" data-management-page="${screen}">${screenContent(role, screen)}</div></div>
     <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}" style="--management-pad-x:${padPosition(index)}">
-      <span class="management-nav-indicator" aria-hidden="true"></span>${navigation(role, screen)}
+      <span class="management-nav-indicator" aria-hidden="true"><svg class="management-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="management-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="management-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg><i class="management-nav-dot"></i></span>${navigation(role, screen)}
     </nav>`;
 
     requestAnimationFrame(() => root.querySelector('.management-nav')?.classList.add('is-ready'));
