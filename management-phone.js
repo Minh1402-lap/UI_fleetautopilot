@@ -208,8 +208,8 @@
   }
 
   function padPosition(index) {
-    // Pad rộng 19% thanh, tương đương khoảng ba phần tư một ô trong menu bốn tab.
-    return ['15.789%', '147.368%', '278.947%', '410.526%'][index];
+    // Vòm rộng đúng một cột; CSS dịch theo chỉ số tab nên tâm vòm luôn trùng tâm icon và chữ.
+    return String(index);
   }
 
   function navigation(role, screen) {
@@ -240,8 +240,8 @@
       </div>
     </header>
     <div class="management-content"><div class="management-page is-current" data-management-page="${screen}">${screenContent(role, screen)}</div></div>
-    <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}" style="--management-pad-x:${padPosition(index)}">
-      <span class="management-nav-indicator" aria-hidden="true"><svg class="management-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="management-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="management-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg><i class="management-nav-dot"></i></span>${navigation(role, screen)}
+    <nav class="management-nav management-glass" aria-label="Điều hướng ${config.subtitle}" style="--management-nav-index:${padPosition(index)}">
+      <span class="management-nav-indicator" aria-hidden="true"><svg class="management-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="management-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="management-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg></span>${navigation(role, screen)}
     </nav>`;
 
     requestAnimationFrame(() => root.querySelector('.management-nav')?.classList.add('is-ready'));
@@ -256,7 +256,7 @@
     const steps = Math.abs(nextIndex - previousIndex);
     const duration = steps > 2 ? 520 : steps > 1 ? 420 : 300;
     nav.style.setProperty('--management-nav-duration', `${duration}ms`);
-    nav.style.setProperty('--management-pad-x', padPosition(nextIndex));
+    nav.style.setProperty('--management-nav-index', padPosition(nextIndex));
     nav.querySelectorAll('[data-management-screen]').forEach(button => {
       if (button.dataset.managementScreen === activeNavigationId(role, screen)) button.setAttribute('aria-current', 'page');
       else button.removeAttribute('aria-current');

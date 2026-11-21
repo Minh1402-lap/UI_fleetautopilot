@@ -109,14 +109,14 @@
   }
 
   function padPosition(index) {
-    // Pad rộng 25% thanh; các mốc giữ tâm pad thẳng với tâm của ba ô điều hướng.
-    return ['16.667%', '150%', '283.333%'][index];
+    // Vòm rộng đúng một cột; CSS dịch theo chỉ số tab nên tâm vòm luôn trùng tâm icon và chữ.
+    return String(index);
   }
 
   function navigation(screen) {
     const index = tabIndex(screen);
-    return `<nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế" style="--phone-pad-x:${padPosition(index)}">
-      <span class="phone-nav-indicator" aria-hidden="true"><svg class="phone-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="phone-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="phone-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg><i class="phone-nav-dot"></i></span>
+    return `<nav class="phone-nav phone-glass" aria-label="Điều hướng Tài xế" style="--phone-nav-index:${padPosition(index)}">
+      <span class="phone-nav-indicator" aria-hidden="true"><svg class="phone-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="phone-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="phone-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg></span>
       <button type="button" data-phone-screen="map" ${index === 0 ? 'aria-current="page"' : ''}>${icon('pin')}<span>Bản đồ</span></button>
       <button type="button" data-phone-screen="trip" ${index === 1 ? 'aria-current="page"' : ''}>${icon('truck')}<span>Chuyến</span></button>
       <button type="button" data-phone-screen="tickets" ${index === 2 ? 'aria-current="page"' : ''}>${message}<span>Ticket</span></button>
@@ -145,7 +145,7 @@
     const previousIndex = tabIndex(previousScreen);
     const steps = Math.abs(nextIndex - previousIndex);
     nav.style.setProperty('--phone-nav-duration', steps > 1 ? '440ms' : '300ms');
-    nav.style.setProperty('--phone-pad-x', padPosition(nextIndex));
+    nav.style.setProperty('--phone-nav-index', padPosition(nextIndex));
     nav.querySelectorAll('[data-phone-screen]').forEach(button => {
       const selected = tabIndex(button.dataset.phoneScreen) === nextIndex;
       if (selected) button.setAttribute('aria-current', 'page');
