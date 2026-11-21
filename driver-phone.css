@@ -78,13 +78,13 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-nav-arch-fill { fill: color-mix(in srgb, var(--phone-nav-line) 15%, transparent); stroke: none; }
 .phone-nav-arch-stroke { fill: none; stroke: var(--phone-nav-line); stroke-width: 2.3px; stroke-linecap: round; stroke-linejoin: round; }
 .phone-nav.is-ready .phone-nav-indicator { transition: transform var(--phone-nav-duration, 300ms) cubic-bezier(.65, 0, .35, 1); }
-.phone-nav button { position: relative; z-index: 2; height: 100%; min-height: 0 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 14px; padding: 3px 0; font-size: 10px !important; line-height: 1.1; transition: color 150ms cubic-bezier(.2, .8, .2, 1); }
+.phone-nav button { position: relative; z-index: 2; height: 100%; min-height: 0 !important; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 14px; padding: 3px 0; font-size: 10px !important; line-height: 1.1; transition: color 150ms cubic-bezier(.2, .8, .2, 1); }
 #driver-phone .phone-nav button svg { width: 19px; height: 19px; transition: transform 200ms cubic-bezier(.2, .8, .2, 1); }
 .phone-nav button span { position: relative; display: block; white-space: nowrap; }
 .phone-nav [aria-current=page] { color: var(--phone-nav-line) !important; font-weight: 600 !important; }
-.phone-nav [aria-current=page] svg { transform: translateY(-2px); filter: drop-shadow(0 0 5px color-mix(in srgb, var(--phone-nav-line) 40%, transparent)); }
-/* Chấm sáng nằm giữa icon và chữ của chính tab đang chọn nên luôn thẳng hàng với nhãn. */
-.phone-nav [aria-current=page] span::before { content: ''; position: absolute; left: 50%; top: -6px; width: 4px; height: 4px; border-radius: 50%; transform: translateX(-50%); background: var(--phone-nav-line); box-shadow: 0 0 6px var(--phone-nav-line); }
+.phone-nav [aria-current=page] svg { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--phone-nav-line) 40%, transparent)); }
+
+
 .phone-secondary { position: absolute; inset: 86px 12px 76px; border-radius: 22px; padding: 28px 20px; display: flex; flex-direction: column; align-items: stretch; gap: 20px; text-align: center; }
 #driver-phone .phone-empty-icon svg { width: 42px; height: 42px; }
 .phone-secondary h2 { font-size: 21px; margin: 0; }
