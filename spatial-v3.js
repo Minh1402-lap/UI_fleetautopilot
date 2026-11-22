@@ -54,7 +54,8 @@
   }
 
   function themePillsHtml() {
-    const cur = document.documentElement.dataset.theme || 'light';
+    // Ưu tiên giá trị từ #theme-select để phản hồi tức thì ngay lần bấm đầu khi motion.js đang chuyển nền
+    const cur = $('#theme-select')?.value || document.documentElement.dataset.theme || 'light';
     return [
       ['light', 'Sáng'],
       ['dark', 'Tối'],
@@ -63,6 +64,13 @@
     ]
       .map(([k, lbl]) => `<button type="button" data-v3="theme" data-id="${k}" aria-pressed="${cur === k}">${lbl}</button>`)
       .join('');
+  }
+
+  function syncThemePills(theme) {
+    const activeTheme = theme || document.documentElement.dataset.theme || $('#theme-select')?.value || 'light';
+    root.querySelectorAll('[data-v3="theme"]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.id === activeTheme));
+    });
   }
 
   function stylePillsHtml() {
@@ -850,8 +858,9 @@
     if (act === 'style') { window.FleetUIStyle?.set(id); if (id === 'v1') api.render(); render(); return; }
     if (act === 'theme') {
       const sel = $('#theme-select');
+      syncThemePills(id);
       if (sel) { sel.value = id; sel.dispatchEvent(new Event('change', { bubbles: true })); }
-      render();
+      requestAnimationFrame(() => syncThemePills(id));
       return;
     }
     if (act === 'map-filter') { st.mapFilter = id; render(); return; }
@@ -938,6 +947,12 @@
         st.lastTriggerSelector = '';
       }
     }
+  });
+
+  // Đồng bộ nút chọn nền Mẫu 3 mỗi khi data-theme trên <html> thay đổi (kể cả khi đổi từ URL/popstate/motion.js)
+  new MutationObserver(() => syncThemePills()).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
   });
 
   window.addEventListener('fleet:ui-style', () => { st.drawer = ''; requestAnimationFrame(render); });
