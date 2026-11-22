@@ -421,24 +421,30 @@
       else button.removeAttribute('aria-current');
     });
     centerMobileNav();
+    const isBentoV2 =
+      window.FleetUIStyle?.get?.() === 'v2' &&
+      window.innerWidth >= 760 &&
+      (page === 'dispatch' || page === 'overview');
     $('#dispatch-view').hidden = page !== 'dispatch';
     $('#workspace-view').hidden = page === 'dispatch';
-    if (page === 'dispatch') renderDispatch();
-    else {
-      $('#workspace-view').innerHTML = ({ overview, orders: ordersView, fleet: fleetView, gps: gpsView, reports: reportsView })[page]();
-      if (page === 'gps') $('.fleet-map').style.transform = `scale(${gpsZoom})`;
+    if (!isBentoV2) {
+      if (page === 'dispatch') renderDispatch();
+      else {
+        $('#workspace-view').innerHTML = ({ overview, orders: ordersView, fleet: fleetView, gps: gpsView, reports: reportsView })[page]();
+        if (page === 'gps') $('.fleet-map').style.transform = `scale(${gpsZoom})`;
+      }
+      $$('#workspace-view .table-wrap').forEach((w) => {
+        w.tabIndex = 0;
+        w.setAttribute('role', 'region');
+        w.setAttribute('aria-label', 'Bảng dữ liệu có thể cuộn ngang');
+        const hint = document.createElement('p');
+        hint.className = 'table-scroll-hint';
+        hint.textContent = 'Cuộn ngang để xem đầy đủ →';
+        hint.hidden = w.scrollWidth <= w.clientWidth + 1;
+        w.insertAdjacentElement('beforebegin', hint);
+      });
     }
     document.title = routes[page] + ' — Fleet Autopilot · Bản thử';
-    $$('#workspace-view .table-wrap').forEach((w) => {
-      w.tabIndex = 0;
-      w.setAttribute('role', 'region');
-      w.setAttribute('aria-label', 'Bảng dữ liệu có thể cuộn ngang');
-      const hint = document.createElement('p');
-      hint.className = 'table-scroll-hint';
-      hint.textContent = 'Cuộn ngang để xem đầy đủ →';
-      hint.hidden = w.scrollWidth <= w.clientWidth + 1;
-      w.insertAdjacentElement('beforebegin', hint);
-    });
     if (focusedId) document.getElementById(focusedId)?.focus({ preventScroll: true });
     window.dispatchEvent(new Event('fleet:render'));
   }
