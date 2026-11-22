@@ -39,6 +39,7 @@ body.role-home-active .ui-style-switch {
 
 /* ===== BIẾN MÀU KHOÁNG MATTE CHO MẪU 2 (LOẠI BỎ NEON / DẠ QUANG) ===== */
 :root[data-theme="light"] {
+  --v2-bg-solid: #cbd5de;
   --v2-accent: #38556e;
   --v2-accent-soft: rgba(56, 85, 110, 0.12);
   --v2-ring-end: #4b6b85;
@@ -78,6 +79,7 @@ body.role-home-active .ui-style-switch {
 }
 
 :root[data-theme="dark"] {
+  --v2-bg-solid: #0d1014;
   --v2-accent: #8ea4b8;
   --v2-accent-soft: rgba(148, 168, 186, 0.16);
   --v2-ring-end: #b7c7d6;
@@ -116,6 +118,7 @@ body.role-home-active .ui-style-switch {
 }
 
 :root[data-theme="amber"] {
+  --v2-bg-solid: #101314;
   --v2-accent: #bfa272;
   --v2-accent-soft: rgba(191, 162, 114, 0.16);
   --v2-ring-end: #d6be93;
@@ -154,6 +157,7 @@ body.role-home-active .ui-style-switch {
 }
 
 :root[data-theme="moss"] {
+  --v2-bg-solid: #10140e;
   --v2-accent: #8ca67c;
   --v2-accent-soft: rgba(140, 166, 124, 0.16);
   --v2-ring-end: #adc29e;
@@ -243,8 +247,16 @@ body.role-home-active .ui-style-switch {
 
 /* ===== KÍCH HOẠT KHÔNG GIAN MẪU 2 (DESKTOP >= 760PX, TRỪ TÀI XẾ) ===== */
 @media (min-width: 760px) {
+  html:has(body.ui-v2:not([data-role="driver"]):not(.role-home-active)) {
+    background-color: var(--v2-bg-solid) !important;
+    background-image: var(--v2-bg-grad) !important;
+    background-attachment: fixed !important;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) {
-    background: var(--v2-bg-grad) fixed !important;
+    display: flow-root;
+    background-color: var(--v2-bg-solid) !important;
+    background-image: var(--v2-bg-grad) !important;
+    background-attachment: fixed !important;
     min-height: 100vh;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .ambient-backdrop,
@@ -1009,9 +1021,10 @@ body.role-home-active .ui-style-switch {
     flex-direction: column;
     justify-content: space-between;
     padding: 18px 0 22px;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--v2-dark-muted);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--v2-dark-ink);
+    opacity: 0.82;
     text-align: right;
     min-width: 24px;
   }
@@ -1048,11 +1061,11 @@ body.role-home-active .ui-style-switch {
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    gap: 4px;
+    gap: 5px;
     padding: 0;
   }
   .v2-bar-num {
-    font-size: 11.5px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--v2-dark-ink);
   }
@@ -1061,39 +1074,62 @@ body.role-home-active .ui-style-switch {
   }
   .v2-bar-track {
     width: 100%;
-    max-width: 26px;
+    max-width: 34px;
     flex: 1;
     display: flex;
     align-items: flex-end;
   }
   .v2-bar-fill {
     width: 100%;
-    min-height: 4px;
-    border-radius: 5px 5px 2px 2px;
+    min-height: 5px;
+    border-radius: 6px 6px 3px 3px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.18);
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .v2-bar-rest,
+  .v2-bar-done {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 16px;
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .v2-bar-rest {
+    background: rgba(255, 255, 255, 0.22);
+    color: #f4f7fa;
   }
   .v2-bar-done {
-    display: block;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.42);
+    background: rgba(255, 255, 255, 0.46);
+    color: #12171b;
   }
   .v2-bar-col.active .v2-bar-done {
     background: var(--v2-accent);
+    color: #111612;
+  }
+  :root[data-theme="light"] .v2-bar-col.active .v2-bar-done {
+    color: #f7f9fb;
   }
   .v2-bar-lbl {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12.5px;
+    font-weight: 700;
     color: var(--v2-dark-muted);
   }
+  .v2-bar-col.active .v2-bar-lbl {
+    color: var(--v2-dark-ink);
+  }
   .v2-chart-detail {
-    padding: 5px 9px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.055);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    font-size: 11px;
+    padding: 7px 11px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.065);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 12.5px;
+    font-weight: 500;
     color: var(--v2-dark-ink);
   }
   .v2-chart-detail strong {
@@ -1101,17 +1137,19 @@ body.role-home-active .ui-style-switch {
   }
   .v2-chart-legend {
     display: flex;
-    gap: 14px;
-    font-size: 11px;
-    color: var(--v2-dark-muted);
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--v2-dark-ink);
   }
   .v2-chart-legend i {
     display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    margin-right: 5px;
-    vertical-align: middle;
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: -1px;
   }
 
   /* 3 thẻ KPI giữa: kính mờ sạch, không hắt sáng dạ quang */
@@ -1509,8 +1547,12 @@ body.role-home-active .ui-style-switch {
   body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active) #main > :not(#spatial-v2-phone) {
     display: none !important;
   }
+  html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)),
   body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active) {
-    background: var(--v2-bg-grad) fixed !important;
+    display: flow-root;
+    background-color: var(--v2-bg-solid) !important;
+    background-image: var(--v2-bg-grad) !important;
+    background-attachment: fixed !important;
   }
   body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active) .app {
     margin: 0 !important;

@@ -451,12 +451,14 @@
       .map((x) => {
         const hPct = Math.round((x.total / peak) * 100);
         const donePct = x.total ? Math.round((x.done / x.total) * 100) : 0;
+        const restPct = x.total ? 100 - donePct : 0;
         const isAct = x.month === activeBar.month;
-        return `<button type="button" class="v2-bar-col ${isAct ? 'active' : ''}" data-v2-action="admin-bar" data-id="${x.month}" title="Tháng ${x.month}: ${x.total} đơn (${x.done} hoàn thành)">
+        return `<button type="button" class="v2-bar-col ${isAct ? 'active' : ''}" data-v2-action="admin-bar" data-id="${x.month}" title="Tháng ${x.month}: ${x.total} đơn (${x.done} hoàn thành, ${x.rest} đang/chờ)">
           <span class="v2-bar-num">${x.total}</span>
           <div class="v2-bar-track">
-            <div class="v2-bar-fill" style="height:${Math.max(hPct, x.total ? 12 : 4)}%">
-              <span class="v2-bar-done" style="height:${donePct}%"></span>
+            <div class="v2-bar-fill" style="height:${Math.max(hPct, x.total ? 26 : 5)}%">
+              ${x.rest > 0 ? `<span class="v2-bar-rest" style="height:${restPct}%"><b>${x.rest}</b></span>` : ''}
+              ${x.done > 0 ? `<span class="v2-bar-done" style="height:${donePct}%"><b>${x.done}</b></span>` : ''}
             </div>
           </div>
           <span class="v2-bar-lbl">${x.label}</span>
