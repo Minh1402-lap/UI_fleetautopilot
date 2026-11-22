@@ -820,6 +820,22 @@ body.role-home-active .ui-style-switch {
     text-overflow: ellipsis;
   }
   /* Tem Kỹ Thuật (Hướng A — Industrial Tag) đồng bộ Mẫu 2: nền trung tính đục, bo 5px, vạch màu cạnh trái 3px */
+  #spatial-v2-root .v2-card-dark h2,
+  #spatial-v2-root .v2-card-dark h3,
+  #spatial-v2-root .v2-card-dark strong {
+    color: var(--v2-dark-ink) !important;
+  }
+  #spatial-v2-root .v2-card-light h2,
+  #spatial-v2-root .v2-card-light h3,
+  #spatial-v2-root .v2-card-light h4,
+  #spatial-v2-root .v2-card-light strong {
+    color: var(--v2-light-ink) !important;
+  }
+  #spatial-v2-root .v2-action-btn,
+  #spatial-v2-root .v2-ai-chip,
+  #spatial-v2-root .v2-ai-veh[aria-pressed="true"] {
+    color: var(--v2-dark-ink, #f4f1ea) !important;
+  }
   .v2-tag {
     --tag-c: #8f9ba8;
     display: inline-flex;
@@ -854,6 +870,13 @@ body.role-home-active .ui-style-switch {
     border-color: rgba(28, 38, 48, 0.14);
     border-left: 3px solid var(--tag-c);
     color: var(--v2-light-ink);
+  }
+  /* Khung con .v2-sys-node có nền tối bên trong .v2-hero sáng nên tag bên trong phải giữ chữ sáng */
+  #spatial-v2-root .v2-sys-node .v2-tag {
+    background: #1d2125 !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-left: 3px solid var(--tag-c) !important;
+    color: #eef2f5 !important;
   }
 
   /* Biểu đồ cột Admin màu phẳng đồng bộ */
@@ -1381,6 +1404,22 @@ body.role-home-active .ui-style-switch {
   }
 
   /* Tem Kỹ Thuật (Hướng A) cho Phone (<760px) */
+  #spatial-v2-root .v2-card-dark h2,
+  #spatial-v2-root .v2-card-dark h3,
+  #spatial-v2-root .v2-card-dark strong {
+    color: var(--v2-dark-ink) !important;
+  }
+  #spatial-v2-root .v2-card-light h2,
+  #spatial-v2-root .v2-card-light h3,
+  #spatial-v2-root .v2-card-light h4,
+  #spatial-v2-root .v2-card-light strong {
+    color: var(--v2-light-ink) !important;
+  }
+  #spatial-v2-root .v2-action-btn,
+  #spatial-v2-root .v2-ai-chip,
+  #spatial-v2-root .v2-ai-veh[aria-pressed="true"] {
+    color: var(--v2-dark-ink, #f4f1ea) !important;
+  }
   .v2-tag {
     --tag-c: #8f9ba8;
     display: inline-flex;
