@@ -298,7 +298,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     order: -1;
   }
 
-  /* Thanh pill kính nổi bên trái (căn tâm tuyệt đối ở trạng thái thu gọn và thẳng hàng khi mở rộng) */
+  /* Thanh pill kính nổi bên trái — mở rộng mượt trước (280ms cubic-bezier(.22, 1, .36, 1)) rồi chữ mới hiện ra giống Mẫu 1 */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar {
     position: fixed;
     top: 16px;
@@ -306,7 +306,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     left: 16px;
     width: 76px;
     border-radius: 38px;
-    padding: 18px 10px 20px;
+    padding: 18px 13px 20px;
     background: var(--v2-sb-bg) !important;
     border: 1px solid var(--v2-shell-border) !important;
     box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.20);
@@ -314,8 +314,11 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     -webkit-backdrop-filter: blur(28px);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    transition: width 260ms ease, border-radius 260ms ease, padding 260ms ease;
+    align-items: stretch;
+    overflow: hidden;
+    transition:
+      width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-radius 280ms cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 14;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar::before {
@@ -325,30 +328,38 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within {
     width: 248px;
     border-radius: 26px;
-    padding: 18px 14px 20px;
-    align-items: stretch;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 0;
-    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0 2px;
+    width: 222px;
     min-height: 42px;
     height: 42px;
     color: var(--v2-logo-primary);
     --brand-mark: var(--v2-logo-primary);
     --brand-secondary: var(--v2-logo-secondary);
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:not(:hover):not(:focus-within) .brand-label {
-    display: none;
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand-label {
+    display: block;
+    opacity: 0;
+    transform: translateX(-4px);
+    white-space: nowrap;
+    pointer-events: none;
+    transition:
+      opacity 120ms ease,
+      transform 140ms ease;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover .brand-label,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within .brand-label {
-    display: block;
     opacity: 1;
-    white-space: nowrap;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition:
+      opacity 180ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1) 70ms;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .brand-preview-icon,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .brand-preview-icon {
@@ -359,12 +370,6 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover .brand,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within .brand {
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 0 8px;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .brand-construction-mark,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .brand-construction-mark {
@@ -378,7 +383,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2.role-switch-active .sidebar .role-nav {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
   }
   body.ui-v2:not(.role-switch-active) .sidebar .role-nav,
   body.ui-v2.role-switch-active .sidebar nav:not(.role-nav) {
@@ -390,53 +395,54 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     border-top: 1px solid var(--v2-shell-border);
     gap: 8px;
     width: 100%;
-    align-items: center;
-    justify-items: center;
+    align-items: stretch;
+    justify-items: stretch;
     overflow-y: auto;
     overflow-x: hidden;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover nav,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within nav {
-    align-items: stretch;
-    justify-items: stretch;
-  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar nav button {
-    width: 50px;
+    width: 100%;
+    min-width: 0;
     height: 50px;
     min-height: 50px;
-    padding: 0;
-    margin: 0 auto;
-    gap: 0;
+    padding: 0 13px;
+    margin: 0;
+    gap: 13px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     border-radius: 16px;
     color: var(--v2-sb-icon);
     border: 1px solid transparent;
+    overflow: hidden;
+    white-space: nowrap;
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:not(:hover):not(:focus-within) nav .nav-label {
-    display: none !important;
-  }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover nav button,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within nav button {
-    width: 100%;
-    height: auto;
-    min-height: 46px;
-    padding: 10px 14px;
-    margin: 0;
-    gap: 12px;
-    justify-content: flex-start;
-    align-items: center;
-    border-radius: 14px;
-  }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover nav .nav-label,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within nav .nav-label {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar nav .nav-label {
     display: block !important;
     flex: 1;
     max-width: none;
-    opacity: 1;
     margin-left: 0 !important;
     line-height: 1.35;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    pointer-events: none;
+    transition:
+      opacity 110ms ease,
+      transform 130ms ease;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover nav .nav-label,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within nav .nav-label {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition:
+      opacity 180ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1) 70ms;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar nav button svg {
     flex: 0 0 22px !important;
@@ -470,7 +476,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: margin-left 260ms ease;
+    transition: margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover ~ .app,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within ~ .app {
