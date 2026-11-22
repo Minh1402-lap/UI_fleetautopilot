@@ -26,7 +26,7 @@
     dispatch: {
       title: 'Tổng quan điều phối',
       subtitle: 'Điều phối',
-      screens: ['overview', 'orders', 'assignment', 'more', 'new-order', 'fleet', 'gps', 'reports'],
+      screens: ['overview', 'orders', 'assignment', 'more', 'new-order', 'fleet', 'gps', 'reports', 'tickets', 'evidence', 'help-recovery'],
       navigation: [
         ['overview', 'home', 'Tổng quan'],
         ['orders', 'order', 'Đơn hàng'],
@@ -37,10 +37,10 @@
     admin: {
       title: 'Tổng quan vận hành',
       subtitle: 'Quản lý vận hành',
-      screens: ['overview', 'role-approvals', 'fleet', 'more', 'activity', 'tickets', 'maintenance'],
+      screens: ['overview', 'activity', 'fleet', 'more', 'tickets', 'maintenance', 'reports'],
       navigation: [
         ['overview', 'home', 'Tổng quan'],
-        ['role-approvals', 'order', 'Duyệt quyền'],
+        ['activity', 'activity', 'Nhật ký'],
         ['fleet', 'truck', 'Đội xe'],
         ['more', 'gear', 'Thêm'],
       ],
@@ -110,35 +110,38 @@
   }
 
   function adminOverview() {
-    const metrics = `<div class="management-metrics">${metric('Đổi quyền chờ duyệt')}${metric('Xe hoạt động')}${metric('Ticket mở')}</div>`;
-    const work = `<div class="management-rows">${actionRow('role-approvals', 'order', 'Phê duyệt thay đổi quyền')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì')}${actionRow('tickets', 'alert', 'Ticket cần xem')}</div>`;
-    return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Cần xử lý', work, 'layers')}${glassCard('Bản đồ đội xe', routeMap(), 'pin')}`;
+    const metrics = `<div class="management-metrics">${metric('Đơn trong kỳ')}${metric('Xe hoạt động')}${metric('Ticket mở')}</div>`;
+    const work = `<div class="management-rows">${actionRow('activity', 'activity', 'Nhật ký hoạt động Điều phối')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì & Khóa TK')}${actionRow('tickets', 'alert', 'Ticket chỉ đọc')}</div>`;
+    return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Giám sát vận hành', work, 'layers')}${glassCard('Bản đồ đội xe', routeMap(), 'pin')}`;
   }
 
   function dispatchOverview() {
-    const metrics = `<div class="management-metrics">${metric('Đơn chờ')}${metric('Chuyến đang chạy')}${metric('Xe sẵn sàng')}</div>`;
-    const work = `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('assignment', 'truck', 'Duyệt phân công')}${actionRow('gps', 'pin', 'Theo dõi GPS')}</div>`;
+    const metrics = `<div class="management-metrics">${metric('Đơn chờ')}${metric('Chờ TX / Chạy')}${metric('Xe sẵn sàng')}</div>`;
+    const work = `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('assignment', 'truck', 'Duyệt phân công (V1)')}${actionRow('evidence', 'camera', 'Bằng chứng 2 đầu & Ngoại lệ')}${actionRow('tickets', 'alert', 'Khẩn cấp 1 nút & Ticket')}</div>`;
     return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Công việc chính', work, 'layers')}${glassCard('Theo dõi hành trình', routeMap(), 'pin')}`;
   }
 
   function dispatchOrders() {
-    return glassCard('Đơn hàng', `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('orders', 'search-icon', 'Danh sách đơn hàng', 'Chưa có dữ liệu')}</div><p class="management-copy management-card-note">Đơn hàng sẽ hiển thị khi kết nối nguồn dữ liệu vận hành.</p>`, 'order');
+    return glassCard('Đơn hàng', `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('orders', 'search-icon', 'Danh sách đơn hàng', 'Chưa có dữ liệu')}</div><p class="management-copy management-card-note">Đơn vị chuẩn: viên (gạch), kg (cát/đá nhà máy), m³ (thông thường) · Phạm vi ≤100 km.</p>`, 'order');
   }
 
   function dispatchMore() {
-    return glassCard('Chức năng Điều phối', `<div class="management-rows">${actionRow('fleet', 'truck', 'Xe & tài xế')}${actionRow('gps', 'pin', 'Theo dõi GPS')}${actionRow('reports', 'chart', 'Báo cáo')}</div>`, 'gear');
+    return glassCard('Chức năng Điều phối', `<div class="management-rows">${actionRow('evidence', 'camera', 'Bằng chứng 2 đầu & Ngoại lệ')}${actionRow('tickets', 'alert', 'Khẩn cấp & Ticket 2 chiều')}${actionRow('help-recovery', 'switch-account', 'Hỗ trợ gửi quên mật khẩu')}${actionRow('fleet', 'truck', 'Xe & tài xế (Ben/Cẩu/Đầu kéo)')}${actionRow('gps', 'pin', 'Theo dõi GPS Taris')}${actionRow('reports', 'chart', 'Báo cáo tháng')}</div>`, 'gear');
   }
 
   function dispatchScreen(screen) {
     if (screen === 'overview') return dispatchOverview();
     if (screen === 'orders') return dispatchOrders();
-    if (screen === 'gps') return `${glassCard('Theo dõi GPS', routeMap(), 'pin', 'management-map-card')}${glassCard('Trạng thái kết nối', '<p class="management-copy">Chưa có nguồn GPS để hiển thị xe hoặc hành trình.</p>', 'activity')}`;
+    if (screen === 'gps') return `${glassCard('Theo dõi GPS', routeMap(), 'pin', 'management-map-card')}${glassCard('Trạng thái kết nối', '<p class="management-copy">Chưa có nguồn GPS Taris (chu kỳ 10 phút) để hiển thị xe hoặc hành trình.</p>', 'activity')}`;
     if (screen === 'more') return dispatchMore();
     const pages = {
-      assignment: ['Điều phối', 'Đơn chờ và xe đủ điều kiện sẽ hiển thị khi kết nối dịch vụ.', 'truck', 'overview'],
-      'new-order': ['Tiếp nhận đơn từ Sale', 'Biểu mẫu tiếp nhận cần nguồn lưu và quyền Điều phối phía máy chủ.', 'order', 'orders'],
-      fleet: ['Xe & tài xế', 'Danh sách xe và tài xế chưa được kết nối.', 'truck', 'more'],
-      reports: ['Báo cáo', 'Số liệu báo cáo sẽ hiển thị khi có nguồn dữ liệu được xác minh.', 'chart', 'more'],
+      assignment: ['Điều phối', 'Đơn chờ và xe đủ điều kiện (công bằng trước, tuyến sau) sẽ hiển thị khi kết nối dịch vụ.', 'truck', 'overview'],
+      'new-order': ['Tiếp nhận đơn từ Sale', 'Biểu mẫu tiếp nhận (nhóm ưu tiên, đơn vị viên/kg/m³, ≤100 km) cần nguồn lưu phía máy chủ.', 'order', 'orders'],
+      evidence: ['Bằng chứng 2 đầu & Ngoại lệ', 'Đối chiếu ảnh đầu nhận + đầu giao, duyệt hoàn thành, xác nhận xe sẵn sàng hoặc điều xe hỗ trợ khi xe hư.', 'camera', 'more'],
+      tickets: ['Khẩn cấp 1 nút & Ticket', 'Tiếp nhận ảnh Khẩn cấp tự chụp từ tài xế, trao đổi 2 chiều và đóng hồ sơ chỉ đọc.', 'alert', 'more'],
+      'help-recovery': ['Hỗ trợ gửi quên mật khẩu', 'Điều phối hỗ trợ gửi yêu cầu lên hàng chờ System Admin; không xác minh hay cấp mã thay System Admin.', 'switch-account', 'more'],
+      fleet: ['Xe & tài xế', 'Danh sách xe (Ben / Cẩu / Đầu kéo / Dự phòng) và tài xế chưa được kết nối.', 'truck', 'more'],
+      reports: ['Báo cáo', 'Số liệu báo cáo tách theo đơn vị viên / kg / m³ sẽ hiển thị khi có nguồn dữ liệu.', 'chart', 'more'],
     };
     return emptyPage(...pages[screen]);
   }
@@ -148,7 +151,7 @@
   }
 
   function adminMore() {
-    return glassCard('Chức năng quản lý', `<div class="management-rows">${actionRow('activity', 'activity', 'Hoạt động Điều phối')}${actionRow('tickets', 'alert', 'Sự cố & ticket')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì')}</div>`, 'gear');
+    return glassCard('Chức năng quản lý', `<div class="management-rows">${actionRow('reports', 'chart', 'Báo cáo 6T/12T & Tra cứu đơn')}${actionRow('tickets', 'alert', 'Hồ sơ Ticket (Chỉ đọc)')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì & Khóa TK')}</div>`, 'gear');
   }
 
   function adminScreen(screen) {
@@ -156,10 +159,10 @@
     if (screen === 'fleet') return adminFleet();
     if (screen === 'more') return adminMore();
     const pages = {
-      'role-approvals': ['Phê duyệt thay đổi quyền', 'Yêu cầu đổi vai trò người dùng sẽ hiển thị khi kết nối dịch vụ. Admin không duyệt phân công vận hành.', 'order', 'overview'],
-      activity: ['Hoạt động Điều phối', 'Nhật ký thao tác sẽ hiển thị khi có nguồn dữ liệu được xác minh.', 'activity', 'more'],
-      tickets: ['Sự cố & ticket', 'Ticket và hội thoại chỉ đọc sẽ hiển thị khi kết nối dịch vụ.', 'alert', 'more'],
-      maintenance: ['Yêu cầu bảo trì', 'Yêu cầu bảo trì chưa được tải từ dịch vụ.', 'gear', 'more'],
+      activity: ['Nhật ký hoạt động Điều phối', 'Lịch sử phân công và hoàn thành của Điều phối viên (chỉ đọc). Admin không duyệt phân công hay đổi role tài khoản.', 'activity', 'overview'],
+      reports: ['Báo cáo 6T/12T & Tra cứu đơn', 'Thống kê đơn theo tháng và tra cứu toàn công ty (chỉ đọc, không suy ra doanh thu).', 'chart', 'more'],
+      tickets: ['Hồ sơ Ticket (Chỉ đọc)', 'Admin xem toàn bộ hội thoại và hồ sơ sự cố ở chế độ chỉ đọc.', 'alert', 'more'],
+      maintenance: ['Yêu cầu bảo trì & Khóa TK', 'Gửi yêu cầu bảo trì sang System Admin và nhận thông báo khóa tài khoản khẩn cấp.', 'gear', 'more'],
     };
     return emptyPage(...pages[screen]);
   }
@@ -193,9 +196,9 @@
 
   function activeNavigationId(role, screen) {
     const moreScreens = role === 'dispatch'
-      ? ['fleet', 'gps', 'reports']
+      ? ['fleet', 'gps', 'reports', 'tickets', 'evidence', 'help-recovery']
       : role === 'admin'
-        ? ['activity', 'tickets', 'maintenance']
+        ? ['reports', 'tickets', 'maintenance']
         : ['recovery', 'connections', 'data', 'controls', 'backups', 'logs'];
     if (moreScreens.includes(screen)) return 'more';
     if (role === 'dispatch' && screen === 'new-order') return 'orders';

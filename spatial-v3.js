@@ -43,6 +43,7 @@
       'Bộ lệnh cho phép: health system, health gps, health accounts, health jobs, help, clear',
     ],
     flags: { aiV1: true, gpsSync: true, sheetsExport: true },
+    lastTriggerSelector: '',
   };
 
   function isActiveV3() {
@@ -837,7 +838,15 @@
     if (!el) return;
     const act = el.dataset.v3, id = el.dataset.id || '', tab = el.dataset.tab || '';
     if (act === 'close-backdrop' && e.target !== el) return;
-    if (act === 'close-backdrop' || act === 'close-drawer') { st.drawer = ''; render(); return; }
+    if (act === 'close-backdrop' || act === 'close-drawer') {
+      st.drawer = '';
+      render();
+      if (st.lastTriggerSelector) {
+        root.querySelector(st.lastTriggerSelector)?.focus({ preventScroll: true });
+        st.lastTriggerSelector = '';
+      }
+      return;
+    }
     if (act === 'style') { window.FleetUIStyle?.set(id); if (id === 'v1') api.render(); render(); return; }
     if (act === 'theme') {
       const sel = $('#theme-select');
@@ -849,7 +858,14 @@
     if (act === 'zoom-in') { st.mapZoom = Math.min(1.5, +(st.mapZoom + 0.15).toFixed(2)); render(); return; }
     if (act === 'zoom-out') { st.mapZoom = Math.max(1, +(st.mapZoom - 0.15).toFixed(2)); render(); return; }
     if (act === 'pick-map-veh') { st.selectedPlate = id; render(); return; }
-    if (act === 'open-drawer') { st.drawer = id; if (tab) { if (id === 'orders') st.orderTab = tab; else st.drawerTab = tab; } render(); return; }
+    if (act === 'open-drawer') {
+      st.lastTriggerSelector = `[data-v3="open-drawer"][data-id="${CSS.escape(id)}"]${tab ? `[data-tab="${CSS.escape(tab)}"]` : ''}`;
+      st.drawer = id;
+      if (tab) { if (id === 'orders') st.orderTab = tab; else st.drawerTab = tab; }
+      render();
+      root.querySelector('.v3-close')?.focus({ preventScroll: true });
+      return;
+    }
     if (act === 'drawer-tab') { st.drawerTab = id; render(); return; }
     if (act === 'order-tab') { st.orderTab = id; render(); return; }
     if (act === 'select-ticket') { st.ticketId = id; render(); return; }
@@ -908,6 +924,19 @@
       e.preventDefault();
       runSafeConsole(e.target.cmd?.value);
       render();
+    }
+  });
+
+  // Hỗ trợ phím Escape đóng ngăn kéo Mẫu 3 và trả focus về nút đã mở (theo chuẩn WCAG 2.2)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && st.drawer && isActiveV3() && !$('#modal')?.open) {
+      e.preventDefault();
+      st.drawer = '';
+      render();
+      if (st.lastTriggerSelector) {
+        root.querySelector(st.lastTriggerSelector)?.focus({ preventScroll: true });
+        st.lastTriggerSelector = '';
+      }
     }
   });
 
