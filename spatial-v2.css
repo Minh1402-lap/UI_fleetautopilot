@@ -267,6 +267,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .ambient-backdrop,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .glass-canvas {
+    display: none !important;
     opacity: 0 !important;
     pointer-events: none;
   }
@@ -534,16 +535,18 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     font-style: normal !important;
     font-weight: 600 !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .sec-table-panel, #sec-inspector, .sec-shortcut, .kali-task-window, .terminal-guide) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .sec-table-panel, #sec-inspector, .sec-shortcut, .kali-task-window, .terminal-guide, .system-terminal, .system-console) {
     background: var(--v2-sub-panel-bg) !important;
+    background-image: var(--v2-sub-panel-bg) !important;
     border: 1px solid var(--v2-sub-panel-border) !important;
     border-radius: 22px !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.stat, .status-pill) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.stat, .status-pill, .sec-kpi, .system-kpi) {
     background: var(--v2-dark-bg) !important;
+    background-image: var(--v2-dark-bg) !important;
     border: 1px solid var(--v2-dark-border) !important;
     border-radius: 18px !important;
     color: var(--v2-dark-ink) !important;
@@ -551,12 +554,21 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+  body.ui-v2[data-role="admin_system"] .sec-kpis {
+    border: 0 !important;
+    gap: 14px !important;
+  }
+  body.ui-v2[data-role="admin_system"] :is(.sec-kpi strong, .sec-kpi b, .system-kpi strong) {
+    color: var(--v2-dark-ink) !important;
+    font-family: var(--font) !important;
+  }
+  body.ui-v2[data-role="admin_system"] :is(.sec-kpi small, .system-kpi small, .system-kpi > span) {
+    color: var(--v2-dark-muted) !important;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .status-pill {
     border-radius: 14px !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .status-pill.active,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .stat:hover,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .status-pill:hover {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.status-pill.active, .stat:hover, .status-pill:hover, .sec-kpi:hover, .sec-kpi[aria-pressed="true"], .system-kpi:hover) {
     border-color: var(--v2-accent) !important;
     box-shadow: 0 0 0 1px var(--v2-accent) !important;
   }
@@ -573,8 +585,9 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     color: var(--v2-dark-ink) !important;
     box-shadow: none !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.search, .theme-switch, .account, #role-preview, .heading-icon, .order-card, .ai-button, .vehicle.selected, .ticket-message, .ticket-compose textarea, .ticket-toolbar select, .field input, .field select, .field textarea, .role-toolbar input, .role-toolbar select, .role-form input, .role-form select, .role-form textarea, .admin-vehicle-list button, .dispatch-picker select) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.search, .theme-switch, .account, #role-preview, .heading-icon, .order-card, .ai-button, .vehicle.selected, .ticket-message, .ticket-compose textarea, .ticket-toolbar select, .field input, .field select, .field textarea, .role-toolbar input, .role-toolbar select, .role-form input, .role-form select, .role-form textarea, .admin-vehicle-list button, .dispatch-picker select, .sec-filters input, .sec-filters select, #sec-review-form select, #sec-review-form textarea, .sec-explanation p:first-of-type, .system-service, .terminal-output, .terminal-input-row input, .terminal-guide-grid button) {
     background: var(--v2-sub-nested-bg) !important;
+    background-image: none !important;
     border: 1px solid var(--v2-sub-nested-border) !important;
     box-shadow: none !important;
     backdrop-filter: none !important;

@@ -993,6 +993,15 @@
     });
 
     document.documentElement.classList.toggle('ui-v2-html', activeDesktopV2 || activePhoneV2);
+    if (activeDesktopV2 || activePhoneV2) {
+      document.documentElement.style.setProperty('background-color', 'var(--v2-bg-solid)', 'important');
+      document.documentElement.style.setProperty('background-image', 'var(--v2-bg-grad)', 'important');
+      document.documentElement.style.setProperty('background-attachment', 'fixed', 'important');
+    } else if (uiStyle !== 'v3') {
+      document.documentElement.style.removeProperty('background-color');
+      document.documentElement.style.removeProperty('background-image');
+      document.documentElement.style.removeProperty('background-attachment');
+    }
     document.body.classList.toggle('ui-v2', activeDesktopV2);
     document.body.classList.toggle('ui-v2-bento-active', showBento);
     document.body.classList.toggle('ui-v2-phone', activePhoneV2);
