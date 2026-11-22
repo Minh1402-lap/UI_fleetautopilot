@@ -763,7 +763,7 @@
     if (role === 'dispatch') {
       const focusOrder = pendingOrders.find((o) => o.id === s.selectedOrder) || pendingOrders[0];
       navTabs = [
-        ['overview', 'truck', 'Điều phối'],
+        ['overview', 'dispatch', 'Điều phối'],
         ['orders', 'order', 'Đơn hàng'],
         ['fleet', 'pin', 'Đội xe'],
         ['more', 'gear', 'Thêm'],

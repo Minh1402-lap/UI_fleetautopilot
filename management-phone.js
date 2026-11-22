@@ -30,7 +30,7 @@
       navigation: [
         ['overview', 'home', 'Tổng quan'],
         ['orders', 'order', 'Đơn hàng'],
-        ['assignment', 'truck', 'Điều phối'],
+        ['assignment', 'dispatch', 'Điều phối'],
         ['more', 'gear', 'Thêm'],
       ],
     },

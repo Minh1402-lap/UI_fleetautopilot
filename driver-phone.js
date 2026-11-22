@@ -33,8 +33,7 @@
           <g class="phone-map-label"><rect x="14" y="530" width="103" height="30" rx="9"/><rect x="235" y="158" width="112" height="30" rx="9"/><text x="65" y="550">Lấy hàng</text><text x="291" y="178">Giao hàng</text></g>
         </g>
       </svg>
-      <span class="phone-map-disclaimer">Tuyến minh họa</span>
-      <div class="phone-map-tools" aria-label="Điều khiển sơ đồ minh họa">
+      <div class="phone-map-tools" aria-label="Điều khiển bản đồ">
         <button type="button" data-phone-action="recenter" aria-label="Đặt lại khung bản đồ">${icon('pin')}</button>
         <button type="button" data-phone-action="zoom-in" aria-label="Phóng to sơ đồ">+</button>
         <button type="button" data-phone-action="zoom-out" aria-label="Thu nhỏ sơ đồ">−</button>
