@@ -37,7 +37,7 @@
   let data=initial();
   try{const s=JSON.parse(localStorage.getItem(key));if(s?.version===2&&['users','requests','audit','system','incidents','evidence'].every(k=>Array.isArray(s[k])))data=s;}catch{}
   let role='dispatch',tab='',query='',auditDay='',selected=data.audit[0]?.id,sysSelected=data.system[0]?.id,zoom=1,photo=null,photoUrl='',gps=null;
-  const originalNav=$('.sidebar nav'),roleNav=document.createElement('nav');roleNav.className='role-nav';roleNav.setAttribute('aria-label','Navigation du rôle');originalNav.after(roleNav);
+  const originalNav=$('.sidebar nav'),roleNav=document.createElement('nav');roleNav.className='role-nav';roleNav.setAttribute('aria-label','Điều hướng vai trò');originalNav.after(roleNav);
   const root=document.createElement('section');root.id='role-view';root.hidden=true;$('#main').insertBefore(root,$('#main footer'));
   const picker=document.createElement('div');picker.className='role-selector';picker.innerHTML=`<span>Vai trò mẫu</span><button type="button" id="role-preview" aria-label="Chuyển vai trò xem thử" aria-haspopup="menu" aria-expanded="false" aria-controls="role-menu"><span id="role-preview-label"></span><span aria-hidden="true">⌄</span></button><div id="role-menu" role="menu" aria-label="Chọn vai trò mẫu" hidden>${Object.entries(names).map(([k,v])=>`<button type="button" role="menuitemradio" aria-checked="false" data-role-choice="${k}"><span>${v}</span><span class="role-check" aria-hidden="true">✓</span></button>`).join('')}</div>`;$('.header-actions').append(picker);
   const driverBrand=document.createElement('div');driverBrand.className='driver-brand';driverBrand.textContent='F  Fleet Autopilot';$('header').prepend(driverBrand);
