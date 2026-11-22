@@ -1,10 +1,10 @@
 /* Mẫu 2 (Spatial UI kính phân tầng đậm-nhạt) cho UI thử nghiệm Fleet Autopilot.
  * Trách nhiệm:
  * - Thêm nút chuyển "Mẫu 1 / Mẫu 2" trên thanh đầu trang (ẩn với Tài xế và màn hình <760px).
- * - Khi bật Mẫu 2, dựng dashboard Bento phân tầng khung đậm-nhạt cho 3 vai trò:
+ * - Khi bật Mẫu 2, dựng dashboard Bento gộp gọn, không trùng lặp các trang với nhau cho 3 vai trò:
  *   Điều phối, Quản lý vận hành (Admin), Quản trị hệ thống (System Admin).
  * - Đọc dữ liệu dùng chung từ FleetPreview / FleetRoles / workflow / governance;
- *   mọi thao tác điều hướng, lọc, duyệt phân công đều nối thẳng về handler thật của prototype.
+ *   mọi thao tác điều hướng, tạo đơn, kiểm tra chuyến, duyệt phân công đều nối thẳng về handler thật.
  * - Không sửa hoặc ghi đè hành vi Mẫu 1; tắt về Mẫu 1 khôi phục nguyên trạng 100%. */
 (() => {
   'use strict';
@@ -19,8 +19,9 @@
   const icon = (name) => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
 
   const STYLE_KEY = 'fleet-ui-style-v1';
-  const WF_KEY = 'fleet-autopilot-workflow-v1';
-  const GOV_KEY = 'fleet-autopilot-governance-v1';
+  const WF_KEY = 'fleet-autopilot-workflow-v2';
+  const GOV_KEY = 'fleet-autopilot-governance-v2';
+  const qtyText = (o) => (api.qtyText ? api.qtyText(o) : `${o?.quantity || 0} ${o?.unit || 'm³'}`);
 
   let uiStyle = readInitialStyle();
   let mapZoom = 1;
@@ -30,23 +31,24 @@
 
   function readInitialStyle() {
     const param = new URLSearchParams(location.search).get('ui');
-    if (param === 'v1' || param === 'v2') return param;
+    if (param === 'v1' || param === 'v2' || param === 'v3') return param;
     try {
       const saved = localStorage.getItem(STYLE_KEY);
-      if (saved === 'v1' || saved === 'v2') return saved;
+      if (saved === 'v1' || saved === 'v2' || saved === 'v3') return saved;
     } catch {}
     return 'v1';
   }
 
   function saveStyle(next) {
-    uiStyle = next === 'v2' ? 'v2' : 'v1';
+    uiStyle = next === 'v3' ? 'v3' : next === 'v2' ? 'v2' : 'v1';
     try {
       localStorage.setItem(STYLE_KEY, uiStyle);
     } catch {}
     const url = new URL(location.href);
-    if (uiStyle === 'v2') url.searchParams.set('ui', 'v2');
+    if (uiStyle !== 'v1') url.searchParams.set('ui', uiStyle);
     else url.searchParams.delete('ui');
     history.replaceState(null, '', url);
+    window.dispatchEvent(new CustomEvent('fleet:ui-style', { detail: { style: uiStyle } }));
   }
 
   function readJson(key, fallback) {
@@ -56,6 +58,19 @@
     } catch {
       return fallback;
     }
+  }
+
+  // Đọc dữ liệu quản trị dùng chung (fallback khớp governance.js v2)
+  function readGov() {
+    if (window.FleetGovernance?.snapshot) return window.FleetGovernance.snapshot();
+    return readJson(GOV_KEY, {
+      changes: [],
+      recovery: [],
+      maintenance: [],
+      support: [],
+      supportGrants: [],
+      jobs: [{ id: 'JOB-017', name: 'Đồng bộ trạng thái GPS', status: 'failed', attempts: 0 }],
+    });
   }
 
   function currentClock() {
@@ -75,14 +90,15 @@
     });
   }
 
-  // Nút chuyển Mẫu 1 / Mẫu 2 gắn vào thanh đầu trang để đổi qua lại nhanh
+  // Nút chuyển Mẫu 1 / Mẫu 2 / Mẫu 3 gắn vào thanh đầu trang để đổi qua lại nhanh
   const styleSwitch = document.createElement('div');
   styleSwitch.className = 'ui-style-switch';
   styleSwitch.setAttribute('role', 'group');
   styleSwitch.setAttribute('aria-label', 'Chọn mẫu giao diện');
   styleSwitch.innerHTML =
     '<button type="button" data-ui-style="v1" aria-pressed="true">Mẫu 1</button>' +
-    '<button type="button" data-ui-style="v2" aria-pressed="false">Mẫu 2</button>';
+    '<button type="button" data-ui-style="v2" aria-pressed="false">Mẫu 2</button>' +
+    '<button type="button" data-ui-style="v3" aria-pressed="false">Mẫu 3</button>';
 
   const headerActions = $('.header-actions');
   if (headerActions) {
@@ -142,8 +158,29 @@
     return false;
   }
 
-  function buildMapMarkup(vehicles, activeOrders, titleText) {
+  // Bản đồ đội xe tích hợp thanh thông tin xe đang chọn ngay trên Bento để không cần trang GPS trùng lặp
+  function buildMapMarkup(vehicles, activeOrders, titleText, drivers = [], showDetailBtn = true) {
     const activeCount = vehicles.filter((v) => v.availability !== 'maintenance').length;
+    const activePlate = vehicles.some((v) => v.plate === selectedVehiclePlate)
+      ? selectedVehiclePlate
+      : vehicles[0]?.plate || '';
+    const activeVeh = vehicles.find((v) => v.plate === activePlate);
+    const activeOrd = activeVeh ? activeOrders.find((o) => o.plate === activeVeh.plate) : null;
+    const activeDriver = activeVeh ? drivers.find((d) => d.id === activeVeh.driverId) : null;
+
+    const gpsText = activeVeh
+      ? activeVeh.gps === 'offline'
+        ? 'Mất tín hiệu GPS mẫu'
+        : activeVeh.gps === 'stale'
+        ? 'Chưa cập nhật GPS mẫu'
+        : 'Có tín hiệu GPS mẫu'
+      : '';
+    const stateText = activeOrd
+      ? `Đang chạy ${activeOrd.id} (${activeOrd.to})`
+      : activeVeh?.availability === 'maintenance'
+      ? 'Đang bảo trì'
+      : 'Sẵn sàng nhận đơn';
+
     const pins = vehicles
       .slice(0, 4)
       .map((v, i) => {
@@ -156,7 +193,7 @@
         const ord = activeOrders.find((o) => o.plate === v.plate);
         const dotClass =
           v.gps === 'offline' ? 'v2-dot-red' : v.gps === 'stale' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
-        const pressed = selectedVehiclePlate === v.plate ? 'true' : 'false';
+        const pressed = activePlate === v.plate ? 'true' : 'false';
         return `<button type="button" class="v2-map-pin" style="left:${coords[0]};top:${coords[1]}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${pressed}"><span class="v2-dot ${dotClass}"></span>${esc(v.plate)}</button>`;
       })
       .join('');
@@ -177,9 +214,9 @@
           <path d="M340 -15 C320 45 415 35 395 85 C375 135 315 120 355 170 C395 220 465 180 475 240"
                 fill="none" stroke="var(--v2-map-river)" stroke-width="26" stroke-linecap="round"/>
           <path d="M130 96 C155 140 215 175 292 224 C345 190 405 148 475 115"
-                fill="none" stroke="var(--v2-route)" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="130" cy="96" r="7" fill="var(--v2-route)"/>
-          <circle cx="475" cy="115" r="7" fill="var(--v2-route)"/>
+                fill="none" stroke="var(--v2-route)" stroke-width="3.6" stroke-linecap="round"/>
+          <circle cx="130" cy="96" r="6" fill="var(--v2-route)"/>
+          <circle cx="475" cy="115" r="6" fill="var(--v2-route)"/>
         </svg>
         ${pins}
         <div class="v2-map-zoom">
@@ -187,31 +224,49 @@
           <button type="button" data-v2-action="map-out" aria-label="Thu nhỏ bản đồ">−</button>
         </div>
         <span class="v2-map-caption">Sơ đồ minh họa · Chưa kết nối GPS Taris</span>
-      </div>`;
+      </div>
+      ${
+        activeVeh
+          ? `<div class="v2-map-bar">
+              <div class="v2-map-bar-info">
+                <strong>${esc(activeVeh.plate)}</strong>
+                <span>${esc(activeDriver?.name || 'Chưa gán tài xế')} · ${esc(stateText)} · ${esc(gpsText)}</span>
+              </div>
+              ${
+                showDetailBtn
+                  ? `<button type="button" class="v2-map-bar-btn" data-action="detail-vehicle" data-id="${esc(activeVeh.plate)}">Chi tiết xe →</button>`
+                  : ''
+              }
+            </div>`
+          : ''
+      }`;
   }
 
   function renderDispatchBento() {
     const s = api.snapshot();
-    const wf = readJson(WF_KEY, { tickets: [] });
+    const wf = window.FleetWorkflow?.tickets ? { tickets: window.FleetWorkflow.tickets() } : readJson(WF_KEY, { tickets: [] });
     const openTickets = (wf.tickets || []).filter((t) => t.status === 'open');
     const pendingOrders = s.orders.filter((o) => o.status === 'pending');
+    const assignedOrders = s.orders.filter((o) => o.status === 'assigned');
     const activeOrders = s.orders.filter((o) => ['assigned', 'running'].includes(o.status));
-    const readyVehicles = s.vehicles.filter(
-      (v) => v.availability === 'ready' && !activeOrders.some((o) => o.plate === v.plate)
-    );
+    const readyVehicles = api.candidates ? api.candidates(pendingOrders.find((o) => o.id === s.selectedOrder) || pendingOrders[0]) : s.vehicles.filter((v) => v.availability === 'ready' && !activeOrders.some((o) => o.plate === v.plate));
     const staleVehicles = s.vehicles.filter((v) => v.gps === 'stale' || v.gps === 'offline');
 
     const focusOrder = pendingOrders.find((o) => o.id === s.selectedOrder) || pendingOrders[0] || s.orders[0];
+    const mapFocusPlate = s.vehicles.some((v) => v.plate === selectedVehiclePlate)
+      ? selectedVehiclePlate
+      : s.vehicles[0]?.plate || '';
 
     const queueRows =
       pendingOrders
         .slice(0, 4)
         .map((o, idx) => {
           const tagCls = idx === 0 ? 'v2-tag-amber' : 'v2-tag-blue';
-          return `<button type="button" class="v2-list-item" data-v2-action="dispatch-order" data-id="${esc(o.id)}">
+          const isFocused = focusOrder?.id === o.id;
+          return `<button type="button" class="v2-list-item" data-v2-action="focus-order" data-id="${esc(o.id)}" aria-pressed="${isFocused}">
             <div class="v2-item-main">
-              <div class="v2-item-title"><strong>${esc(o.id)}</strong><span>· ${esc(o.material)} (${o.quantity} tấn mẫu)</span></div>
-              <div class="v2-item-sub">${esc(o.from)} → ${esc(o.to)}</div>
+              <div class="v2-item-title"><strong>${esc(o.id)}</strong><span>· ${esc(o.material)} (${esc(qtyText(o))})</span></div>
+              <div class="v2-item-sub">${esc(o.customerGroup || '')} · ${esc(o.from)} → ${esc(o.to)}${o.distanceKm ? ` · ${o.distanceKm} km` : ''}</div>
             </div>
             <span class="v2-tag ${tagCls}">Chờ phân xe</span>
           </button>`;
@@ -231,7 +286,8 @@
         const pillCls = ord ? 'v2-pill-solid-blue' : v.availability === 'maintenance' ? 'v2-pill-solid-amber' : 'v2-pill-solid-green';
         const dotCls = v.gps === 'stale' || v.gps === 'offline' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
         const subText = ord ? `${ord.id} · ${ord.to}` : v.gps === 'stale' ? 'Chưa cập nhật GPS mẫu' : 'Sẵn sàng nhận đơn';
-        return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="track-vehicle" data-id="${esc(v.plate)}">
+        const isSelected = mapFocusPlate === v.plate;
+        return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
             <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
             ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-dot ${dotCls}"></span>`}
@@ -248,8 +304,8 @@
       ...staleVehicles.slice(0, 1).map((v) => ({
         col: 'red',
         title: `${v.plate} chưa cập nhật GPS`,
-        sub: 'Kiểm tra tín hiệu trong màn GPS ↗',
-        act: 'track-vehicle',
+        sub: 'Chọn để xem trạng thái xe trên bản đồ',
+        act: 'select-vehicle',
         id: v.plate,
       })),
       ...pendingOrders.slice(0, 1).map((o) => ({
@@ -285,16 +341,19 @@
       <div class="v2-main">
         <div class="v2-top-grid">
           <section class="v2-hero v2-card-light">
-            ${buildMapMarkup(s.vehicles, activeOrders, 'Bản đồ đội xe')}
+            ${buildMapMarkup(s.vehicles, activeOrders, 'Bản đồ đội xe', s.drivers, true)}
           </section>
           <div class="v2-mid-col">
             <section class="v2-mid-panel v2-card-dark">
               <div class="v2-card-hd">
                 <div>
                   <h3>Hàng chờ phân xe hôm nay</h3>
-                  <div class="v2-hd-sub">Bấm đơn để mở phân công · Dữ liệu mẫu</div>
+                  <div class="v2-hd-sub">Chọn đơn để điều phối nhanh ở cột phải</div>
                 </div>
-                <span class="v2-tag v2-tag-amber">${pendingOrders.length} đơn</span>
+                <div class="v2-hd-tools">
+                  <button type="button" class="v2-hd-link" data-v2-action="go-page" data-id="orders">Sổ đơn ↗</button>
+                  <span class="v2-tag v2-tag-amber">${pendingOrders.length} đơn</span>
+                </div>
               </div>
               <div class="v2-list">${queueRows}</div>
             </section>
@@ -303,7 +362,7 @@
                 <div class="v2-kpi-top"><span>Đơn chờ xử lý</span><span class="v2-tag v2-tag-amber">${pendingOrders.length}</span></div>
                 <strong>${String(pendingOrders.length).padStart(2, '0')}</strong>
               </button>
-              <button type="button" class="v2-kpi v2-kpi-blue" data-v2-action="go-page" data-id="gps">
+              <button type="button" class="v2-kpi v2-kpi-blue" data-v2-action="go-page" data-id="fleet">
                 <div class="v2-kpi-top"><span>Chuyến đang chạy</span><span class="v2-tag v2-tag-blue">${activeOrders.length}</span></div>
                 <strong>${String(activeOrders.length).padStart(2, '0')}</strong>
               </button>
@@ -326,26 +385,25 @@
           ${attentionHtml}
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn active" data-v2-action="go-page" data-id="orders">${icon('order')}<span>Đơn hàng</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="go-page" data-id="fleet">${icon('truck')}<span>Đội xe</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="go-page" data-id="gps">${icon('pin')}<span>Bản đồ</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="go-tickets">${icon('alert')}<span>Ticket (${openTickets.length})</span></button>
+          <button type="button" class="v2-flt-btn" data-action="new-order">${icon('order')}<span>+ Nhận đơn</span></button>
+          <button type="button" class="v2-flt-btn" data-workflow-action="trip-list">${icon('truck')}<span>Bằng chứng</span></button>
+          <button type="button" class="v2-flt-btn" data-workflow-action="help-recovery">${icon('switch-account')}<span>Quên MK</span></button>
         </div>
         <div class="v2-action-card v2-card-light">
           <div class="v2-action-hd">
             <h4>Điều phối nhanh</h4>
             <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
           </div>
-          <div class="v2-action-l1">${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)}` : 'Chưa có đơn chờ'}</div>
-          <div class="v2-action-l2">${focusOrder ? `${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Tạo đơn mới ở mục Đơn hàng'}</div>
+          <div class="v2-action-l1">${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)} (${esc(qtyText(focusOrder))})` : 'Chưa có đơn chờ'}</div>
+          <div class="v2-action-l2">${focusOrder ? `${esc(focusOrder.customerGroup || '')} · ${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Tạo đơn mới bằng nút + Nhận đơn'}</div>
           <div class="v2-ai-picks">${readyVehicles
             .slice(0, 3)
             .map((v, idx) => {
               const isChosen = (s.selectedVehicle || readyVehicles[0]?.plate) === v.plate;
-              return `<button type="button" class="v2-ai-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">${esc(v.plate)}<small>${idx === 0 ? 'AI đề xuất' : 'Sẵn sàng'}</small></button>`;
+              return `<button type="button" class="v2-ai-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">${esc(v.plate)}<small>${esc(v.type)}</small></button>`;
             })
             .join('')}</div>
-          <div class="v2-ai-note">AI đề xuất (V1) · Công bằng trước, tuyến sau · Điều phối duyệt</div>
+          <div class="v2-ai-note">Công bằng trước, tuyến sau (chưa chốt công thức) · ${assignedOrders.length} đơn chờ TX xác nhận</div>
           <button type="button" class="v2-action-btn" data-v2-action="quick-assign" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>Duyệt phân công</button>
         </div>
       </aside>`;
@@ -354,7 +412,7 @@
   function renderAdminBento() {
     const s = api.snapshot();
     const wf = readJson(WF_KEY, { tickets: [] });
-    const gov = readJson(GOV_KEY, { changes: [], maintenance: [] });
+    const gov = readGov();
     const pendingOrders = s.orders.filter((o) => o.status === 'pending');
     const activeOrders = s.orders.filter((o) => ['assigned', 'running'].includes(o.status));
     const openTickets = (wf.tickets || []).filter((t) => t.status === 'open');
@@ -405,20 +463,20 @@
           (o) => `<button type="button" class="v2-q-item" data-v2-action="admin-page" data-id="approvals">
             <span class="v2-dot v2-dot-amber"></span>
             <div>
-              <div class="v2-q-title">${esc(o.id)} · ${esc(o.material)} (${o.quantity} tấn mẫu)</div>
+              <div class="v2-q-title">${esc(o.id)} · ${esc(o.material)} (${esc(qtyText(o))})</div>
               <div class="v2-q-sub">${esc(o.from)} → ${esc(o.to)}</div>
             </div>
           </button>`
         )
         .join('') || '<div class="v2-q-sub">Không có đơn chưa phân xe.</div>';
 
-    const firstChange = pendingChanges[0];
+    const lockAlerts = gov.support || [];
 
     v2Root.innerHTML = `
       <div class="v2-main">
         <div class="v2-top-grid">
           <section class="v2-hero v2-card-light">
-            ${buildMapMarkup(s.vehicles, activeOrders, 'Bản đồ đội xe toàn công ty')}
+            ${buildMapMarkup(s.vehicles, activeOrders, 'Bản đồ đội xe toàn công ty', s.drivers, false)}
           </section>
           <div class="v2-mid-col">
             <section class="v2-mid-panel v2-card-dark">
@@ -453,8 +511,8 @@
                 <strong>${String(s.orders.length).padStart(2, '0')}</strong>
               </button>
               <button type="button" class="v2-kpi v2-kpi-amber" data-v2-action="admin-page" data-id="maintenance">
-                <div class="v2-kpi-top"><span>Chờ duyệt quyền</span><span class="v2-tag v2-tag-amber">${pendingChanges.length}</span></div>
-                <strong>${String(pendingChanges.length).padStart(2, '0')}</strong>
+                <div class="v2-kpi-top"><span>Phiếu bảo trì</span><span class="v2-tag v2-tag-amber">${pendingMaint.length}</span></div>
+                <strong>${String(pendingMaint.length).padStart(2, '0')}</strong>
               </button>
               <button type="button" class="v2-kpi v2-kpi-green" data-v2-action="admin-page" data-id="tickets">
                 <div class="v2-kpi-top"><span>Ticket mở</span><span class="v2-tag v2-tag-green">${openTickets.length}</span></div>
@@ -464,21 +522,21 @@
           </div>
         </div>
         <div class="v2-bottom-row">
-          <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('switch-account')}</span><span class="v2-pill-solid-amber">Chờ duyệt</span></div>
-            <div><div class="v2-tile-title">Đổi vai trò</div><div class="v2-tile-sub">${pendingChanges.length} hồ sơ chờ phê duyệt</div></div>
+          <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="approvals">
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-pill-solid-blue">Chỉ đọc</span></div>
+            <div><div class="v2-tile-title">Nhật ký & Hoạt động</div><div class="v2-tile-sub">${roles.snapshot().audit.length} thao tác Điều phối</div></div>
           </button>
-          <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="activity">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-dot v2-dot-blue"></span></div>
-            <div><div class="v2-tile-title">Hoạt động Điều phối</div><div class="v2-tile-sub">${roles.snapshot().audit.length} thao tác đã ghi nhận</div></div>
-          </button>
-          <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="tickets">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-pill-solid-blue">Chỉ đọc</span></div>
+          <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="tickets">
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-dot v2-dot-blue"></span></div>
             <div><div class="v2-tile-title">Hồ sơ Ticket</div><div class="v2-tile-sub">${openTickets.length} sự cố đang theo dõi</div></div>
           </button>
-          <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-dot v2-dot-amber"></span></div>
+          <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="maintenance">
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-pill-solid-amber">Kỹ thuật</span></div>
             <div><div class="v2-tile-title">Yêu cầu bảo trì</div><div class="v2-tile-sub">${pendingMaint.length} phiếu gửi System Admin</div></div>
+          </button>
+          <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="maintenance">
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-amber"></span></div>
+            <div><div class="v2-tile-title">Cảnh báo hệ thống</div><div class="v2-tile-sub">${lockAlerts.length} thông báo khóa TK</div></div>
           </button>
         </div>
       </div>
@@ -492,24 +550,24 @@
           ${pendingOrderRows}
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn active" data-v2-action="admin-page" data-id="fleet">${icon('pin')}<span>Đội xe</span></button>
+          <button type="button" class="v2-flt-btn" data-gov="maintenance-new">${icon('gear')}<span>+ Bảo trì</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="approvals">${icon('order')}<span>Nhật ký</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="tickets">${icon('message')}<span>Ticket</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="maintenance">${icon('gear')}<span>Bảo trì</span></button>
+          <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="tickets">${icon('alert')}<span>Ticket (${openTickets.length})</span></button>
         </div>
         <div class="v2-action-card v2-card-light">
-          <h4>Phê duyệt đổi vai trò</h4>
-          <div class="v2-action-l1">${firstChange ? esc(firstChange.name) : 'Không có yêu cầu chờ duyệt'}</div>
-          <div class="v2-action-l2">${firstChange ? esc(firstChange.reason) : 'Xem nhật ký hoặc tạo yêu cầu bảo trì'}</div>
-          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Xem hồ sơ duyệt</button>
+          <h4>Bảo trì & Thông báo khóa TK</h4>
+          <div class="v2-action-l1">${lockAlerts[0] ? esc(lockAlerts[0].id) : 'Giám sát vận hành toàn công ty'}</div>
+          <div class="v2-action-l2">${lockAlerts[0] ? esc(lockAlerts[0].text.slice(0, 72)) : 'Phân quyền role do System Admin phụ trách'}</div>
+          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Mở Bảo trì & Cảnh báo</button>
         </div>
       </aside>`;
   }
 
   function renderSystemAdminBento() {
     const rSnap = roles.snapshot();
-    const gov = readJson(GOV_KEY, { changes: [], maintenance: [], jobs: [] });
+    const gov = readGov();
     const activeUsers = (rSnap.users || []).filter((u) => !u.deleted && u.active);
+    const pendingRecovery = (gov.recovery || []).filter((r) => r.status === 'pending');
     const pendingChanges = (gov.changes || []).filter((c) => ['pending', 'approved', 'designated'].includes(c.status));
     const failedJobs = (gov.jobs || []).filter((j) => j.status === 'failed');
     const logs = (rSnap.system || []).slice(0, 4);
@@ -574,8 +632,8 @@
                 <strong>${String(activeUsers.length).padStart(2, '0')}</strong>
               </button>
               <button type="button" class="v2-kpi v2-kpi-amber" data-v2-action="system-page" data-id="changes">
-                <div class="v2-kpi-top"><span>Chờ đổi quyền</span><span class="v2-tag v2-tag-amber">${pendingChanges.length}</span></div>
-                <strong>${String(pendingChanges.length).padStart(2, '0')}</strong>
+                <div class="v2-kpi-top"><span>Khôi phục TK/MK</span><span class="v2-tag v2-tag-amber">${pendingRecovery.length}</span></div>
+                <strong>${String(pendingRecovery.length).padStart(2, '0')}</strong>
               </button>
               <button type="button" class="v2-kpi v2-kpi-red" data-v2-action="system-page" data-id="maintenance">
                 <div class="v2-kpi-top"><span>Tác vụ lỗi</span><span class="v2-tag v2-tag-red">${failedJobs.length}</span></div>
@@ -616,7 +674,7 @@
           </button>
           <button type="button" class="v2-q-item" data-v2-action="system-page" data-id="changes">
             <span class="v2-dot v2-dot-amber"></span>
-            <div><div class="v2-q-title">${pendingChanges.length} yêu cầu đổi vai trò</div><div class="v2-q-sub">Thực hiện đúng phạm vi đã duyệt</div></div>
+            <div><div class="v2-q-title">${pendingRecovery.length} yêu cầu quên TK/MK · ${pendingChanges.length} duyệt quản trị</div><div class="v2-q-sub">Xác minh cấp mã 1 lần · Cấm tự duyệt quản trị</div></div>
           </button>
           <button type="button" class="v2-q-item" data-v2-action="system-page" data-id="security">
             <span class="v2-dot v2-dot-green"></span>
@@ -624,9 +682,8 @@
           </button>
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn active" data-v2-action="system-page" data-id="accounts">${icon('switch-account')}<span>Tài khoản</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="changes">${icon('layers')}<span>Quyền</span></button>
-          <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="connections">${icon('gear')}<span>Kết nối</span></button>
+          <button type="button" class="v2-flt-btn" data-gov="provision">${icon('switch-account')}<span>+ Cấp TK</span></button>
+          <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="changes">${icon('layers')}<span>Đổi quyền</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="security">${icon('alert')}<span>An ninh</span></button>
         </div>
         <div class="v2-action-card v2-card-light">
@@ -655,7 +712,7 @@
     const s = api.snapshot();
     const rSnap = roles.snapshot();
     const wf = readJson(WF_KEY, { tickets: [] });
-    const gov = readJson(GOV_KEY, { changes: [], maintenance: [], jobs: [] });
+    const gov = readGov();
     const currentTheme = document.documentElement.dataset.theme || 'light';
     const roleLabel = role === 'dispatch' ? 'Điều phối' : role === 'admin' ? 'Admin' : 'System Admin';
 
@@ -665,6 +722,7 @@
       (v) => v.availability === 'ready' && !activeOrders.some((o) => o.plate === v.plate)
     );
     const openTickets = (wf.tickets || []).filter((t) => t.status === 'open');
+    const pendingRecovery = (gov.recovery || []).filter((r) => r.status === 'pending');
     const pendingChanges = (gov.changes || []).filter((c) => ['pending', 'approved', 'designated'].includes(c.status));
     const failedJobs = (gov.jobs || []).filter((j) => j.status === 'failed');
 
@@ -695,9 +753,9 @@
     if (role === 'dispatch') {
       const focusOrder = pendingOrders.find((o) => o.id === s.selectedOrder) || pendingOrders[0];
       navTabs = [
-        ['overview', 'home', 'Tổng quan'],
+        ['overview', 'truck', 'Điều phối'],
         ['orders', 'order', 'Đơn hàng'],
-        ['assignment', 'layers', 'Điều phối'],
+        ['fleet', 'pin', 'Đội xe'],
         ['more', 'gear', 'Thêm'],
       ];
       bodyHtml = `
@@ -714,7 +772,7 @@
               .slice(0, 2)
               .map(
                 (o) => `<button type="button" class="v2p-row" data-v2-action="dispatch-order" data-id="${esc(o.id)}">
-                  <div><strong>${esc(o.id)} · ${esc(o.material)} (${o.quantity} tấn mẫu)</strong><small>${esc(o.from)} → ${esc(o.to)}</small></div>
+                  <div><strong>${esc(o.id)} · ${esc(o.material)} (${esc(qtyText(o))})</strong><small>${esc(o.from)} → ${esc(o.to)}</small></div>
                   <span class="v2-tag v2-tag-amber">Chờ xe</span>
                 </button>`
               )
@@ -750,8 +808,8 @@
     } else if (role === 'admin') {
       navTabs = [
         ['overview', 'home', 'Tổng quan'],
-        ['role-approvals', 'switch-account', 'Duyệt quyền'],
-        ['fleet', 'pin', 'Đội xe'],
+        ['activity', 'activity', 'Nhật ký'],
+        ['tickets', 'alert', 'Ticket'],
         ['more', 'gear', 'Thêm'],
       ];
       const days = [...new Set(s.orders.map((o) => o.day))].sort();
@@ -770,7 +828,7 @@
         ${mapCard('Bản đồ đội xe toàn công ty', `${s.vehicles.filter((v) => v.availability !== 'maintenance').length} xe hoạt động`)}
         <div class="v2p-kpis">
           <div class="v2p-kpi v2-kpi-blue"><span>Tổng đơn</span><strong>${String(s.orders.length).padStart(2, '0')}</strong></div>
-          <div class="v2p-kpi v2-kpi-amber"><span>Duyệt quyền</span><strong>${String(pendingChanges.length).padStart(2, '0')}</strong></div>
+          <div class="v2p-kpi v2-kpi-amber"><span>Bảo trì</span><strong>${String((gov.maintenance || []).filter((m) => m.status === 'approved').length).padStart(2, '0')}</strong></div>
           <div class="v2p-kpi v2-kpi-green"><span>Ticket mở</span><strong>${String(openTickets.length).padStart(2, '0')}</strong></div>
         </div>
         <section class="v2p-card v2p-dark v2p-sec">
@@ -780,13 +838,13 @@
             .join('')}</div>
         </section>
         <div class="v2p-pair">
-          <div class="v2p-card v2p-light v2p-mini"><strong>Đổi vai trò</strong><small>${pendingChanges.length} hồ sơ chờ duyệt</small></div>
+          <div class="v2p-card v2p-light v2p-mini"><strong>Nhật ký Điều phối</strong><small>${rSnap.audit.length} thao tác chỉ đọc</small></div>
           <div class="v2p-card v2p-dark v2p-mini"><strong>Ticket (chỉ đọc)</strong><small>${openTickets.length} sự cố đang mở</small></div>
         </div>
         <section class="v2p-card v2p-light v2p-act">
           <div class="v2p-act-top">
             <div><strong>Đơn chưa phân xe (${pendingOrders.length})</strong><small>${pendingOrders[0] ? `${esc(pendingOrders[0].id)} · ${esc(pendingOrders[0].material)}` : 'Không có đơn chờ'}</small></div>
-            <button type="button" class="v2p-btn" data-v2-phone-open="role-approvals">Xem</button>
+            <button type="button" class="v2p-btn" data-v2-phone-open="activity">Xem</button>
           </div>
         </section>`;
     } else {
@@ -845,7 +903,7 @@
             <option value="light" ${currentTheme === 'light' ? 'selected' : ''}>Sáng</option>
             <option value="dark" ${currentTheme === 'dark' ? 'selected' : ''}>Tối</option>
             <option value="amber" ${currentTheme === 'amber' ? 'selected' : ''}>Hổ phách</option>
-            <option value="moss" ${currentTheme === 'moss' ? 'selected' : ''}>Rêu Lime</option>
+            <option value="moss" ${currentTheme === 'moss' ? 'selected' : ''}>Rêu mờ</option>
           </select>
           <a class="v2p-link-btn" href="./">Vai trò</a>
         </div>
@@ -858,6 +916,53 @@
           )
           .join('')}
       </nav>`;
+  }
+
+  // Đồng bộ thanh menu pill khi ẩn các tab trùng lặp để trang đang mở luôn đánh dấu chính xác
+  function syncNavLabelsAndActive(role) {
+    const params = new URLSearchParams(location.search);
+    if (role === 'dispatch') {
+      const isTickets = params.get('flow') === 'tickets';
+      const p = params.get('page') || 'dispatch';
+      const overviewBtn = document.querySelector('.sidebar nav button[data-page="Tổng quan"]');
+      const dispatchBtn = document.querySelector('.sidebar nav button[data-page="Điều phối"]');
+      const ticketsBtn = document.querySelector('.sidebar nav button[data-workflow-action="tickets"]');
+      if (isTickets) {
+        document.querySelectorAll('.sidebar nav button[data-page]').forEach((b) => {
+          b.classList.remove('active');
+          b.removeAttribute('aria-current');
+        });
+        ticketsBtn?.classList.add('active');
+        ticketsBtn?.setAttribute('aria-current', 'page');
+        const crumb = $('.crumb');
+        if (crumb) crumb.innerHTML = `${icon('home')}<span>/</span>Sự cố & ticket`;
+      } else {
+        ticketsBtn?.classList.remove('active');
+        ticketsBtn?.removeAttribute('aria-current');
+        if (p === 'overview') {
+          overviewBtn?.classList.remove('active');
+          overviewBtn?.removeAttribute('aria-current');
+          dispatchBtn?.classList.add('active');
+          dispatchBtn?.setAttribute('aria-current', 'page');
+          const crumb = $('.crumb');
+          if (crumb) crumb.innerHTML = `${icon('home')}<span>/</span>Điều phối`;
+        }
+      }
+    }
+    if (role === 'admin') {
+      const appBtn = document.getElementById('admin-nav-approvals');
+      if (appBtn) {
+        appBtn.title = 'Nhật ký & Hoạt động';
+        const lbl = appBtn.querySelector('.nav-label');
+        if (lbl) lbl.textContent = 'Nhật ký & Hoạt động';
+      }
+      if ((params.get('admin_page') || 'overview') === 'approvals' && params.get('flow') !== 'tickets') {
+        const h1 = $('#role-view .page-heading h1');
+        if (h1) h1.textContent = 'Nhật ký phê duyệt & Hoạt động';
+        const crumb = $('.crumb');
+        if (crumb) crumb.innerHTML = `${icon('home')}<span>/</span>NHẬT KÝ & HOẠT ĐỘNG`;
+      }
+    }
   }
 
   function sync() {
@@ -876,6 +981,10 @@
     document.body.classList.toggle('ui-v2-phone', activePhoneV2);
     v2Root.hidden = !showBento;
     v2Phone.hidden = !activePhoneV2;
+
+    if (activeDesktopV2) {
+      syncNavLabelsAndActive(role);
+    }
 
     if (isPhone() && eligibleRole) {
       ensurePhoneV1Switch();
@@ -897,6 +1006,9 @@
     const btn = e.target.closest('[data-ui-style]');
     if (!btn) return;
     saveStyle(btn.dataset.uiStyle);
+    if (uiStyle === 'v1') {
+      api.render();
+    }
     sync();
   });
 
@@ -943,6 +1055,15 @@
       document.querySelector('[data-workflow-action="tickets"]')?.click();
       return;
     }
+    if (action === 'focus-order') {
+      const picker = $('#dispatch-order');
+      if (picker && [...picker.options].some((o) => o.value === id)) {
+        picker.value = id;
+        picker.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      sync();
+      return;
+    }
     if (action === 'dispatch-order') {
       const picker = $('#dispatch-order');
       if (picker && [...picker.options].some((o) => o.value === id)) {
@@ -964,14 +1085,6 @@
     }
     if (action === 'quick-assign') {
       $('#assign')?.click();
-      return;
-    }
-    if (action === 'track-vehicle') {
-      const gpsBtn = document.querySelector('.sidebar nav button[data-page="GPS"]');
-      gpsBtn?.click();
-      setTimeout(() => {
-        document.querySelector(`[data-action="gps-select"][data-id="${CSS.escape(id)}"]`)?.click();
-      }, 30);
       return;
     }
     if (action === 'admin-page') {
@@ -1006,7 +1119,16 @@
       saveStyle('v1');
       sync();
       setTimeout(() => {
-        document.querySelector(`#management-phone [data-phone-screen="${CSS.escape(target)}"]`)?.click();
+        const navBtn = document.querySelector(`#management-phone [data-management-screen="${CSS.escape(target)}"]`);
+        if (navBtn) {
+          navBtn.click();
+        } else {
+          const url = new URL(location.href);
+          url.searchParams.delete('flow');
+          url.searchParams.set('phone_view', target);
+          history.pushState(null, '', url);
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }
       }, 30);
       return;
     }
@@ -1043,7 +1165,15 @@
     }
   });
 
-  // Đồng bộ lại khi đổi vai trò, đổi trang, cập nhật dữ liệu mẫu hoặc thay đổi kích thước cửa sổ
+  // Đồng bộ lại khi đổi vai trò, đổi trang, đổi mẫu UI, cập nhật dữ liệu mẫu hoặc thay đổi kích thước cửa sổ
+  window.addEventListener('fleet:ui-style', (e) => {
+    const next = e.detail?.style;
+    if (next === 'v1' || next === 'v2' || next === 'v3') {
+      uiStyle = next;
+      requestAnimationFrame(sync);
+    }
+  });
+  window.FleetUIStyle = { get: () => uiStyle, set: saveStyle };
   window.addEventListener('fleet:role-render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:commit', () => requestAnimationFrame(sync));
