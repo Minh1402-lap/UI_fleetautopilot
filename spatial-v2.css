@@ -245,15 +245,21 @@ body.role-home-active .ui-style-switch {
   color: #d8bf92;
 }
 
+/* Đồng bộ nền thẻ gốc <html> ở cả PC và Phone Mẫu 2 để không bao giờ lộ nền #4a6269 ở mép trên hoặc mép dưới */
+html.ui-v2-html,
+html:has(body.ui-v2:not([data-role="driver"]):not(.role-home-active)),
+html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
+  background-color: var(--v2-bg-solid) !important;
+  background-image: var(--v2-bg-grad) !important;
+  background-attachment: fixed !important;
+}
+
 /* ===== KÍCH HOẠT KHÔNG GIAN MẪU 2 (DESKTOP >= 760PX, TRỪ TÀI XẾ) ===== */
 @media (min-width: 760px) {
-  html:has(body.ui-v2:not([data-role="driver"]):not(.role-home-active)) {
-    background-color: var(--v2-bg-solid) !important;
-    background-image: var(--v2-bg-grad) !important;
-    background-attachment: fixed !important;
-  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) {
     display: flow-root;
+    padding: 16px 0 !important;
+    margin: 0 !important;
     background-color: var(--v2-bg-solid) !important;
     background-image: var(--v2-bg-grad) !important;
     background-attachment: fixed !important;
@@ -450,9 +456,9 @@ body.role-home-active .ui-style-switch {
     display: none;
   }
 
-  /* Khung ứng dụng nổi bao toàn bộ nội dung bên phải thanh menu */
+  /* Khung ứng dụng nổi bao toàn bộ nội dung bên phải thanh menu (dùng padding của body cho mép trên/dưới để không hở margin ra html) */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app {
-    margin: 16px 16px 16px 108px !important;
+    margin: 0 16px 0 108px !important;
     min-height: calc(100vh - 32px);
     border-radius: 28px;
     background: var(--v2-shell-bg);
@@ -498,6 +504,20 @@ body.role-home-active .ui-style-switch {
   body.ui-v2 #role-view .role-table {
     min-width: 0;
     width: 100%;
+  }
+  body.ui-v2 #role-view .role-table th:last-child {
+    text-align: right;
+    padding-right: 0;
+  }
+  body.ui-v2[data-role="admin_system"] .sec-workspace {
+    align-items: stretch !important;
+  }
+  body.ui-v2[data-role="admin_system"] .sec-table-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  body.ui-v2[data-role="admin_system"] .sec-table-scroll {
+    flex: 1;
   }
   body.ui-v2 #role-view .role-row .badge,
   body.ui-v2 #role-view td .badge {

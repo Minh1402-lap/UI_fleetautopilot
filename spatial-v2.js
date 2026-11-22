@@ -992,6 +992,7 @@
       btn.setAttribute('aria-pressed', String(btn.dataset.uiStyle === uiStyle));
     });
 
+    document.documentElement.classList.toggle('ui-v2-html', activeDesktopV2 || activePhoneV2);
     document.body.classList.toggle('ui-v2', activeDesktopV2);
     document.body.classList.toggle('ui-v2-bento-active', showBento);
     document.body.classList.toggle('ui-v2-phone', activePhoneV2);
