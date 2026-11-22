@@ -394,7 +394,7 @@
           ${attentionHtml}
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn" data-action="new-order">${icon('order')}<span>+ Nhận đơn</span></button>
+          <button type="button" class="v2-flt-btn active" data-action="new-order">${icon('order')}<span>+ Nhận đơn</span></button>
           <button type="button" class="v2-flt-btn" data-workflow-action="trip-list">${icon('truck')}<span>Bằng chứng</span></button>
           <button type="button" class="v2-flt-btn" data-workflow-action="help-recovery">${icon('switch-account')}<span>Quên MK</span></button>
         </div>
@@ -560,7 +560,7 @@
           ${pendingOrderRows}
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn" data-gov="maintenance-new">${icon('gear')}<span>+ Bảo trì</span></button>
+          <button type="button" class="v2-flt-btn active" data-gov="maintenance-new">${icon('gear')}<span>+ Bảo trì</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="approvals">${icon('order')}<span>Nhật ký</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="tickets">${icon('alert')}<span>Ticket (${openTickets.length})</span></button>
         </div>
@@ -692,7 +692,7 @@
           </button>
         </div>
         <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn" data-gov="provision">${icon('switch-account')}<span>+ Cấp TK</span></button>
+          <button type="button" class="v2-flt-btn active" data-gov="provision">${icon('switch-account')}<span>+ Cấp TK</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="changes">${icon('layers')}<span>Đổi quyền</span></button>
           <button type="button" class="v2-flt-btn" data-v2-action="system-page" data-id="security">${icon('alert')}<span>An ninh</span></button>
         </div>
