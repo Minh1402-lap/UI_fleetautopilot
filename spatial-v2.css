@@ -521,7 +521,8 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     font-style: normal !important;
     font-weight: 600 !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .sec-table-panel, #sec-inspector, .sec-shortcut, .kali-task-window, .terminal-guide, .system-terminal, .system-console) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) #sec-inspector,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .sec-table-panel, .sec-shortcut, .kali-task-window, .terminal-guide, .system-terminal, .system-console):not(.v2-card-light):not(.v2-card-dark) {
     background: var(--v2-sub-panel-bg) !important;
     background-image: var(--v2-sub-panel-bg) !important;
     border: 1px solid var(--v2-sub-panel-border) !important;
@@ -529,6 +530,21 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .governance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .governance-grid > .panel:first-child:nth-last-child(3),
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .governance-grid > .panel:last-child:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 1050px) {
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .governance-grid {
+      grid-template-columns: 1fr;
+    }
   }
   /* Hai tông Đậm–Sáng (.v2-card-light / .v2-card-dark) cho các khung con Bento trên mọi trang con */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) {
