@@ -530,6 +530,41 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+  /* Hai tông Đậm–Sáng (.v2-card-light / .v2-card-dark) cho các khung con Bento trên mọi trang con */
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) {
+    background: var(--v2-light-bg) !important;
+    background-image: none !important;
+    border: 1px solid var(--v2-light-border) !important;
+    color: var(--v2-light-ink) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(h2, h3, h4, strong, th, td, .panel-heading, .data-table td, .role-table td) {
+    color: var(--v2-light-ink) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th) {
+    color: var(--v2-light-muted) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row {
+    background: rgba(255, 255, 255, 0.45) !important;
+    border-color: rgba(15, 23, 42, 0.10) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) {
+    background: var(--v2-dark-bg) !important;
+    background-image: none !important;
+    border: 1px solid var(--v2-dark-border) !important;
+    color: var(--v2-dark-ink) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(h2, h3, h4, strong, th, td, .panel-heading, .data-table td, .role-table td) {
+    color: var(--v2-dark-ink) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th) {
+    color: var(--v2-dark-muted) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .bento-mini-row {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.10) !important;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.stat, .status-pill, .sec-kpi, .system-kpi) {
     background: var(--v2-dark-bg) !important;
     background-image: var(--v2-dark-bg) !important;
