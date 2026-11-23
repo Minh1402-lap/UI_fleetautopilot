@@ -38,21 +38,43 @@ body .badge[data-status] .status-dot {
   display: none;
 }
 
-:root[data-theme="light"] body .badge[data-status] {
+:is(:root[data-theme="light"], .v2-card-light) body .badge[data-status],
+:root[data-theme="light"] .badge[data-status],
+.v2-card-light .badge[data-status] {
   background: color-mix(in srgb, var(--tag-c) 14%, transparent);
-  border-color: color-mix(in srgb, var(--tag-c) 30%, transparent);
+  border-color: color-mix(in srgb, var(--tag-c) 32%, transparent);
 }
-:root[data-theme="light"] body .badge[data-status="completed"] {
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="completed"] {
   --tag-c: #15803d;
 }
-:root[data-theme="light"] body .badge[data-status="running"] {
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="running"] {
   --tag-c: #1d4ed8;
 }
-:root[data-theme="light"] body .badge[data-status="assigned"],
-:root[data-theme="light"] body .badge[data-status="pending"] {
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="assigned"],
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="pending"] {
   --tag-c: #b45309;
 }
-:root[data-theme="light"] body .badge[data-status="cancelled"],
-:root[data-theme="light"] body .badge[data-status="neutral"] {
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="cancelled"],
+:is(:root[data-theme="light"], .v2-card-light) .badge[data-status="neutral"] {
   --tag-c: #b91c1c;
+}
+
+/* Khung tối (.v2-card-dark) trên nền Sáng luôn giữ pill chữ sáng rõ */
+:root[data-theme="light"] .v2-card-dark .badge[data-status] {
+  background: color-mix(in srgb, var(--tag-c) 18%, transparent);
+  border-color: color-mix(in srgb, var(--tag-c) 34%, transparent);
+}
+:root[data-theme="light"] .v2-card-dark .badge[data-status="completed"] {
+  --tag-c: #4ade80;
+}
+:root[data-theme="light"] .v2-card-dark .badge[data-status="running"] {
+  --tag-c: #60a5fa;
+}
+:root[data-theme="light"] .v2-card-dark .badge[data-status="assigned"],
+:root[data-theme="light"] .v2-card-dark .badge[data-status="pending"] {
+  --tag-c: #fbbf24;
+}
+:root[data-theme="light"] .v2-card-dark .badge[data-status="cancelled"],
+:root[data-theme="light"] .v2-card-dark .badge[data-status="neutral"] {
+  --tag-c: #f87171;
 }
