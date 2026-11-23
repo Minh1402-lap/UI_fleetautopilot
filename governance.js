@@ -127,9 +127,16 @@
     } else if (current === 'changes') {
       body = panel('Hàng chờ khôi phục quên tên / mật khẩu', recoveryMarkup(), 'order') + panel('Cổng phê duyệt role quản trị (Admin / System Admin)', changesMarkup(), 'layers');
     } else if (current === 'logs') {
-      body = panel('Nhật ký hệ thống chỉ đọc', table(['Thời gian', 'Người thực hiện', 'Nội dung / yêu cầu', 'Trước → Sau', 'Kết quả'], logs.map((l) => `<tr><td>${time(l.at)}</td><td>${esc(l.actor)}</td><td>${esc(l.action)}<small>${esc(l.request)}</small></td><td>${esc(l.before)} → ${esc(l.after)}</td><td>${esc(l.result || 'Ghi nhận lịch sử mẫu')}</td></tr>`).join('')) + note('Không xóa hoặc sửa lịch sử duyệt/nhật ký; không ghi mật khẩu hay mã khôi phục vào log.'));
+      const uniqueActors = new Set(logs.map((l) => l.actor)).size;
+      body = panel('Tổng hợp nhật ký hệ thống', details([['Tổng bản ghi', `${logs.length} mục mẫu`], ['Người thực hiện', `${uniqueActors} tài khoản`], ['Nguyên tắc lưu trữ', 'Chỉ đọc · Không xóa/sửa'], ['Bảo mật log', 'Không ghi mật khẩu / mã khôi phục']]) + note('Mọi thay đổi role, bảo trì và cấp quyền hỗ trợ đều lưu vết trước → sau.'), 'chart') +
+        panel('Nhật ký hệ thống chỉ đọc', table(['Thời gian', 'Người thực hiện', 'Nội dung / yêu cầu', 'Trước → Sau', 'Kết quả'], logs.map((l) => `<tr><td>${time(l.at)}</td><td>${esc(l.actor)}</td><td>${esc(l.action)}<small>${esc(l.request)}</small></td><td>${esc(l.before)} → ${esc(l.after)}</td><td>${esc(l.result || 'Ghi nhận lịch sử mẫu')}</td></tr>`).join('')) + note('Không xóa hoặc sửa lịch sử duyệt/nhật ký; không ghi mật khẩu hay mã khôi phục vào log.'));
     } else if (current === 'connections') {
-      body = panel('Ghép biển số ↔ IMEI GPS Taris (tối đa 1 lần / 10 phút)', table(['Biển số', 'Loại xe', 'IMEI Taris mẫu', 'Trạng thái GPS', 'Thao tác'], api.snapshot().vehicles.map((v) => `<tr><td><strong>${esc(v.plate)}</strong></td><td>${esc(v.type)}</td><td><code>${esc(v.imei || 'Chưa ghép')}</code></td><td>${badge(v.gps === 'fresh' ? 'Có tín hiệu mẫu' : v.gps === 'stale' ? 'Chưa cập nhật' : 'Mất tín hiệu', v.gps === 'fresh' ? 'completed' : v.gps === 'stale' ? 'pending' : 'neutral')}</td><td>${button('Sửa IMEI', 'edit-imei', v.plate, 'text-button')} · ${button('Kiểm tra API', 'gps', v.plate, 'text-button')}</td></tr>`).join('')) + note('Công ty xác nhận ghép biển số/IMEI với System Admin trước khi chạy thật. Chỉ kiểm tra trạng thái kết nối; không mở vị trí vận hành khi chưa có quyền hỗ trợ.'));
+      const vehicles = api.snapshot().vehicles;
+      const fresh = vehicles.filter((v) => v.gps === 'fresh').length;
+      const stale = vehicles.filter((v) => v.gps === 'stale').length;
+      const offline = vehicles.filter((v) => v.gps === 'offline').length;
+      body = panel('Tổng quan kết nối GPS Taris', details([['Chu kỳ lấy mẫu', 'Tối đa 1 lần / 10 phút'], ['Có tín hiệu mẫu', `${fresh} xe`], ['Chưa cập nhật', `${stale} xe`], ['Mất tín hiệu mẫu', `${offline} xe`]]) + note('Chỉ kiểm tra trạng thái kết nối; không mở vị trí vận hành khi chưa có quyền hỗ trợ.'), 'pin') +
+        panel('Ghép biển số ↔ IMEI GPS Taris (tối đa 1 lần / 10 phút)', table(['Biển số', 'Loại xe', 'IMEI Taris mẫu', 'Trạng thái GPS', 'Thao tác'], vehicles.map((v) => `<tr><td><strong>${esc(v.plate)}</strong></td><td>${esc(v.type)}</td><td><code>${esc(v.imei || 'Chưa ghép')}</code></td><td>${badge(v.gps === 'fresh' ? 'Có tín hiệu mẫu' : v.gps === 'stale' ? 'Chưa cập nhật' : 'Mất tín hiệu', v.gps === 'fresh' ? 'completed' : v.gps === 'stale' ? 'pending' : 'neutral')}</td><td>${button('Sửa IMEI', 'edit-imei', v.plate, 'text-button')} · ${button('Kiểm tra API', 'gps', v.plate, 'text-button')}</td></tr>`).join('')) + note('Công ty xác nhận ghép biển số/IMEI với System Admin trước khi chạy thật. Chỉ kiểm tra trạng thái kết nối; không mở vị trí vận hành khi chưa có quyền hỗ trợ.'));
     } else if (current === 'maintenance') {
       body = panel('Yêu cầu bảo trì từ Quản lý vận hành', maintenanceMarkup()) +
         panel('Tác vụ nền', state.jobs.map((j) => `<div class="role-row system-job-row"><div class="system-job-info"><strong>${esc(j.id)} · ${esc(j.name)}</strong>${badge(j.status === 'failed' ? 'Lỗi mẫu' : 'Đã thử lại mẫu', j.status === 'failed' ? 'neutral' : 'completed')}<small>${j.at ? time(j.at) : 'Chưa chạy lại'}</small></div>${j.status === 'failed' ? button('Thử lại tác vụ lỗi', 'retry', j.id, 'primary') : ''}</div>`).join('') + note('Lỗi code, DB hoặc khôi phục toàn hệ thống chuyển người phát triển.')) +
@@ -144,7 +151,8 @@
       });
     }
     if (current === 'security' && window.FleetSecurity) body = window.FleetSecurity.markup();
-    $('#role-view').innerHTML = `<section class="page-heading"><div><h1>${title}</h1><p>${current === 'security' ? 'Đối chiếu sự kiện an ninh, lỗi vận hành và bằng chứng (chỉ đọc)' : 'Quản trị hệ thống · Phân quyền, khôi phục mã 1 lần, kết nối Taris & bảo trì'}</p></div><span class="system-page-meta">Dữ liệu mô phỏng · UTC+7</span></section><div class="governance-grid">${body}</div>`;
+    const pageIco = systemPages[current]?.[1] || 'gear';
+    $('#role-view').innerHTML = `<section class="page-heading"><span class="heading-icon">${icon(pageIco)}</span><h1>${title}</h1><p>${current === 'security' ? 'Đối chiếu sự kiện an ninh, lỗi vận hành và bằng chứng (chỉ đọc)' : 'Quản trị hệ thống · Phân quyền, khôi phục mã 1 lần, kết nối Taris & bảo trì'}</p></section><div class="workspace-actions-bar"><span class="system-page-meta">Dữ liệu mô phỏng · UTC+7</span></div><div class="governance-grid">${body}</div>`;
     if (current === 'security') window.FleetSecurity?.mount();
     $('.crumb').innerHTML = `${icon('home')}<span>/</span>${esc(title.toLocaleUpperCase('vi'))}`;
     document.title = title + ' - Fleet Autopilot';
@@ -158,15 +166,22 @@
         const failedJobs = state.jobs.filter((j) => j.status === 'failed').length;
         const staleCount = api.snapshot().vehicles.filter((v) => v.gps !== 'fresh').length;
         // Admin KHÔNG duyệt đổi vai trò — chỉ gửi yêu cầu bảo trì, xem ảnh hưởng vận hành & nhận thông báo khóa TK khẩn cấp
-        maintenancePanel.innerHTML = `<div class="panel-heading"><h2>${icon('gear')}Yêu cầu bảo trì & Thông báo hệ thống</h2></div>
-          <h3>Cảnh báo ảnh hưởng vận hành</h3>
-          <div class="role-row"><div><strong>Tín hiệu GPS Taris & Tác vụ nền</strong><small>${staleCount} xe chưa cập nhật/mất GPS · ${failedJobs} tác vụ nền lỗi (JOB-017)</small></div>${badge(failedJobs || staleCount ? 'Cần theo dõi' : 'Ổn định', failedJobs || staleCount ? 'pending' : 'completed')}</div>
-          <h3>Yêu cầu bảo trì gửi System Admin</h3>
-          ${maintenanceMarkup()}
-          ${button('+ Tạo yêu cầu bảo trì', 'maintenance-new', '', 'primary')}
-          <h3>Thông báo khóa tài khoản khẩn cấp từ System Admin</h3>
-          ${state.support.map((n) => `<div class="role-row"><span><strong>${esc(n.id)}</strong> · ${esc(n.text)}<small>${time(n.at)}</small></span></div>`).join('') || note('Chưa có thông báo khóa tài khoản khẩn cấp.')}
-          ${note('Quản lý vận hành giám sát toàn công ty & gửi phiếu bảo trì. Quản lý tài khoản và đổi role do System Admin phụ trách.')}`;
+        maintenancePanel.innerHTML = `<div class="admin-maint-bento">
+          <div class="admin-maint-sub">
+            <h3>Cảnh báo ảnh hưởng vận hành</h3>
+            <div class="role-row"><div><strong>Tín hiệu GPS Taris & Tác vụ nền</strong><small>${staleCount} xe chưa cập nhật/mất GPS · ${failedJobs} tác vụ nền lỗi (JOB-017)</small></div>${badge(failedJobs || staleCount ? 'Cần theo dõi' : 'Ổn định', failedJobs || staleCount ? 'pending' : 'completed')}</div>
+            ${note('Quản lý vận hành giám sát toàn công ty & gửi phiếu bảo trì. Quản lý tài khoản và đổi role do System Admin phụ trách.')}
+          </div>
+          <div class="admin-maint-sub">
+            <h3>Yêu cầu bảo trì gửi System Admin</h3>
+            ${maintenanceMarkup()}
+            ${button('+ Tạo yêu cầu bảo trì', 'maintenance-new', '', 'primary')}
+          </div>
+          <div class="admin-maint-sub">
+            <h3>Thông báo khóa tài khoản khẩn cấp</h3>
+            ${state.support.map((n) => `<div class="role-row"><span><strong>${esc(n.id)}</strong> · ${esc(n.text)}<small>${time(n.at)}</small></span></div>`).join('') || note('Chưa có thông báo khóa tài khoản khẩn cấp.')}
+          </div>
+        </div>`;
       }
       const nav = $('#admin-nav-maintenance');
       if (nav) { nav.title = 'Bảo trì & Cảnh báo'; nav.querySelector('.nav-label').textContent = nav.title; }
