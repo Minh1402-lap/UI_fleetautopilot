@@ -1,75 +1,81 @@
-/* Native SVG retains F + truck + crane + materials, traced from the reference.
-   Transparent backing and inherited SVG colors follow the active UI theme. */
-/* Đồng bộ màu logo (chính + phụ) theo từng nền giống Mẫu 2: Sáng, Tối, Đen hổ phách champagne, Rêu Lime. */
+/* Logo Hương Sen SVG đơn sắc nền trong suốt, dùng CSS mask đổi màu theo 4 theme: Sáng, Tối, Đen hổ phách, Rêu Lime. */
 :root,
 :root[data-theme="light"] {
-  --brand-forest: #1A2A20;
-  --brand-moss: #2E4D3A;
-  --brand-ivory: #E6EDE8;
-  --brand-mark: #1A2A20;
-  --brand-secondary: #2E4D3A;
+  --brand-mark: #67412c;
+  --brand-secondary: #67412c;
 }
 
-:root[data-theme="dark"] {
-  --brand-mark: #f1f5f9;
-  --brand-secondary: #a9c5b4;
-}
-
-:root[data-theme="amber"] {
-  --brand-mark: #f3e6ce;
-  --brand-secondary: #d5b477;
-}
-
+:root[data-theme="dark"],
+:root[data-theme="amber"],
 :root[data-theme="moss"] {
-  --brand-mark: #e8eee0;
-  --brand-secondary: #a6d941;
+  --brand-mark: #f5d66d;
+  --brand-secondary: #f5d66d;
 }
 
-.role-home-brand > svg {
+.hs-brand-mark {
+  display: block;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
   color: var(--brand-mark);
+  background-color: currentColor;
+  -webkit-mask: url("assets/brand/huong-sen-symbol.svg") center / contain no-repeat;
+  mask: url("assets/brand/huong-sen-symbol.svg") center / contain no-repeat;
+}
+
+.hs-brand-name {
+  display: block;
+  width: 146px;
+  height: 28px;
+  flex: 0 0 146px;
+  color: var(--brand-mark);
+  background-color: currentColor;
+  -webkit-mask: url("assets/brand/huong-sen-wordmark.svg") left center / contain no-repeat;
+  mask: url("assets/brand/huong-sen-wordmark.svg") left center / contain no-repeat;
+}
+
+.role-home-brand > .hs-brand-mark {
+  width: 54px;
+  height: 54px;
+}
+
+.role-home-brand > div > .hs-brand-name {
+  width: 184px;
+  height: 34px;
+  margin-bottom: 2px;
+}
+
+.phone-brand .hs-brand-mark,
+.v2p-brand .hs-brand-mark,
+.v3-brand .hs-brand-mark,
+.v3-sb-brand .hs-brand-mark {
+  width: 32px;
+  height: 32px;
 }
 
 .sidebar .brand .brand-preview-icon {
   position: relative;
   display: grid;
   place-items: center;
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
   margin-left: 0;
   overflow: hidden;
   border-radius: 9px;
   background: transparent;
 }
 
-.brand-preview-icon .brand-construction-mark {
-  display: block;
-  width: 38px;
-  height: 24px;
-  color: var(--brand-mark);
-  fill: currentColor;
-  stroke: none;
-}
+.sidebar .brand { min-height: 44px; height: 44px; gap: 10px; }
+.sidebar .brand-label { color: var(--brand-mark); }
 
 @media (min-width: 601px) and (hover: hover) and (pointer: fine) {
   .sidebar:is(:hover, :focus-within) .brand .brand-preview-icon {
-    flex-basis: 72px;
-    width: 72px;
+    flex-basis: 44px;
+    width: 44px;
   }
-  .sidebar:is(:hover, :focus-within) .brand-construction-mark { width: 68px; height: 40px; }
-}
-
-.sidebar .brand { min-height: 44px; height: 44px; }
-.sidebar .brand-label { color: var(--brand-mark); }
-
-@media (max-width: 600px) {
-  body:not([data-role=driver]) .sidebar .brand .brand-preview-icon,
-  .sidebar .brand .brand-preview-icon {
-    flex-basis: 72px;
-    width: 72px;
-    height: 44px;
-    border-radius: 7px;
+  .sidebar:is(:hover, :focus-within) .hs-brand-mark {
+    width: 42px;
+    height: 42px;
   }
-  body:not([data-role=driver]) .sidebar .brand { height: 44px; min-height: 44px; }
-  .brand-preview-icon .brand-construction-mark { width: 68px; height: 40px; }
 }

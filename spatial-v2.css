@@ -329,41 +329,35 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     gap: 10px;
     padding: 0 2px;
     width: 222px;
-    min-height: 42px;
-    height: 42px;
-    color: var(--v2-logo-primary);
-    --brand-mark: var(--v2-logo-primary);
-    --brand-secondary: var(--v2-logo-secondary);
+    min-height: 44px;
+    height: 44px;
+    color: var(--brand-mark);
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand-label {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .hs-brand-name {
     display: block;
     opacity: 0;
-    white-space: nowrap;
     pointer-events: none;
     transition: opacity 180ms ease;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover .brand-label,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within .brand-label {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover .hs-brand-name,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within .hs-brand-name {
     opacity: 1;
     pointer-events: auto;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .brand-preview-icon,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .brand-preview-icon {
-    flex: 0 0 46px !important;
-    width: 46px !important;
-    height: 32px !important;
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    height: 44px !important;
     margin: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .brand-construction-mark,
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .brand-construction-mark {
-    width: 44px !important;
-    height: 28px !important;
-    display: block;
-    margin: 0;
-    color: var(--v2-logo-primary);
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .hs-brand-mark,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .hs-brand-mark {
+    width: 42px !important;
+    height: 42px !important;
   }
   body.ui-v2[data-role="dispatch"] .sidebar nav:not(.role-nav),
   body.ui-v2.role-switch-active .sidebar .role-nav {

@@ -10,8 +10,8 @@
   root.id = 'role-home';
   root.innerHTML = `<section class="role-home-shell">
     <header class="role-home-brand">
-      <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
-      <div><strong>Fleet Autopilot</strong><span>Chọn giao diện thử nghiệm</span></div>
+      <span class="hs-brand-mark" aria-hidden="true"></span>
+      <div><span class="hs-brand-name" role="img" aria-label="Hương Sen"></span><span>Chọn giao diện thử nghiệm</span></div>
     </header>
     <div class="role-home-grid">
       <a href="?role=dispatch&ui=v2"><span class="role-home-icon"><svg aria-hidden="true"><use href="#truck"/></svg></span><strong>Điều phối</strong><small>Đơn hàng, phân xe và GPS</small><b>Vào giao diện <span>→</span></b></a>

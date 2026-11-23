@@ -910,7 +910,7 @@
     v2Phone.innerHTML = `
       <div class="v2p-topbar" role="banner">
         <div class="v2p-brand">
-          <svg viewBox="0 0 552 332" aria-hidden="true"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg>
+          <span class="hs-brand-mark" aria-hidden="true"></span>
           <span>${esc(roleLabel)}</span>
         </div>
         <div class="v2p-top-actions">

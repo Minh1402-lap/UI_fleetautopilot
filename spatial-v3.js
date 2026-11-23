@@ -206,7 +206,7 @@
     return `<div class="v3-shell">
       <header class="v3-topbar">
         <div class="v3-tb-left">
-          <div class="v3-brand"><svg viewBox="0 0 552 332"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>Điều phối</span></div>
+          <div class="v3-brand"><span class="hs-brand-mark" aria-hidden="true"></span><span>Điều phối</span></div>
           <div class="v3-pill-group">${stylePillsHtml()}</div>
         </div>
         <label class="v3-search">${ico('search-icon')}<input type="search" data-v3-search placeholder="Tìm mã đơn, xe, vật liệu…" value="${esc(st.search)}"></label>
@@ -444,7 +444,7 @@
     return `<div class="v3-shell">
       <header class="v3-topbar">
         <div class="v3-tb-left">
-          <div class="v3-brand"><svg viewBox="0 0 552 332"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>Quản lý vận hành</span></div>
+          <div class="v3-brand"><span class="hs-brand-mark" aria-hidden="true"></span><span>Quản lý vận hành</span></div>
           <div class="v3-pill-group">${stylePillsHtml()}</div>
         </div>
         <label class="v3-search">${ico('search-icon')}<input type="search" data-v3-search placeholder="Tìm đơn, nhật ký Điều phối, xe…" value="${esc(st.search)}"></label>
@@ -802,7 +802,7 @@
     }
 
     return `<aside class="v3-sidebar" aria-label="Điều hướng Quản trị hệ thống">
-      <div class="v3-sb-brand"><svg viewBox="0 0 552 332"><use href="assets/brand/fleet-construction.svg#fleet-logo"/></svg><span>Fleet Autopilot</span></div>
+      <div class="v3-sb-brand"><span class="hs-brand-mark" aria-hidden="true"></span><span>Fleet Autopilot</span></div>
       <nav class="v3-sb-nav">
         ${SYS_NAVS.map(([id, ic, lbl]) => `<button type="button" class="v3-sb-btn" data-v3="sys-nav" data-id="${id}" title="${lbl}" ${st.sysNav === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${lbl}</span></button>`).join('')}
       </nav>
