@@ -535,7 +535,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     --ink: var(--v2-light-ink);
     --muted: var(--v2-light-muted);
     background: var(--v2-light-bg) !important;
-    background-image: none !important;
+    background-image: var(--v2-light-bg) !important;
     border: 1px solid var(--v2-light-border) !important;
     color: var(--v2-light-ink) !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
@@ -560,7 +560,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     --ink: var(--v2-dark-ink);
     --muted: var(--v2-dark-muted);
     background: var(--v2-dark-bg) !important;
-    background-image: none !important;
+    background-image: var(--v2-dark-bg) !important;
     border: 1px solid var(--v2-dark-border) !important;
     color: var(--v2-dark-ink) !important;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;

@@ -36,7 +36,7 @@
       const saved = localStorage.getItem(STYLE_KEY);
       if (saved === 'v1' || saved === 'v2' || saved === 'v3') return saved;
     } catch {}
-    return 'v1';
+    return 'v2';
   }
 
   function saveStyle(next) {
