@@ -307,6 +307,16 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 14;
   }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar :is(nav, .role-nav) {
+    margin: auto 0;
+  }
+  .report-filter-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-left: auto;
+    text-align: right;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar::before {
     display: none !important;
   }
