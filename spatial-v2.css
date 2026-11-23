@@ -568,6 +568,18 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     border-color: rgba(24, 34, 44, 0.30) !important;
     background: rgba(24, 34, 44, 0.12) !important;
   }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(input, select, textarea) {
+    color: var(--v2-light-ink) !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    border-color: rgba(15, 23, 42, 0.22) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(input, textarea)::placeholder {
+    color: var(--v2-light-muted) !important;
+    opacity: 0.9;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bar-track {
+    background: rgba(15, 23, 42, 0.14) !important;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .role-row {
     background: rgba(255, 255, 255, 0.45) !important;
@@ -605,10 +617,14 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     border-color: rgba(255, 255, 255, 0.18) !important;
     background: rgba(255, 255, 255, 0.08) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(input, select) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(input, select, textarea) {
     color: var(--v2-dark-ink) !important;
-    background: rgba(10, 14, 18, 0.42) !important;
-    border-color: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(10, 14, 18, 0.56) !important;
+    border-color: rgba(255, 255, 255, 0.24) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(input, textarea)::placeholder {
+    color: var(--v2-dark-muted) !important;
+    opacity: 0.9;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .bento-mini-row,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .role-row {
