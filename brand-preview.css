@@ -1,15 +1,23 @@
-/* Logo Hương Sen SVG đơn sắc nền trong suốt, dùng CSS mask đổi màu theo 4 theme: Sáng, Tối, Đen hổ phách, Rêu Lime. */
+/* Logo Hương Sen SVG đơn sắc nền trong suốt, dùng CSS mask đổi màu theo từng topic nền: Sáng, Tối, Đen hổ phách, Rêu Lime. */
 :root,
 :root[data-theme="light"] {
-  --brand-mark: #67412c;
-  --brand-secondary: #67412c;
+  --brand-mark: #1e293b;
+  --brand-secondary: #1e293b;
 }
 
-:root[data-theme="dark"],
-:root[data-theme="amber"],
+:root[data-theme="dark"] {
+  --brand-mark: #93c5fd;
+  --brand-secondary: #93c5fd;
+}
+
+:root[data-theme="amber"] {
+  --brand-mark: #e7c98f;
+  --brand-secondary: #e7c98f;
+}
+
 :root[data-theme="moss"] {
-  --brand-mark: #f5d66d;
-  --brand-secondary: #f5d66d;
+  --brand-mark: #a6d941;
+  --brand-secondary: #a6d941;
 }
 
 .hs-brand-mark {
