@@ -532,37 +532,58 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   /* Hai tông Đậm–Sáng (.v2-card-light / .v2-card-dark) cho các khung con Bento trên mọi trang con */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) {
+    --ink: var(--v2-light-ink);
+    --muted: var(--v2-light-muted);
     background: var(--v2-light-bg) !important;
     background-image: none !important;
     border: 1px solid var(--v2-light-border) !important;
     color: var(--v2-light-ink) !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(h2, h3, h4, strong, th, td, .panel-heading, .data-table td, .role-table td) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(h2, h3, h4, strong, th, td, dd, code, .panel-heading, .data-table td, .role-table td, .text-button, .distribution-row strong) {
     color: var(--v2-light-ink) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(p, dt, small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th, .distribution-row span, .role-row small, .bento-mini-main small) {
     color: var(--v2-light-muted) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(.secondary, button:not(.primary):not(.text-button)) {
+    color: var(--v2-light-ink) !important;
+    border-color: rgba(15, 23, 42, 0.22) !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .role-row {
     background: rgba(255, 255, 255, 0.45) !important;
-    border-color: rgba(15, 23, 42, 0.10) !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) {
+    --ink: var(--v2-dark-ink);
+    --muted: var(--v2-dark-muted);
     background: var(--v2-dark-bg) !important;
     background-image: none !important;
     border: 1px solid var(--v2-dark-border) !important;
     color: var(--v2-dark-ink) !important;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(h2, h3, h4, strong, th, td, .panel-heading, .data-table td, .role-table td) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(h2, h3, h4, strong, th, td, dd, code, .panel-heading, .data-table td, .role-table td, .text-button, .distribution-row strong) {
     color: var(--v2-dark-ink) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(p, dt, small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th, .distribution-row span, .role-row small, .bento-mini-main small) {
     color: var(--v2-dark-muted) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .bento-mini-row {
-    background: rgba(255, 255, 255, 0.04) !important;
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(.secondary, button:not(.primary):not(.text-button)) {
+    color: var(--v2-dark-ink) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(input, select) {
+    color: var(--v2-dark-ink) !important;
+    background: rgba(10, 14, 18, 0.42) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .bento-mini-row,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .role-row {
+    background: rgba(255, 255, 255, 0.05) !important;
     border-color: rgba(255, 255, 255, 0.10) !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.stat, .status-pill, .sec-kpi, .system-kpi) {
@@ -1010,7 +1031,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   #spatial-v2-root .v2-action-btn,
   #spatial-v2-root .v2-ai-veh[aria-pressed="true"] {
-    color: var(--v2-dark-ink, #f4f1ea) !important;
+    color: var(--v2-btn-ink) !important;
   }
   #spatial-v2-root .v2-ai-chip {
     background: rgba(24, 34, 44, 0.12) !important;
@@ -1686,7 +1707,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   #spatial-v2-root .v2-action-btn,
   #spatial-v2-root .v2-ai-veh[aria-pressed="true"] {
-    color: var(--v2-dark-ink, #f4f1ea) !important;
+    color: var(--v2-btn-ink) !important;
   }
   #spatial-v2-root .v2-ai-chip {
     background: rgba(24, 34, 44, 0.12) !important;
