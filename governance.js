@@ -372,16 +372,16 @@
       );
     }
     if (action === 'maintenance-new' && r === 'admin') {
-      modal('Tạo yêu cầu bảo trì gửi System Admin',
-        `<form class="role-form"><label>Loại hỗ trợ kỹ thuật<select name="kind"><option value="gps">Kiểm tra kết nối GPS Taris</option><option value="retry">Thử lại tác vụ nền lỗi</option><option value="developer">Chuyển lỗi code/DB đến người phát triển</option></select></label>${field('Đối tượng (biển số / mã tác vụ)', 'target')}${field('Nội dung và ảnh hưởng vận hành', 'text')}<button class="primary">Gửi sang System Admin</button></form>`,
+      modal('Gửi yêu cầu hỗ trợ kỹ thuật',
+        `<form class="role-form"><label>Bạn đang gặp vấn đề gì?<select name="kind"><option value="gps">Kiểm tra thiết bị định vị GPS trên xe</option><option value="retry">Đồng bộ lại dữ liệu bị kẹt / chưa cập nhật</option><option value="developer">Báo lỗi phần mềm cho đội kỹ thuật</option></select></label>${field('Biển số xe hoặc phần đang gặp lỗi', 'target', '', 'required placeholder="Ví dụ: 51C-481.66 hoặc màn hình Đơn hàng"')}${field('Mô tả sự cố đang gặp', 'text', '', 'required placeholder="Ví dụ: Không thấy vị trí xe cập nhật từ sáng"')}<button class="primary">Gửi yêu cầu hỗ trợ</button></form>`,
         (f) => {
           const kind = f.get('kind'), target = String(f.get('target')).trim(), text = String(f.get('text')).trim();
           if (!['gps', 'retry', 'developer'].includes(kind) || !target || !text) return false;
           const req = { id: 'BT-' + String(state.maintenance.length + 1).padStart(3, '0'), kind, target, text, requestedBy: actors.admin, approvedBy: actors.admin, at: now(), status: 'approved', result: '' };
           state.maintenance.unshift(req);
           save();
-          log('Yêu cầu bảo trì từ Admin', 'Mới', `${target} · ${text}`, req.id);
-          api.toast('Đã gửi yêu cầu bảo trì sang System Admin.');
+          log('Yêu cầu hỗ trợ từ Admin', 'Mới', `${target} · ${text}`, req.id);
+          api.toast('Đã gửi yêu cầu hỗ trợ sang bộ phận kỹ thuật.');
         }
       );
     }
