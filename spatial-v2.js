@@ -1214,6 +1214,7 @@
   window.FleetUIStyle = { get: () => uiStyle, set: saveStyle };
   window.addEventListener('fleet:role-render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:render', () => requestAnimationFrame(sync));
+  window.addEventListener('fleet:workflow-sync', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:commit', () => requestAnimationFrame(sync));
   window.addEventListener('popstate', () => requestAnimationFrame(sync));
   window.addEventListener('resize', () => requestAnimationFrame(sync));

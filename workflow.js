@@ -293,8 +293,23 @@
     if (show) {
       document.body.dataset.workflow = 'tickets';
       showTickets();
+      if (r === 'dispatch') {
+        document.querySelectorAll('.sidebar nav button[data-page]').forEach((b) => {
+          b.classList.remove('active');
+          b.removeAttribute('aria-current');
+        });
+        navButton.classList.add('active');
+        navButton.setAttribute('aria-current', 'page');
+        const crumb = $('.crumb');
+        if (crumb) crumb.innerHTML = `${icon('home')}<span>/</span>Sự cố & ticket`;
+      }
       document.title = 'Sự cố & ticket - Fleet Autopilot';
-    } else document.body.removeAttribute('data-workflow');
+    } else {
+      document.body.removeAttribute('data-workflow');
+      navButton.classList.remove('active');
+      navButton.removeAttribute('aria-current');
+    }
+    window.dispatchEvent(new Event('fleet:workflow-sync'));
   }
 
   // Kiểm bằng chứng 2 đầu (đầu nhận + đầu giao + GPS điện thoại vs GPS Taris)
