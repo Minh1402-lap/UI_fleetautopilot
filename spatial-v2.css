@@ -587,9 +587,6 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .admin-maint-sub) :is(button.primary, button.secondary) {
     border-radius: 999px !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .admin-maint-sub) button.primary {
-    border-color: transparent !important;
-  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.sec-badge, .sec-review-status) {
     border-radius: 999px !important;
     padding: 3px 10px !important;
