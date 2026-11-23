@@ -570,7 +570,19 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .role-row {
     background: rgba(255, 255, 255, 0.45) !important;
-    border-color: rgba(15, 23, 42, 0.12) !important;
+    border: 1px solid rgba(15, 23, 42, 0.12) !important;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.role-row + .role-row) {
+    margin-top: 8px;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel, .admin-maint-sub) :is(button.primary, button.secondary) {
+    border-radius: 999px !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.sec-badge, .sec-review-status) {
+    border-radius: 999px !important;
+    padding: 3px 10px !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) {
     --ink: var(--v2-dark-ink);
@@ -600,7 +612,9 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .bento-mini-row,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) .role-row {
     background: rgba(255, 255, 255, 0.05) !important;
-    border-color: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.stat, .status-pill, .sec-kpi, .system-kpi) {
     background: var(--v2-dark-bg) !important;
