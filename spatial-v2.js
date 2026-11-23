@@ -1158,13 +1158,10 @@
       }, 30);
       return;
     }
-    // Khi bấm chuột vào mục trong thanh menu bên trái ở Mẫu 2, chỉ bỏ focus nếu con trỏ không còn ở trên sidebar để không làm giật thanh menu khi chuột vẫn đang đặt trên đó
+    // Bỏ focus ngay sau khi bấm chuột để :focus-within không giữ thanh menu mở sau khi chuyển trang
     const sbBtn = e.target.closest('.sidebar nav button');
     if (sbBtn && uiStyle === 'v2' && isDesktop() && e.detail > 0) {
-      setTimeout(() => {
-        const sb = sbBtn.closest('.sidebar');
-        if (sb && !sb.matches(':hover')) sbBtn.blur();
-      }, 0);
+      sbBtn.blur();
     }
     if (v2Phone.contains(e.target)) {
       const actBtn = e.target.closest('[data-v2-action]');

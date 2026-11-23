@@ -300,15 +300,11 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.20);
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    contain: layout paint;
-    will-change: width;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     overflow: hidden;
-    transition:
-      width 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      border-radius 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 14;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar::before {
@@ -335,21 +331,14 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand-label {
     display: block;
     opacity: 0;
-    transform: translateX(-4px);
     white-space: nowrap;
     pointer-events: none;
-    transition:
-      opacity 120ms ease,
-      transform 140ms ease;
+    transition: opacity 180ms ease;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover .brand-label,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within .brand-label {
     opacity: 1;
-    transform: translateX(0);
     pointer-events: auto;
-    transition:
-      opacity 180ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1) 70ms;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand .brand-preview-icon,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:is(:hover, :focus-within) .brand .brand-preview-icon {
@@ -419,20 +408,13 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     line-height: 1.35;
     white-space: nowrap;
     opacity: 0;
-    transform: translateX(-4px);
     pointer-events: none;
-    transition:
-      opacity 110ms ease,
-      transform 130ms ease;
+    transition: opacity 180ms ease;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover nav .nav-label,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within nav .nav-label {
     opacity: 1;
-    transform: translateX(0);
     pointer-events: auto;
-    transition:
-      opacity 180ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1) 70ms;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar nav button svg {
     flex: 0 0 22px !important;
@@ -453,7 +435,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     display: none;
   }
 
-  /* Khung ứng dụng nổi bao toàn bộ nội dung bên phải thanh menu (dùng padding của body cho mép trên/dưới để không hở margin ra html; thanh menu trượt phủ mượt phía trên như Mẫu 1 để không gây reflow toàn lưới Bento mỗi frame) */
+  /* Khung ứng dụng nổi bao toàn bộ nội dung bên phải thanh menu — đẩy sang phải theo đúng animation Mẫu 1 */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app {
     margin: 0 16px 0 108px !important;
     min-height: calc(100vh - 32px);
@@ -466,10 +448,19 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: margin-left 280ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover ~ .app,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within ~ .app {
-    margin-left: 108px !important;
+    margin-left: 280px !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar,
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand-label,
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar nav .nav-label,
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app {
+      transition: none !important;
+    }
   }
 
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > header {
