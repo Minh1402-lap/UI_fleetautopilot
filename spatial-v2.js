@@ -293,13 +293,13 @@
           ? 'Bảo trì'
           : 'Sẵn sàng';
         const pillCls = ord ? 'v2-pill-solid-blue' : v.availability === 'maintenance' ? 'v2-pill-solid-amber' : 'v2-pill-solid-green';
-        const tagCls = v.gps === 'stale' || v.gps === 'offline' ? 'v2-tag-amber' : ord ? 'v2-tag-blue' : v.availability === 'maintenance' ? 'v2-tag-amber' : 'v2-tag-green';
+        const dotCls = v.gps === 'offline' ? 'v2-dot-red' : v.gps === 'stale' || v.availability === 'maintenance' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
         const subText = ord ? `${ord.id} · ${ord.to}` : v.gps === 'stale' ? 'Chưa cập nhật GPS mẫu' : 'Sẵn sàng nhận đơn';
         const isSelected = mapFocusPlate === v.plate;
         return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
             <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
-            ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-tag ${tagCls}">${stText}</span>`}
+            ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-dot ${dotCls}" title="${esc(stText)}" aria-label="${esc(stText)}"></span>`}
           </div>
           <div>
             <div class="v2-tile-title">${esc(v.plate)}</div>
@@ -537,7 +537,7 @@
             <div><div class="v2-tile-title">Nhật ký & Hoạt động</div><div class="v2-tile-sub">${roles.snapshot().audit.length} thao tác Điều phối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="tickets">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-tag v2-tag-blue">Chỉ đọc</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-dot v2-dot-blue" title="Chỉ đọc" aria-label="Chỉ đọc"></span></div>
             <div><div class="v2-tile-title">Hồ sơ Ticket</div><div class="v2-tile-sub">${openTickets.length} sự cố đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="maintenance">
@@ -545,7 +545,7 @@
             <div><div class="v2-tile-title">Yêu cầu bảo trì</div><div class="v2-tile-sub">${pendingMaint.length} phiếu gửi System Admin</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-amber">Cảnh báo</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-amber" title="Cảnh báo" aria-label="Cảnh báo"></span></div>
             <div><div class="v2-tile-title">Cảnh báo hệ thống</div><div class="v2-tile-sub">${lockAlerts.length} thông báo khóa TK</div></div>
           </button>
         </div>
@@ -602,17 +602,26 @@
       )
       .join('');
 
+    const logTag = (action) => {
+      const a = String(action || '').toLowerCase();
+      if (/cảnh báo|khóa|bất thường|lỗi|ip/.test(a)) return { cls: 'v2-tag-red', label: 'Cảnh báo' };
+      if (/role|vai trò|quyền|duyệt/.test(a)) return { cls: 'v2-tag-amber', label: 'Quyền' };
+      if (/sao lưu|backup/.test(a)) return { cls: 'v2-tag-green', label: 'Sao lưu' };
+      if (/mật khẩu|mã|khôi phục/.test(a)) return { cls: 'v2-tag-blue', label: 'Khôi phục' };
+      return { cls: 'v2-tag-blue', label: 'Nhật ký' };
+    };
     const logRows =
       logs
-        .map(
-          (l) => `<button type="button" class="v2-list-item" data-v2-action="system-page" data-id="logs">
+        .map((l) => {
+          const t = logTag(l.action);
+          return `<button type="button" class="v2-list-item" data-v2-action="system-page" data-id="logs">
             <div class="v2-item-main">
               <div class="v2-item-title"><strong>${formatShortTime(l.at)}</strong><span>· ${esc(l.action)}</span></div>
               <div class="v2-item-sub">${esc(l.actor)} · ${esc(l.before || '—')} → ${esc(l.after || '—')}</div>
             </div>
-            <span class="v2-tag v2-tag-blue">Nhật ký</span>
-          </button>`
-        )
+            <span class="v2-tag ${t.cls}">${t.label}</span>
+          </button>`;
+        })
         .join('') || '<div class="v2-item-sub">Chưa có nhật ký thay đổi.</div>';
 
     v2Root.innerHTML = `
@@ -658,7 +667,7 @@
             <div><div class="v2-tile-title">Tài khoản & khôi phục</div><div class="v2-tile-sub">${activeUsers.length} tài khoản hoạt động</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="changes">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-tag v2-tag-blue">Phân quyền</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-dot v2-dot-blue" title="Phân quyền" aria-label="Phân quyền"></span></div>
             <div><div class="v2-tile-title">Thay đổi quyền</div><div class="v2-tile-sub">${pendingChanges.length} yêu cầu đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="system-page" data-id="connections">
@@ -666,7 +675,7 @@
             <div><div class="v2-tile-title">Đồng bộ GPS Taris</div><div class="v2-tile-sub">Chu kỳ 10 phút · Kiểm tra kết nối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="security">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-red">An ninh</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-red" title="An ninh" aria-label="An ninh"></span></div>
             <div><div class="v2-tile-title">An ninh & nhật ký</div><div class="v2-tile-sub">Đối chiếu cảnh báo & bằng chứng</div></div>
           </button>
         </div>
