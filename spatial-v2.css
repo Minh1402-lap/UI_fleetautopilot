@@ -42,6 +42,7 @@ body.role-home-active .ui-style-switch {
   --v2-bg-solid: #c6d3de;
   --v2-accent: #2563eb;
   --v2-accent-soft: rgba(37, 99, 235, 0.16);
+  --v2-light-bar-fill: #2563eb;
   --v2-ring-end: #38bdf8;
   --v2-bg-grad: radial-gradient(ellipse at 18% 12%, rgba(255, 255, 255, 0.78), transparent 55%),
     radial-gradient(ellipse at 85% 88%, rgba(148, 170, 189, 0.58), transparent 60%),
@@ -82,6 +83,7 @@ body.role-home-active .ui-style-switch {
   --v2-bg-solid: #090d14;
   --v2-accent: #3b82f6;
   --v2-accent-soft: rgba(59, 130, 246, 0.22);
+  --v2-light-bar-fill: #1d4ed8;
   --v2-ring-end: #38bdf8;
   --v2-bg-grad: radial-gradient(ellipse at 14% 12%, rgba(59, 130, 246, 0.14), transparent 50%),
     radial-gradient(ellipse at 82% 92%, rgba(239, 68, 68, 0.10), transparent 46%),
@@ -123,6 +125,7 @@ body.role-home-active .ui-style-switch {
   --v2-bg-solid: #0b1012;
   --v2-accent: #d5b477;
   --v2-accent-soft: rgba(213, 180, 119, 0.22);
+  --v2-light-bar-fill: #8c5e1a;
   --v2-ring-end: #f3d9a4;
   --v2-bg-grad: radial-gradient(ellipse at 88% 14%, rgba(181, 129, 56, 0.24), transparent 52%),
     radial-gradient(ellipse at 18% 92%, rgba(48, 62, 62, 0.34), transparent 55%),
@@ -163,6 +166,7 @@ body.role-home-active .ui-style-switch {
   --v2-bg-solid: #0d1209;
   --v2-accent: #a6d941;
   --v2-accent-soft: rgba(166, 217, 65, 0.20);
+  --v2-light-bar-fill: #3f6612;
   --v2-ring-end: #c7ee75;
   --v2-bg-grad: radial-gradient(ellipse at 74% 94%, rgba(88, 117, 24, 0.34), transparent 58%),
     radial-gradient(ellipse at 14% 12%, rgba(62, 88, 24, 0.22), transparent 50%),
@@ -580,8 +584,9 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bar-track {
     background: rgba(15, 23, 42, 0.14) !important;
   }
+  /* Dùng màu nhấn đậm riêng cho nền sáng để thanh tiến trình không bị dìm màu trên theme Amber/Moss */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bar-track > i {
-    background: var(--v2-accent) !important;
+    background: var(--v2-light-bar-fill, var(--v2-accent)) !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .bento-mini-row,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) .role-row {
