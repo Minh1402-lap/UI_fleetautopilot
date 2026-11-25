@@ -113,7 +113,8 @@
   }
   let orderQuery = '', orderStatus = 'all', orderDay = '', orderPage = 1, fleetQuery = '', fleetFilter = 'all', fleetTab = 'vehicles', reportTab = 'orders', gpsFilter = 'all', gpsPlate = state.vehicles[0]?.plate, gpsZoom = 1, mapZoom = 1;
   const orderPageSize = 5;
-  let reportFrom = '2026-11-10', reportTo = sampleDay, toastTimer, onConfirm = null;
+  // Mặc định lọc trọn tháng của ngày mẫu để khớp báo cáo theo tháng
+  let reportFrom = '2026-11-01', reportTo = '2026-11-30', toastTimer, onConfirm = null;
   const modal = $('#modal'), title = $('#modal-title'), copy = $('#modal-copy'), content = $('#modal-content'), confirm = $('#confirm-modal'), searchModal = $('#search-modal');
 
   function toast(text) {
@@ -381,22 +382,28 @@
 
   function reportData() { return state.orders.filter((o) => o.day >= reportFrom && o.day <= reportTo); }
   function reportsView() {
-    const list = reportData(), done = list.filter((o) => o.status === 'completed');
-    const unitSums = units.map((u) => ({ u, total: done.filter((o) => (o.unit || 'm³') === u).reduce((n, o) => n + o.quantity, 0) })).filter((x) => x.total > 0);
-    const unitSummaryText = unitSums.length ? unitSums.map((x) => `${formatNum(x.total)} ${x.u}`).join(' · ') : '0';
+    const list = reportData();
+    // 4 chỉ số độc lập phản ánh tổng quan tức thời: tổng đơn, đơn còn tồn, tỷ lệ xe có chuyến/tổng đội xe, và ticket sự cố đang mở
+    const remainingOrders = list.filter((o) => ['pending', 'assigned', 'running'].includes(o.status)).length;
+    const activeVehicles = state.vehicles.filter((v) => ['assigned', 'running'].includes(vehicleStatus(v))).length;
+    let ticketList = window.FleetWorkflow?.tickets?.();
+    if (!ticketList) {
+      try { ticketList = JSON.parse(localStorage.getItem('fleet-autopilot-workflow-v2') || '{}').tickets || []; } catch { ticketList = []; }
+    }
+    const openTickets = ticketList.filter((t) => t.status === 'open').length;
     const materials = [...new Set(list.map((o) => o.material))];
     const monthVehicles = state.vehicles.map((v) => {
       const trips = state.orders.filter((o) => o.plate === v.plate && o.status === 'completed').length;
       const st = v.availability === 'awaiting_check' ? `<button type="button" class="text-button" data-workflow-action="vehicle-ready" data-id="${esc(v.plate)}">Xác nhận sẵn sàng</button>` : badge(vehicleStatus(v));
       return `<tr><td><strong>${esc(v.plate)}</strong><small>${esc(v.type)}</small></td><td>${trips} chuyến</td><td>${st}</td></tr>`;
     }).join('');
-    const reportTabs = `<div class="v2-report-tabs" role="tablist" aria-label="Chuyển bảng báo cáo"><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'orders' ? 'active' : ''}" data-action="report-tab" data-id="orders" aria-selected="${reportTab === 'orders'}">Chi tiết trong kỳ (${list.length})</button><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'vehicles' ? 'active' : ''}" data-action="report-tab" data-id="vehicles" aria-selected="${reportTab === 'vehicles'}">Việc theo xe trong tháng (${state.vehicles.length})</button></div>`;
-    return pageHead('HIỆU QUẢ VẬN CHUYỂN', 'Báo cáo', 'Tổng hợp từ đơn hàng mẫu theo khoảng ngày; tách riêng từng đơn vị viên / kg / m³ (không cộng gộp sai đơn vị).', actionButton('Xuất báo cáo CSV', 'export-reports', null, 'primary'), 'chart') +
-      `<section class="panel v2-card-dark report-filters"><div class="filter-bar">${reportTabs}<label class="field"><span>Từ ngày</span><input id="report-from" type="date" value="${esc(reportFrom)}"></label><label class="field"><span>Đến ngày</span><input id="report-to" type="date" value="${esc(reportTo)}"></label><div class="report-filter-summary"><strong>${list.length} đơn trong kỳ</strong><small>Ngày minh họa: ${date(sampleDay)} · Không suy ra doanh thu/lợi nhuận</small></div></div>${reportFrom > reportTo ? '<p class="form-error" role="alert">Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.</p>' : ''}</section>
-      <div class="stats workspace-stats">${metric('Tổng đơn trong kỳ', list.length, 'order')}${metric('Đơn hoàn thành', done.length, 'layers')}${metric('Đã giao (theo đơn vị)', unitSummaryText, 'truck')}${metric('Tỷ lệ hoàn thành', list.length ? Math.round(done.length / list.length * 100) + '%' : '—', 'chart')}</div>
+    const reportTabs = `<div class="v2-report-tabs" role="tablist" aria-label="Chuyển bảng báo cáo"><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'orders' ? 'active' : ''}" data-action="report-tab" data-id="orders" aria-selected="${reportTab === 'orders'}">Chi tiết trong tháng (${list.length})</button><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'vehicles' ? 'active' : ''}" data-action="report-tab" data-id="vehicles" aria-selected="${reportTab === 'vehicles'}">Việc theo xe trong tháng (${state.vehicles.length})</button></div>`;
+    return pageHead('HIỆU QUẢ VẬN CHUYỂN', 'Báo cáo', 'Tổng hợp từ đơn hàng mẫu theo tháng; tách riêng từng đơn vị viên / kg / m³ (không cộng gộp sai đơn vị).', actionButton('Xuất báo cáo CSV', 'export-reports', null, 'primary'), 'chart') +
+      `<section class="panel v2-card-dark report-filters"><div class="filter-bar">${reportTabs}<label class="field"><span>Từ ngày</span><input id="report-from" type="date" value="${esc(reportFrom)}"></label><label class="field"><span>Đến ngày</span><input id="report-to" type="date" value="${esc(reportTo)}"></label><div class="report-filter-summary"><strong>${list.length} đơn trong tháng</strong><small>Ngày minh họa: ${date(sampleDay)} · Không suy ra doanh thu/lợi nhuận</small></div></div>${reportFrom > reportTo ? '<p class="form-error" role="alert">Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.</p>' : ''}</section>
+      <div class="stats workspace-stats">${metric('Tổng đơn trong tháng', list.length, 'order')}${metric('Đơn còn tồn', remainingOrders, 'chart')}${metric('Xe có chuyến', `${activeVehicles}/${state.vehicles.length}`, 'truck')}${metric('Ticket mở', openTickets, 'alert')}</div>
       <div class="workspace-columns equal"><section class="panel v2-card-light"><div class="panel-heading"><h2>${icon('truck')}Việc theo xe trong tháng</h2><span class="subtle">Tham khảo</span></div><div id="month-jobs" class="table-wrap"><table class="data-table"><thead><tr><th>Xe / loại</th><th>Hoàn thành T11</th><th>Trạng thái</th></tr></thead><tbody>${monthVehicles}</tbody></table></div><p class="section-note">Thống kê tham khảo tháng hiện tại; công thức đo công bằng còn chờ chốt.</p></section>
       <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('layers')}Số đơn theo vật liệu</h2><span class="subtle">Tách theo đơn vị chuẩn</span></div>${materials.map((m) => { const grp = list.filter((o) => o.material === m); const u = grp[0]?.unit || 'm³'; const q = grp.reduce((n, o) => n + o.quantity, 0); return `<div class="material-row"><div><strong>${esc(m)}</strong><span>${grp.length} đơn · ${formatNum(q)} ${esc(u)}</span></div><div class="bar-track"><i style="width:${list.length ? grp.length / list.length * 100 : 0}%"></i></div></div>`; }).join('') || '<p class="subtle">Không có dữ liệu.</p>'}<p class="section-note">Không cộng gộp viên, kg và m³ thành một tổng tải trọng khi chưa có hệ số quy đổi.</p></section></div>
-      <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('order')}Chi tiết trong kỳ</h2><span class="count-label">${list.length} đơn</span></div>${list.length ? ordersTable(list, false, true) : empty('Không có đơn trong kỳ đã chọn.')}</section>`;
+      <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('order')}Chi tiết trong tháng</h2><span class="count-label">${list.length} đơn</span></div>${list.length ? ordersTable(list, false, true) : empty('Không có đơn trong tháng đã chọn.')}</section>`;
   }
 
   function renderDispatch() {
@@ -546,6 +553,28 @@
 
   function details(o) {
     if (!o) return;
+    // Đọc ảnh xác nhận 2 đầu từ FleetRoles.snapshot().evidence nếu đơn đã phân xe
+    const allEv = (window.FleetRoles?.snapshot?.()?.evidence || []).filter((e) => e.order === o.id);
+    const pickupEv = allEv.filter((e) => e.kind === 'pickup');
+    const deliveryEv = allEv.filter((e) => e.kind !== 'pickup');
+    const renderProofSlot = (title, items, emptyText) => {
+      const latest = items[0];
+      return `<div class="detail-proof-card">
+        <span class="detail-proof-title">${title}</span>
+        ${latest
+          ? `<strong>${esc(latest.filename || 'Đã gửi ảnh')}</strong><small>${time(latest.at)}${latest.gps ? ` · GPS ${esc(latest.gps.lat)}, ${esc(latest.gps.lon)}` : ''}</small>`
+          : `<span class="detail-proof-empty">${emptyText}</span>`}
+      </div>`;
+    };
+    const proofSection = o.status !== 'pending'
+      ? `<div class="detail-proof-section">
+          <div class="detail-proof-heading">Ảnh xác nhận 2 đầu</div>
+          <div class="detail-proof-grid">
+            ${renderProofSlot('1. Ảnh lấy hàng (đầu nhận)', pickupEv, 'Chưa có ảnh đầu nhận')}
+            ${renderProofSlot('2. Ảnh giao hàng (đầu giao)', deliveryEv, 'Chưa có ảnh đầu giao')}
+          </div>
+        </div>`
+      : '';
     const extra = htmlNode(
       `<dl class="detail-grid">
         <div><dt>Nhóm khách ưu tiên</dt><dd>${esc(o.customerGroup || '—')}</dd></div>
@@ -556,12 +585,14 @@
         <div><dt>Hạn giao mẫu</dt><dd>${date(o.day)} · ${esc(o.slot || 'Chưa đặt giờ')} ${o.deadlineNote ? `(${esc(o.deadlineNote)})` : ''}</dd></div>
         <div><dt>Xe phụ trách</dt><dd>${esc(o.plate || 'Chưa phân xe')}${o.supportPlate ? ` · Xe hỗ trợ: ${esc(o.supportPlate)}` : ''}</dd></div>
       </dl>
+      ${proofSection}
       <div class="trip-status"><span>Trạng thái mẫu</span>${badge(o.status)}</div>
       ${o.note ? `<p class="modal-copy">${esc(o.note)}</p>` : ''}
       ${o.cancelReason ? `<p class="modal-copy">Lý do hủy/xóa: ${esc(o.cancelReason)}</p>` : ''}
       <div class="detail-actions">
         ${o.status === 'pending' ? actionButton('Chỉnh sửa', 'edit-order', o.id, 'secondary') + actionButton('Chuyển sang Điều phối →', 'dispatch-order', o.id, 'primary') : ''}
         ${['assigned', 'running'].includes(o.status) ? `<button type="button" class="primary" data-workflow-action="trip-review" data-id="${esc(o.id)}">Kiểm bằng chứng & ngoại lệ →</button>` : ''}
+        ${o.status === 'completed' ? `<button type="button" class="secondary" data-workflow-action="trip-review" data-id="${esc(o.id)}">Xem bằng chứng 2 đầu →</button>` : ''}
         ${o.status === 'pending' ? actionButton('Xóa / Hủy đơn (nhập xác nhận)', 'cancel-order', o.id, 'text-button danger-text') : ''}
       </div>`
     );
@@ -861,6 +892,13 @@
   window.addEventListener('resize', () => { centerMobileNav(); $$('#workspace-view .table-wrap').forEach((w) => { if (w.previousElementSibling?.classList.contains('table-scroll-hint')) w.previousElementSibling.hidden = w.scrollWidth <= w.clientWidth + 1; }); });
   document.fonts.ready.then(centerMobileNav);
 
+  // Cập nhật trực tiếp số Ticket mở khi workflow.js phát sự kiện đồng bộ, tránh gọi render() gây vòng lặp
+  window.addEventListener('fleet:workflow-sync', () => {
+    if (page !== 'reports') return;
+    const count = (window.FleetWorkflow?.tickets?.() || []).filter((t) => t.status === 'open').length;
+    const el = $('#workspace-view .stats .stat:last-child strong');
+    if (el) el.textContent = String(count);
+  });
   window.FleetPreview = { snapshot: () => state, openModal, toast, render, commit, setPage, qtyText, candidates, alerts, confirmDeleteOrder, cargoMatchesVehicle, labels, formatNum };
   render();
 })();

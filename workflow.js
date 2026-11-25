@@ -17,7 +17,8 @@
   const detail = (rows) => `<dl class="role-details">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v ?? '—')}</dd></div>`).join('')}</dl>`;
   const input = (label, name, value = '', type = 'text', attrs = '') => `<label>${label}<input name="${name}" type="${type}" value="${esc(value)}" required maxlength="150" ${attrs}></label>`;
   const qtyText = (o) => api.qtyText ? api.qtyText(o) : `${o?.quantity || 0} ${o?.unit || 'm³'}`;
-  const currentTrip = () => api.snapshot().orders.find((o) => o.status === 'running') || api.snapshot().orders.find((o) => o.status === 'assigned');
+  // Ưu tiên lấy chuyến theo đúng tài xế đang xem từ FleetRoles.driverTrip để không bị chuyến của tài xế khác che
+  const currentTrip = () => roles.driverTrip ? roles.driverTrip() : (api.snapshot().orders.find((o) => o.status === 'assigned') || api.snapshot().orders.find((o) => o.status === 'running'));
 
   function seedTickets() {
     return {
@@ -318,7 +319,7 @@
     if (!o) return;
     const allEv = roles.snapshot().evidence.filter((e) => e.order === o.id);
     const pickupEv = allEv.filter((e) => e.kind === 'pickup');
-    const deliveryEv = allEv.filter((e) => e.kind !== 'pickup');
+    const deliveryEv = allEv.filter((e) => e.kind === 'delivery');
     const veh = api.snapshot().vehicles.find((v) => v.plate === o.plate);
     const evList = (items, emptyText) => items.map((e) => `<div class="role-row"><div><strong>${esc(e.filename)}</strong><small>${clock(e.at)} · GPS điện thoại: ${esc(e.gps?.lat)}, ${esc(e.gps?.lon)}</small></div></div>`).join('') || `<p class="workflow-note">${emptyText}</p>`;
 
@@ -334,7 +335,8 @@
       `<h3>1. Ảnh đầu nhận hàng (Pickup)</h3>${evList(pickupEv, 'Chưa có ảnh đầu nhận từ tài xế.')}` +
       `<h3>2. Ảnh đầu giao hàng (Delivery)</h3>${evList(deliveryEv, 'Chưa có ảnh đầu giao từ tài xế.')}` +
       `<div class="workflow-inline-actions">
-        ${role() === 'dispatch' && (stage(o) === 'delivered' || o.status === 'running') ? btn('Duyệt hoàn thành', 'trip-approve', o.id, 'primary') + btn('Yêu cầu bổ sung bằng chứng', 'trip-supplement', o.id) : ''}
+        ${role() === 'dispatch' && stage(o) === 'delivered' && pickupEv.length && deliveryEv.length ? btn('Duyệt hoàn thành', 'trip-approve', o.id, 'primary') : ''}
+        ${role() === 'dispatch' && o.status === 'running' ? btn('Yêu cầu bổ sung bằng chứng', 'trip-supplement', o.id) : ''}
         ${role() === 'dispatch' && ['running', 'assigned'].includes(o.status) ? btn('Xử lý ngoại lệ (4 nhánh)', 'trip-exception', o.id) : ''}
         ${role() === 'dispatch' && veh?.availability === 'awaiting_check' ? btn('Xác nhận xe sẵn sàng', 'vehicle-ready', veh.plate, 'primary') : ''}
       </div>
@@ -585,8 +587,8 @@
     if (action === 'ticket-close' && role() === 'dispatch') {
       modal('Đóng ticket', `<form class="role-form"><label>Kết quả / lý do đóng<textarea name="resolution" required maxlength="1000"></textarea></label><p class="workflow-note">Lưu hồ sơ chỉ đọc và khóa hội thoại. Không tự hoàn thành chuyến hoặc giải phóng xe.</p><button class="primary">Đóng & lưu hồ sơ</button></form>`, (f) => closeTicket(id, f.get('resolution')));
     }
-    if (action === 'trip-accept' && o && o.status === 'assigned') changeTrip(o, 'Tài xế nhận chuyến', () => { o.status = 'running'; o.workflowStage = 'accepted'; });
-    if (action === 'trip-decline' && o && o.status === 'assigned') {
+    if (action === 'trip-accept' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'assigned') changeTrip(o, 'Tài xế nhận chuyến', () => { o.status = 'running'; o.workflowStage = 'accepted'; });
+    if (action === 'trip-decline' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'assigned') {
       modal('Từ chối chuyến ' + o.id, `<form class="role-form"><label>Lý do từ chối<textarea name="reason" required maxlength="500"></textarea></label><label>Gõ "TU CHOI" để xác nhận chủ ý<input name="confirmWord" required placeholder="TU CHOI"></label><p id="dec-err" class="form-error" hidden></p><button class="primary">Gửi phản hồi</button></form>`, (f, form) => {
         const reason = String(f.get('reason') || '').trim(), word = String(f.get('confirmWord') || '').trim().toUpperCase();
         if (word !== 'TU CHOI' && word !== 'TỪ CHỐI') { form.querySelector('#dec-err').hidden = false; form.querySelector('#dec-err').textContent = 'Vui lòng gõ "TU CHOI" để xác nhận.'; return false; }
@@ -594,27 +596,28 @@
         changeTrip(o, 'Từ chối chuyến · ' + reason, () => { o.status = 'pending'; o.workflowStage = 'awaiting'; o.previousPlate = o.plate; o.plate = ''; });
       });
     }
-    if (action === 'trip-pickup' && o && o.status === 'running' && stage(o) === 'accepted') {
+    if (action === 'trip-pickup' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'running' && stage(o) === 'accepted') {
       modal('Xác nhận lấy hàng', `<form class="role-form">${input(`Số lượng thực nhận (${o.unit || 'm³'})`, 'quantity', o.quantity, 'number')}<p class="workflow-note">Ghi số lượng thực tế và chụp ảnh đầu nhận. Chênh lệch trao đổi với Điều phối.</p><button class="primary">Xác nhận đã lấy hàng</button></form>`, (f) => {
         const amount = Number(f.get('quantity'));
         if (!Number.isFinite(amount) || amount <= 0) return false;
-        changeTrip(o, 'Đã lấy hàng', () => { o.actualQuantity = amount; o.workflowStage = 'picked_up'; });
+        changeTrip(o, 'Khai báo lượng thực lấy; chờ ảnh đầu nhận', () => { o.actualQuantity = amount; });
+        setTimeout(() => roles.openCapture('pickup'), 0);
       });
     }
-    if (action === 'trip-evidence' && o && ['picked_up', 'needs_more'].includes(stage(o))) { roles.openCapture(); const form = $('#evidence-form'); if (form) form.dataset.delivery = 'true'; }
+    if (action === 'trip-evidence' && role() === 'driver' && o?.id === currentTrip()?.id && ['picked_up', 'needs_more'].includes(stage(o))) roles.openCapture('delivery');
     if (action === 'trip-list') {
       modal('Kiểm tra chuyến & Bằng chứng 2 đầu', api.snapshot().orders.filter((x) => ['assigned', 'running'].includes(x.status)).map((x) => `<div class="role-row"><div><strong>${esc(x.id)} · ${esc(x.plate)}</strong><small>${esc(x.material)} (${esc(qtyText(x))}) · ${esc(stageNames[stage(x)])}</small></div>${btn('Xem bằng chứng 2 đầu', 'trip-review', x.id, 'primary')}</div>`).join('') || '<p>Không có chuyến cần kiểm tra.</p>');
     }
     if (action === 'trip-review') tripReview(o);
     if (action === 'trip-exception') openException(o);
-    if (action === 'trip-supplement' && o) {
+    if (action === 'trip-supplement' && role() === 'dispatch' && o && o.status === 'running') {
       modal('Yêu cầu bổ sung bằng chứng', `<form class="role-form"><label>Nội dung cần bổ sung (đầu nhận / đầu giao / GPS)<textarea name="note" required maxlength="500"></textarea></label><button class="primary">Gửi yêu cầu</button></form>`, (f) => {
         const note = String(f.get('note') || '').trim();
         if (!note) return false;
         changeTrip(o, 'Yêu cầu bổ sung bằng chứng', () => { o.workflowStage = 'needs_more'; o.evidenceNote = note; });
       });
     }
-    if (action === 'trip-approve' && o) {
+    if (action === 'trip-approve' && role() === 'dispatch' && o && o.status === 'running' && stage(o) === 'delivered' && ['pickup', 'delivery'].every((kind) => roles.snapshot().evidence.some((e) => e.order === o.id && e.kind === kind))) {
       modal('Duyệt hoàn thành ' + o.id, `<form class="role-form"><label class="workflow-check"><input type="checkbox" name="enough" required>Đã đối chiếu ảnh 2 đầu (đầu nhận + đầu giao) và GPS điện thoại</label><label class="workflow-check"><input type="checkbox" name="ready">Xác nhận xe ${esc(o.plate)} sẵn sàng nhận đơn tiếp theo</label><p class="workflow-note">Nếu chưa tích xác nhận sẵn sàng, xe chuyển sang trạng thái Chờ kiểm tra (không tự coi xe đã về bãi).</p><button class="primary">Duyệt hoàn thành chuyến</button></form>`, (f) => {
         if (!f.has('enough')) return false;
         changeTrip(o, 'Điều phối duyệt hoàn thành', () => {
@@ -626,7 +629,7 @@
         });
       });
     }
-    if (action === 'vehicle-ready') {
+    if (action === 'vehicle-ready' && role() === 'dispatch') {
       const v = api.snapshot().vehicles.find((x) => x.plate === id);
       if (v) modal('Xác nhận xe sẵn sàng', `<form class="role-form"><label class="workflow-check"><input type="checkbox" name="ready" required>Đã kiểm tra xe ${esc(id)} sẵn sàng nhận chuyến mới</label><button class="primary">Xác nhận sẵn sàng</button></form>`, () => { v.availability = 'ready'; api.commit('Xác nhận xe sẵn sàng', id); });
     }
@@ -653,12 +656,15 @@
     }
   }, true);
 
-  window.addEventListener('fleet:evidence-saved', () => {
-    const o = currentTrip(), evidence = roles.snapshot().evidence[0];
-    if (!o || !evidence || !['picked_up', 'needs_more'].includes(stage(o))) return;
-    evidence.kind = 'delivery';
-    roles.save();
-    changeTrip(o, 'Gửi bằng chứng giao hàng', () => { o.workflowStage = 'delivered'; });
+  window.addEventListener('fleet:evidence-saved', (event) => {
+    const { order, kind } = event.detail || {};
+    const o = api.snapshot().orders.find((item) => item.id === order);
+    if (!o || o.status !== 'running') return;
+    if (kind === 'pickup' && stage(o) === 'accepted' && o.actualQuantity > 0) {
+      changeTrip(o, 'Đã lấy hàng và lưu ảnh đầu nhận', () => { o.workflowStage = 'picked_up'; });
+    } else if (kind === 'delivery' && ['picked_up', 'needs_more'].includes(stage(o))) {
+      changeTrip(o, 'Gửi bằng chứng giao hàng', () => { o.workflowStage = 'delivered'; });
+    }
   });
   document.addEventListener('input', (e) => { if (e.target.id === 'ticket-message') composeDraft = e.target.value; });
   document.addEventListener('keydown', (e) => { const marker = e.target.closest('.admin-marker'); if (marker && ['Enter', ' '].includes(e.key)) { e.preventDefault(); adminPlate = marker.dataset.id; roles.render(); } });

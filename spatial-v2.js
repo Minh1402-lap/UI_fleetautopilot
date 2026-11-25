@@ -1103,10 +1103,15 @@
       return;
     }
     if (action === 'focus-order') {
+      // Cập nhật trực tiếp selectedOrder trên state sống để không bị kẹt khi #dispatch-order chưa nạp option
+      const s = api.snapshot();
+      if (s && id) s.selectedOrder = id;
       const picker = $('#dispatch-order');
       if (picker && [...picker.options].some((o) => o.value === id)) {
         picker.value = id;
         picker.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        api.render?.();
       }
       sync();
       return;
@@ -1197,10 +1202,14 @@
       const action = actBtn.dataset.v2Action;
       const id = actBtn.dataset.id || '';
       if (action === 'focus-order') {
+        const s = api.snapshot();
+        if (s && id) s.selectedOrder = id;
         const picker = $('#dispatch-order');
         if (picker && [...picker.options].some((o) => o.value === id)) {
           picker.value = id;
           picker.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+          api.render?.();
         }
         sync();
       } else if (action === 'ai-suggest') {
