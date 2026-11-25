@@ -1,131 +1,77 @@
-# Fleet Autopilot
+# Fleet Autopilot — UI Prototype
 
-Giao diện quản lý điều phối vận chuyển vật liệu: tiếp nhận đơn hàng, phân xe và theo dõi quá trình thực hiện trong một không gian làm việc thống nhất.
+Prototype giao diện điều phối vận chuyển vật liệu xây dựng (HTML, CSS và JavaScript thuần — không cần `npm install` hay bước build).
 
-> **Kho UI chuẩn đã chốt.** Giao diện và bốn nền là chuẩn để phát triển các trang tiếp theo. Các thao tác hiện sử dụng dữ liệu mẫu lưu trên trình duyệt; chưa kết nối backend, AI, GPS thực tế, đăng nhập hoặc phân quyền.
+> **Lưu ý phạm vi:** Đây là kho giao diện thử nghiệm chạy dữ liệu mẫu trong trình duyệt (`localStorage`), chưa kết nối backend, xác thực thật, GPS Taris, AI hay Google Maps API. Ứng dụng sản phẩm Next.js nằm ở repository riêng.
 
-![Bốn nền UI chuẩn Fleet Autopilot](docs/ui-standard/2026-11-16/four-themes.png)
-
-## UI chuẩn đã chốt
-
-Hình thức và cả bốn nền được chốt ngày 16/11/2026 làm chuẩn cho các trang tiếp theo. Xem [tài liệu UI chuẩn](UI_STANDARD.md) và [bộ ảnh bốn nền](docs/ui-standard/2026-11-16/four-themes.png). Kế thừa font, màu, lớp kính và thành phần hiện có khi thêm trang; các thay đổi thiết kế cần ảnh xem trước được duyệt.
-
-## Tính năng
-
-| Màn hình | Chức năng trong bản thử |
-| --- | --- |
-| Tổng quan | Số liệu vận hành, đơn cần xử lý, cảnh báo và hoạt động gần đây. |
-| Đơn hàng | Tạo/sửa đơn chờ, tìm kiếm không dấu, lọc trạng thái và ngày, xem chi tiết, hủy mẫu và xuất CSV. |
-| Điều phối | Chọn đơn và xe, xem trước phân công, bắt đầu và hoàn thành chuyến mẫu. |
-| Xe & tài xế | Hai danh sách liên kết, thêm/sửa, lọc và xuất CSV từng danh sách. |
-| GPS | Chọn xe, lọc tín hiệu, phóng to sơ đồ và cập nhật vị trí mô phỏng. |
-| Báo cáo | Tổng hợp số đơn, khối lượng đã giao và tỷ lệ hoàn thành theo khoảng ngày; biểu đồ và xuất CSV. |
+---
 
 ## Chạy trên máy cá nhân
 
-Dự án sử dụng HTML, CSS và JavaScript thuần, không cần cài thư viện hoặc chạy bước build.
-
-Mở terminal tại thư mục `UI`, chạy lệnh dưới đây. Máy cần Node/npm và Python 3; không cần `npm install`:
+Mở terminal tại thư mục `UI/` (yêu cầu Python 3):
 
 ```bash
 npm run dev
+# hoặc: python -m http.server 8083 --bind 127.0.0.1
 ```
 
-Mở [System Admin — Đen hổ phách](http://localhost:8083/?role=admin_system&theme=amber) hoặc [Điều phối — Đen hổ phách](http://localhost:8083/?role=dispatch&theme=amber). Giữ terminal mở; nhấn `Ctrl+C` để dừng.
+Truy cập `http://127.0.0.1:8083/`. Nhấn `Ctrl + C` để dừng máy chủ.
 
-Hoặc khởi động trực tiếp bằng Python 3:
+---
 
-```bash
-python -m http.server 8083 --bind 127.0.0.1
-```
+## Quy chuẩn giao diện hiện hành
 
-Nếu máy dùng lệnh `python3`:
-
-```bash
-python3 -m http.server 8083 --bind 127.0.0.1
-```
-
-Mở [trang Tổng quan](http://127.0.0.1:8083/?page=overview) trên trình duyệt. Nhấn `Ctrl+C` trong terminal để dừng máy chủ.
-
-Có thể dùng máy chủ HTTP tĩnh khác thay Python. Ứng dụng không yêu cầu backend.
-
-## Bốn nền giao diện
-
-| Giao diện | Khóa URL | Đặc điểm |
-| --- | --- | --- |
-| Sáng | `light` | Trắng khói, chữ tối, lớp kính nhẹ. |
-| Tối | `dark` | Đen xám trung tính, chữ sáng. |
-| Đen hổ phách | `amber` | Đen sâu, ánh hổ phách nhẹ, mép kính và nút champagne. |
-| Rêu Lime | `moss` | Nền rêu tối, điểm nhấn lime và lớp kính dịu. |
-
-Các nền dùng chung bố cục, lớp kính trong mờ và nền chuyển sắc. Menu máy tính thu gọn thành biểu tượng, mở rộng khi di chuột hoặc điều hướng bằng bàn phím; thiết bị cảm ứng giữ tên mục. Có hỗ trợ giảm chuyển động và giảm độ trong suốt.
-
-Trạng thái chuyến dùng **chấm màu và chữ**, không dùng khung màu: xanh dương cho đang chạy, xanh lá cho hoàn thành và vàng cho chờ xử lý.
-
-## Điều hướng bằng URL
-
-| Màn hình | Tham số `page` |
+| Thành phần | Quy chuẩn đang áp dụng |
 | --- | --- |
-| Tổng quan | `overview` |
-| Đơn hàng | `orders` |
-| Điều phối | `dispatch` |
-| Xe & tài xế | `fleet` |
-| GPS | `gps` |
-| Báo cáo | `reports` |
+| **PC (`>= 760px`)** | **Mẫu 2 — Spatial UI Hai tông Matte Mineral** (Bento chính + trang con đồng bộ, sidebar pill nổi co/mở bên trái) cho `dispatch`, `admin`, `system_admin`. |
+| **Phone (`< 760px`)** | Thanh điều hướng đáy **vòm chuông Bezier SVG**: Tài xế 3 tab (`Bản đồ / Chuyến / Ticket`), 3 vai trò quản lý 4 tab. |
+| **Nền màu** | 4 nền (`light`, `dark`, `amber`, `moss`) cho quản lý; Tài xế dùng 2 nền (`light`, `dark`). |
+| **Nhãn trạng thái** | Pill bo tròn (`border-radius: 999px`) đồng bộ; 4 thẻ đáy Bento xen kẽ thẻ sáng (pill đặc) và thẻ tối (chấm màu). |
+| **Typography & Icon** | Font **Quicksand** upright (`h1–h4` weight `600`) lưu cục bộ tại `assets/fonts/`; icon UI lấy từ `@mui/icons-material` qua registry trong `index.html`. |
 
-Kết hợp màn hình và giao diện, ví dụ:
+---
 
-```text
-http://127.0.0.1:8083/?page=orders&theme=moss
-```
+## Điều hướng nhanh qua URL
 
-Khi không có tham số `page`, ứng dụng mở màn Điều phối. Nút Back/Forward đồng bộ với trang và nền; lựa chọn nền được ghi nhớ trên trình duyệt.
+| Tham số | Giá trị chính |
+| --- | --- |
+| `role` | `dispatch` (Điều phối) · `driver` (Tài xế) · `admin` (Quản lý vận hành) · `system_admin` (Quản trị hệ thống) |
+| `theme` | `light` · `dark` · `amber` · `moss` |
+| `ui` | `v2` (Mẫu 2 — mặc định) · `v1` · `v3` |
+| `page` | `overview` · `orders` · `dispatch` · `fleet` · `gps` · `reports` |
 
-## Luồng dùng thử
-
-1. Vào **Đơn hàng**, tạo đơn với vật liệu, khối lượng tính bằng tấn và hành trình.
-2. Chọn **Phân xe**, xem các xe mẫu phù hợp và chọn xe thực hiện.
-3. Chọn **Duyệt phân công**, kiểm tra đơn và xe trước khi xác nhận mô phỏng.
-4. Bắt đầu rồi hoàn thành chuyến mẫu trong phần xem phân công.
-5. Xem số liệu thay đổi ở **Tổng quan**, **Xe & tài xế** và **Báo cáo**; xuất CSV nếu cần.
-
-Biểu mẫu kiểm tra trường bắt buộc, khối lượng dương và biển số trùng. Lỗi hiển thị ngay trong biểu mẫu, kể cả khi tắt thông báo nổi. Xe đang thực hiện đơn được giữ nguyên tài xế, tải trọng và tình trạng để dữ liệu mẫu nhất quán.
-
-## Dữ liệu mẫu và phạm vi
-
-Bộ dữ liệu ban đầu có **5 đơn hàng, 6 xe và 6 tài xế**, với ngày minh họa **15–16/11/2026**. Số liệu các màn hình được tính từ cùng một bộ dữ liệu.
-
-Dữ liệu lưu bằng `localStorage`, với khóa `fleet-autopilot-workspace-v2`, theo từng trình duyệt và địa chỉ truy cập. Tải lại trang giữ các thay đổi; xóa dữ liệu trang web sẽ xóa dữ liệu đã lưu. Nút **Khôi phục dữ liệu mẫu** ở cuối trang cho phép khôi phục bộ mẫu sau khi xác nhận. Khôi phục thay thế dữ liệu và các tùy chọn mẫu, giữ lựa chọn nền hiện tại.
-
-Vị trí, tín hiệu GPS, ETA, cảnh báo và gợi ý xe đều là mô phỏng. Phân công không gửi thông báo cho tài xế hoặc tạo chuyến thực tế. Báo cáo chỉ tổng hợp vận chuyển, chưa có giá cước hay công nợ. Quy trình nghiệp vụ và quyền người dùng cần được chốt trước khi kết nối hệ thống thật.
-
-Hình thức của bốn giao diện đã được chốt làm UI chuẩn. Ứng dụng vẫn là bản thử nghiệm về chức năng; chỉ chuyển sang **Final** khi có yêu cầu phê duyệt rõ ràng. Xem trạng thái tại [DESIGN_STATUS.json](DESIGN_STATUS.json).
-
-## Cấu trúc mã nguồn
+Ví dụ:
 
 ```text
-.
-├── index.html          # Khung ứng dụng và màn Điều phối
-├── workspace.js        # Điều hướng, dữ liệu và thao tác của bảy màn hình
-├── workspace.css       # Bố cục trang quản lý và biểu mẫu
-├── theme.js            # Chọn nền, lưu lựa chọn và đồng bộ URL
-├── styles.css          # Kiểu chung, nền sáng/tối và thanh menu
-├── amber.css           # Bảng màu cơ sở Đen hổ phách
-├── amber-premium.css   # Mẫu đen sâu và champagne đã chọn
-├── moss.css            # Nền Rêu Lime
-├── translucent.css     # Lớp nền và hiệu ứng trong mờ
-├── assignment.css      # Hộp duyệt phân công
-├── assets/fonts/       # Font tự lưu trữ và giấy phép font
-├── docs/images/        # Ảnh giới thiệu trong README
-└── DESIGN_STATUS.json  # Trạng thái thử nghiệm và phạm vi hiện tại
+http://127.0.0.1:8083/?role=dispatch&theme=dark&ui=v2&page=orders
+http://127.0.0.1:8083/?role=driver&theme=light
 ```
 
-`workspace.js` là mã ứng dụng đang được nạp. Tệp `app.js` được giữ lại từ bản Điều phối cũ và không được nạp trong giao diện hiện tại.
+---
 
-Từ 18/11/2026, UI thử nghiệm dùng **Quicksand chữ đứng cho toàn bộ vai trò**: tiêu đề, bảng, nút, mã và số liệu. Ba tập ký tự Vietnamese / Latin Extended / Latin được lưu tại `assets/fonts/`, không tải font từ dịch vụ ngoài. Xem [giấy phép Quicksand](assets/fonts/Quicksand-OFL.txt).
+## Cấu trúc mã nguồn chính
 
-System Admin chỉ còn giao diện chuẩn kế thừa bốn nền và lớp kính của Điều phối. Đã bỏ hai kiểu Terminal Kali / Hacker và bộ chọn phiên bản; các URL và lựa chọn Terminal cũ được dọn bằng `system-presentation.js`. Công cụ kiểm tra dữ liệu mẫu trong bản chuẩn vẫn được giữ.
+```text
+UI/
+├── index.html                  # Khung ứng dụng, preload font và registry icon MUI
+├── spatial-v2.js / .css        # Giao diện Bento & trang con Mẫu 2 (PC)
+├── workspace.js / .css         # Dữ liệu mẫu, Đơn hàng, Điều phối, Xe & tài xế, GPS, Báo cáo
+├── roles.js / .css             # Chuyển vai trò mẫu, màn Tài xế, Admin & System Admin
+├── workflow.js / .css          # Luồng duyệt phân công V1, bằng chứng 2 đầu, Ticket & ngoại lệ
+├── governance.js / .css        # Lịch sử thay đổi, khôi phục tài khoản, bảo trì & điều khiển
+├── security.js / .css          # Giám sát an ninh & nhật ký hệ thống
+├── driver-phone.js / .css      # Giao diện Phone Tài xế (< 760px)
+├── management-phone.js / .css  # Giao diện Phone Điều phối / Admin / System Admin (< 760px)
+├── theme.js / theme-picker.*   # Chuyển nền & hiệu ứng lan màu
+├── typography.css              # Thiết lập font Quicksand
+├── status-badges.css           # Chuẩn badge trạng thái pill bo tròn
+└── assets/                     # Font Quicksand, logo và giấy phép tài sản
+```
 
-## Cập nhật 17/11/2026: bỏ Cài đặt
+---
 
-Đã bỏ trang và menu Cài đặt theo yêu cầu người dùng. Điều phối còn sáu trang; đường dẫn `?page=settings` cũ quay về Điều phối. Bộ chọn nền và vai trò vẫn nằm trên thanh đầu trang.
+## Nghiệp vụ phản ánh trên bản thử
+
+- **Đơn vị hàng:** gạch tính theo `viên`, cát/đá nhà máy theo `kg`, cát/đá thông thường theo `m³`; khoảng cách theo `km` (`≤100 km`, dự kiến tính từ tuyến Google Maps giữa Điểm lấy và Điểm giao).
+- **Phân công & xác nhận:** V1 Điều phối duyệt mọi phân công; một xe nhận đơn tiếp theo khi hoàn thành; Tài xế có nút *Báo xe sẵn sàng* trên Phone nhưng Điều phối duyệt mới xác thực được xe sẵn sàng.
+- **Khôi phục dữ liệu mẫu:** Nút **Khôi phục dữ liệu mẫu** ở cuối trang đặt lại dữ liệu lưu trong `localStorage` của trình duyệt.
