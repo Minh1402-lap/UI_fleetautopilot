@@ -67,7 +67,8 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-trip-tools > p { margin: 5px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .phone-proof-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .phone-proof-actions button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 82px !important; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); font-size: 12px !important; font-weight: 600 !important; }
-.phone-trip-tools .phone-emergency { width: 100%; margin-top: 12px; }
+.phone-trip-tools .phone-ready-report { width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--rim); border-radius: 15px; background: var(--nested); color: var(--ink); font-size: 13px !important; font-weight: 600 !important; }
+.phone-trip-tools .phone-emergency { width: 100%; margin-top: 10px; }
 /* Thanh điều hướng đáy Tài xế kiểu vòm chuông không đường đáy, hai chân vòm mờ dần xuống mép dưới dock. Màu lấy --action của nền Sáng/Tối; vòm rộng đúng một cột và trượt theo --phone-nav-index. */
 .phone-nav { --phone-nav-line: var(--action); --phone-nav-pad: 8px; --phone-nav-gap: 4px; position: absolute; z-index: 6; isolation: isolate; left: 10px; right: 10px; bottom: max(7px, env(safe-area-inset-bottom)); height: 62px; overflow: hidden; border-radius: 999px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: var(--phone-nav-gap); padding: 5px var(--phone-nav-pad); }
 .phone-nav::after { display: none; }

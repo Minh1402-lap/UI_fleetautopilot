@@ -70,6 +70,7 @@
           <button type="button" data-phone-screen="pickup">${camera}<span>Ảnh lấy hàng</span></button>
           <button type="button" data-phone-screen="delivery">${camera}<span>Ảnh giao hàng</span></button>
         </div>
+        <button type="button" class="phone-ready-report" data-phone-action="report-ready">${icon('truck')}<span>Báo xe sẵn sàng</span></button>
         ${emergency()}
       </section>
     </section>`;
@@ -300,6 +301,7 @@
     if (action === 'emergency') showUnavailable('Chưa gửi được cảnh báo vì chưa kết nối. Hãy liên hệ Điều phối qua kênh đang dùng.');
     if (action === 'accept') showUnavailable('Chưa thể nhận chuyến vì dịch vụ phân công chưa kết nối.');
     if (action === 'reject') showUnavailable('Chưa thể từ chối chuyến vì dịch vụ phân công chưa kết nối.');
+    if (action === 'report-ready') showUnavailable('Chưa gửi được yêu cầu báo xe sẵn sàng vì chưa kết nối. Điều phối duyệt mới xác thực được xe sẵn sàng.');
     if (['zoom-in', 'zoom-out', 'recenter'].includes(action)) {
       zoom = action === 'recenter' ? 1 : Math.max(1, Math.min(1.8, Math.round((zoom + (action === 'zoom-in' ? 0.2 : -0.2)) * 10) / 10));
       updateZoom();

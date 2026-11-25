@@ -21,7 +21,7 @@
     completed: 'Hoàn thành',
     cancelled: 'Đã hủy',
     ready: 'Sẵn sàng',
-    awaiting_check: 'Chờ xác nhận sẵn sàng',
+    awaiting_check: 'Chờ Điều phối xác nhận sẵn sàng',
     maintenance: 'Bảo trì',
     fresh: 'Có tín hiệu mẫu',
     stale: 'Chưa cập nhật',
@@ -661,9 +661,9 @@
         field('Vật liệu (không có xi măng)', 'material', o?.material || '', 'text', 'required maxlength="80" placeholder="Gạch Block / Cát xây dựng / Đá 1×2"') +
         field('Số lượng', 'quantity', o?.quantity || '', 'number', 'required min="1" max="100000" step="any"') +
         `<label class="field"><span>Đơn vị chuẩn</span><select name="unit">${units.map((u) => `<option value="${esc(u)}" ${(o?.unit || 'm³') === u ? 'selected' : ''}>${esc(u)} (${u === 'viên' ? 'Gạch' : u === 'kg' ? 'Cát/đá nhà máy' : 'Cát/đá thường'})</option>`).join('')}</select></label>` +
-        field('Khoảng cách giao (km, ≤100 km)', 'distanceKm', o?.distanceKm || 20, 'number', 'required min="1" max="200" step="1"') +
-        field('Điểm lấy', 'from', o?.from || '', 'text', 'required maxlength="150"') +
-        field('Điểm giao', 'to', o?.to || '', 'text', 'required maxlength="150"') +
+        field('Điểm lấy hàng', 'from', o?.from || '', 'text', 'required maxlength="150" placeholder="VD: Mỏ Long Phước"') +
+        field('Điểm giao / nhận hàng', 'to', o?.to || '', 'text', 'required maxlength="150" placeholder="VD: Công trình Bình An"') +
+        `<p class="subtle full-field" style="margin:0">${o?.distanceKm ? `Khoảng cách tuyến hiện tại: ${o.distanceKm} km (tự tính từ Google Maps).` : 'Khoảng cách (km, ≤100 km) tự tính sau khi Google Maps vẽ đường từ Điểm lấy → Điểm giao.'}</p>` +
         field('Ngày giao dự kiến', 'day', o?.day || sampleDay, 'date', 'required') +
         field('Giờ hẹn giao', 'slot', o?.slot || '', 'time') +
         `<label class="field full-field"><span>Hạn giao / ghi chú Sale</span><textarea name="note" rows="2" maxlength="500" placeholder="VD: Giao trong 2 ngày, tối đa 5 ngày...">${esc(o?.note || '')}</textarea></label>`,
@@ -677,12 +677,7 @@
           formError('Xi măng nằm ngoài phạm vi vật liệu hiện tại (gạch, cát, đá, đất).');
           return false;
         }
-        const dist = Number(values.distanceKm);
-        if (!Number.isFinite(dist) || dist <= 0) { formError('Vui lòng nhập khoảng cách giao hợp lệ (km).'); return false; }
-        if (dist > 100) {
-          formError('Điểm giao vượt quá phạm vi ≤100 km từ công ty (cần xác nhận ngoại lệ ngoài phạm vi).');
-          return false;
-        }
+        const dist = o?.distanceKm ?? null;
         for (const k of ['material', 'from', 'to']) {
           if (!values[k].trim()) { formError('Vui lòng nhập đầy đủ vật liệu, điểm lấy và điểm giao.'); return false; }
         }
@@ -710,7 +705,7 @@
         field('Sức chứa hiển thị (VD: 15 m³ / 10.000 viên)', 'capacityText', v?.capacityText || '15 m³', 'text', 'required maxlength="40"') +
         field('Mã IMEI GPS Taris (mẫu)', 'imei', v?.imei || '', 'text', 'maxlength="30"') +
         `<label class="field"><span>Tài xế</span><select name="driverId" ${busy ? 'disabled' : ''}><option value="">Chưa gán</option>${state.drivers.filter((d) => d.id === v?.driverId || !state.vehicles.some((x) => x.driverId === d.id)).map((d) => `<option value="${esc(d.id)}" ${v?.driverId === d.id ? 'selected' : ''}>${esc(d.name)}</option>`).join('')}</select></label>` +
-        `<label class="field full-field"><span>Tình trạng xe</span><select name="availability" ${busy ? 'disabled' : ''}><option value="ready" ${v?.availability === 'ready' ? 'selected' : ''}>Sẵn sàng</option><option value="awaiting_check" ${v?.availability === 'awaiting_check' ? 'selected' : ''}>Chờ xác nhận sẵn sàng</option><option value="maintenance" ${v?.availability === 'maintenance' ? 'selected' : ''}>Bảo trì</option></select>${busy ? '<small>Xe có đơn đang thực hiện; loại xe, tài xế và tình trạng được giữ nguyên.</small>' : ''}</label>`,
+        `<label class="field full-field"><span>Tình trạng xe</span><select name="availability" ${busy ? 'disabled' : ''}><option value="ready" ${v?.availability === 'ready' ? 'selected' : ''}>Sẵn sàng</option><option value="awaiting_check" ${v?.availability === 'awaiting_check' ? 'selected' : ''}>Chờ Điều phối xác nhận sẵn sàng</option><option value="maintenance" ${v?.availability === 'maintenance' ? 'selected' : ''}>Bảo trì</option></select>${busy ? '<small>Xe có đơn đang thực hiện; loại xe, tài xế và tình trạng được giữ nguyên.</small>' : ''}</label>`,
       (data) => {
         const values = Object.fromEntries(data);
         values.plate = values.plate.trim().toUpperCase();

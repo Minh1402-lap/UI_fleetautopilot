@@ -687,6 +687,23 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     background: rgba(10, 14, 18, 0.56) !important;
     border-color: rgba(255, 255, 255, 0.24) !important;
   }
+  /* Giữ màu chữ/nền dropdown native luôn tương phản khi <select> nằm trong thẻ tối hoặc thẻ sáng ở cả 4 nền */
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-dark select {
+    color-scheme: dark;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-dark select option,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-dark select optgroup {
+    background-color: #18202c !important;
+    color: #eef3f8 !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-light select {
+    color-scheme: light;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-light select option,
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .v2-card-light select optgroup {
+    background-color: #f4f7fb !important;
+    color: #18222c !important;
+  }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-dark, .admin-maint-sub.v2-card-dark) :is(input, textarea)::placeholder {
     color: var(--v2-dark-muted) !important;
     opacity: 0.9;
@@ -920,7 +937,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     position: sticky;
     top: 0;
     z-index: 2;
-    background: var(--v2-sub-panel-bg, #161c24);
+    background: var(--v2-dark-bg, #161c24);
   }
 
   /* 2) Trang Xe & tài xế: 1 bảng rộng thoáng theo tab Đội xe / Tài xế + 2 thẻ phân tích cân đối bên phải */
