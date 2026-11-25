@@ -27,10 +27,11 @@
           <g class="phone-map-blocks"><path d="M12 20h76v82H12z M115 12h88v70h-88z M232 20h67v92h-67z M322 23h58v72h-58z M8 133h70v86H8z M109 116h86v74h-86z M225 140h69v74h-69z M314 130h66v91h-66z M15 244h84v71H15z M119 230h72v96h-72z M220 248h64v75h-64z M10 350h78v83H10z M112 352h71v71h-71z M217 344h76v88h-76z M318 340h62v83h-62z M18 458h84v85H18z M132 449h70v96h-70z M238 448h64v88h-64z M322 462h60v82h-60z M8 574h78v108H8z M112 570h78v100h-78z M220 568h75v110h-75z M320 570h62v105h-62z"/></g>
           <path class="phone-map-river" d="M417 120C303 178 353 242 287 310S220 426 259 750"/>
           <g class="phone-map-streets"><path d="M-20 114 410 104 M-20 224 410 232 M-20 335 410 347 M-20 449 410 456 M-20 568 410 581 M101-20 102 750 M207-20 207 750 M305-20 305 310 M309 398 309 750 M-20 670 410 365 M-20 35 410 408"/></g>
-          <path class="phone-route-edge" d="M55 510V447H132V373H210V280H300V207"/>
-          <path class="phone-route-line" d="M55 510V447H132V373H210V280H300V207"/>
-          <g class="phone-route-marker"><circle cx="55" cy="510" r="9"/><circle cx="300" cy="207" r="9"/></g>
-          <g class="phone-map-label"><rect x="14" y="530" width="103" height="30" rx="9"/><rect x="235" y="158" width="112" height="30" rx="9"/><text x="65" y="550">Lấy hàng</text><text x="291" y="178">Giao hàng</text></g>
+          <!-- Dịch điểm lấy hàng vào vùng an toàn để nhãn không bị cắt mép trái khi SVG slice trên màn hình dọc -->
+          <path class="phone-route-edge" d="M76 510V447H132V373H210V280H300V207"/>
+          <path class="phone-route-line" d="M76 510V447H132V373H210V280H300V207"/>
+          <g class="phone-route-marker"><circle cx="76" cy="510" r="9"/><circle cx="300" cy="207" r="9"/></g>
+          <g class="phone-map-label"><rect x="44" y="530" width="96" height="30" rx="9"/><rect x="235" y="158" width="112" height="30" rx="9"/><text x="92" y="550">Lấy hàng</text><text x="291" y="178">Giao hàng</text></g>
         </g>
       </svg>
       <div class="phone-map-tools" aria-label="Điều khiển bản đồ">

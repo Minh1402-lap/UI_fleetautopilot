@@ -10,16 +10,16 @@ body.management-phone-active #main { padding: 0; margin: 0; }
 #management-phone button, #management-phone select { font: inherit; min-height: 44px; touch-action: manipulation; }
 #management-phone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; flex-shrink: 0; }
 .management-glass { background-color: var(--small-face); background-image: var(--face-image); border: 1px solid var(--rim); border-top-color: var(--rim-top); border-left-color: var(--rim-left); box-shadow: var(--refraction); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); }
-body.management-phone-active .management-topbar { position: absolute; z-index: 5; top: max(10px, env(safe-area-inset-top)); left: 10px; right: 10px; width: auto; height: 68px; min-height: 0; border-radius: 20px; display: flex; flex-wrap: nowrap; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 9px 8px 12px; }
-.management-brand { display: flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.2; font-weight: 600; }
-#management-phone .management-brand > svg { width: 62px; height: 40px; fill: currentColor; stroke: none; }
-.management-brand > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.management-brand small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 500; }
-.management-topbar-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.management-role-switch { width: 44px; height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid var(--rim); border-radius: 13px; background: var(--nested); color: var(--ink); text-decoration: none; font-size: 8px; font-weight: 600; line-height: 1; touch-action: manipulation; }
+body.management-phone-active .management-topbar { position: absolute; z-index: 5; top: max(10px, env(safe-area-inset-top)); left: 10px; right: 10px; width: auto; height: 68px; min-height: 0; border-radius: 20px; display: flex; flex-wrap: nowrap; flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 8px 8px 10px; }
+.management-brand { flex: 1; min-width: 0; display: flex; align-items: center; gap: 5px; color: var(--ink); text-decoration: none; font-size: 11.5px; line-height: 1.15; font-weight: 600; }
+#management-phone .management-brand > svg { width: 34px; height: 24px; fill: currentColor; stroke: none; flex-shrink: 0; }
+.management-brand > span { flex: 1; min-width: 0; white-space: normal; overflow-wrap: break-word; }
+.management-brand small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.management-topbar-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.management-role-switch { width: 40px; height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border: 1px solid var(--rim); border-radius: 13px; background: var(--nested); color: var(--ink); text-decoration: none; font-size: 8px; font-weight: 600; line-height: 1; touch-action: manipulation; }
 #management-phone .management-role-switch svg { width: 18px; height: 18px; fill: currentColor; stroke: none; }
-.management-theme { flex: 0 0 104px; }
-.management-theme select { width: 100%; border: 1px solid var(--rim); border-radius: 13px; padding: 6px 8px; background: var(--nested); color: var(--ink); font-size: 10px; }
+.management-theme { flex: 0 0 64px; }
+.management-theme select { width: 100%; border: 1px solid var(--rim); border-radius: 13px; padding: 6px 5px; background: var(--nested); color: var(--ink); font-size: 10px; }
 .management-content { position: absolute; inset: 88px 0 72px; overflow: hidden; }
 .management-page { position: absolute; inset: 0; overflow-y: auto; padding: 2px 11px 20px; opacity: 1; transform: translate3d(0, 0, 0); transition: transform var(--management-page-duration, 300ms) cubic-bezier(.65, 0, .35, 1), opacity var(--management-page-duration, 300ms) cubic-bezier(.2, .8, .2, 1); scrollbar-width: none; will-change: transform, opacity; }
 .management-page::-webkit-scrollbar { display: none; }
@@ -62,7 +62,7 @@ body.management-phone-active .management-topbar { position: absolute; z-index: 5
 .management-nav { --management-nav-line: var(--action); --management-nav-pad: 8px; --management-nav-gap: 3px; position: absolute; z-index: 6; isolation: isolate; left: 9px; right: 9px; bottom: max(7px, env(safe-area-inset-bottom)); height: 61px; overflow: hidden; border-radius: 999px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--management-nav-gap); padding: 4px var(--management-nav-pad); }
 .management-nav::after { display: none; }
 .management-nav-indicator { position: absolute; z-index: 1; top: 0; bottom: 0; left: var(--management-nav-pad); width: calc((100% - 2 * var(--management-nav-pad) - 3 * var(--management-nav-gap)) / 4); pointer-events: none; transform: translate3d(calc(var(--management-nav-index, 0) * (100% + var(--management-nav-gap))), 0, 0); transition: none; }
-#management-phone .management-nav svg.management-nav-arch { position: absolute; top: 0; bottom: 0; left: 9%; width: 82%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--management-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
+#management-phone .management-nav svg.management-nav-arch { position: absolute; top: 2px; bottom: 2px; left: 13%; width: 74%; height: calc(100% - 4px); overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--management-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
 .management-nav-arch-fill { fill: color-mix(in srgb, var(--management-nav-line) 15%, transparent); stroke: none; }
 .management-nav-arch-stroke { fill: none; stroke: var(--management-nav-line); stroke-width: 2.3px; stroke-linecap: round; stroke-linejoin: round; }
 .management-nav.is-ready .management-nav-indicator { transition: transform var(--management-nav-duration, 300ms) cubic-bezier(.65, 0, .35, 1); }

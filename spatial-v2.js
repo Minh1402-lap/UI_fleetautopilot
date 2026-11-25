@@ -269,8 +269,9 @@
     const queueRows =
       pendingOrders
         .slice(0, 4)
-        .map((o, idx) => {
-          const tagCls = idx === 0 ? 'v2-tag-amber' : 'v2-tag-blue';
+        .map((o) => {
+          // Đồng bộ màu badge theo trạng thái đơn "Chờ phân xe" thay vì đổi màu theo vị trí dòng
+          const tagCls = 'v2-tag-amber';
           const isFocused = focusOrder?.id === o.id;
           return `<button type="button" class="v2-list-item" data-v2-action="focus-order" data-id="${esc(o.id)}" aria-pressed="${isFocused}">
             <div class="v2-item-main">

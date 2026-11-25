@@ -323,7 +323,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within {
-    width: 248px;
+    width: 268px;
     border-radius: 26px;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand {
@@ -332,7 +332,8 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     justify-content: flex-start;
     gap: 10px;
     padding: 0 2px;
-    width: 222px;
+    width: auto;
+    min-width: 0;
     min-height: 44px;
     height: 44px;
     color: var(--brand-mark);
@@ -458,7 +459,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:hover ~ .app,
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within ~ .app {
-    margin-left: 280px !important;
+    margin-left: 300px !important;
   }
   @media (prefers-reduced-motion: reduce) {
     body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar,
@@ -486,6 +487,10 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > header .role-switch {
     white-space: nowrap;
     flex-shrink: 0;
+  }
+  /* Giữ các nút trên topbar nằm gọn trên 1 dòng, tránh rớt dòng khi đổi nền hoặc vai trò dài */
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > header :is(.theme-switch button, .ui-style-switch button, .account, .role-switch, .role-switch button) {
+    white-space: nowrap;
   }
   /* Đảm bảo bảng dày dữ liệu ở trang con cuộn ngang an toàn, không chồng cột khi thu hẹp khung */
   body.ui-v2 #workspace-view .table-wrap,
@@ -530,12 +535,24 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     background: rgba(15, 23, 42, 0.42);
   }
   body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .data-table th:last-child,
-  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .data-table td:last-child {
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .data-table td:last-child,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .role-table th:last-child,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .role-table td:last-child,
+  body.ui-v2 .sec-table th:last-child,
+  body.ui-v2 .sec-table td:last-child {
     padding-right: 16px;
+    white-space: nowrap;
+    width: 1%;
   }
   body.ui-v2 #role-view .role-table {
     min-width: 0;
     width: 100%;
+    table-layout: auto;
+  }
+  body.ui-v2 #role-view .role-table th,
+  body.ui-v2 #role-view .role-table td {
+    padding: 10px 6px;
+    white-space: normal;
   }
   body.ui-v2 #role-view .role-table th:last-child {
     text-align: right;
@@ -730,13 +747,28 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+  /* Nền đặc và z-index cao cho hộp thoại để chữ/badge phía sau không xuyên qua hoặc đè lên khi đóng */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(dialog, #modal.attention-review, #role-menu) {
-    background: var(--v2-sub-panel-bg) !important;
+    position: relative;
+    z-index: 1200;
+    background: #171e29 !important;
     border: 1px solid var(--v2-sub-panel-border) !important;
     border-radius: 20px !important;
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24) !important;
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.45) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+  :root[data-theme="light"] body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(dialog, #modal.attention-review, #role-menu) {
+    background: #f4f7fb !important;
+  }
+  :root[data-theme="amber"] body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(dialog, #modal.attention-review, #role-menu) {
+    background: #1e1913 !important;
+  }
+  :root[data-theme="moss"] body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(dialog, #modal.attention-review, #role-menu) {
+    background: #171f14 !important;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) dialog::backdrop {
+    background: rgba(6, 10, 16, 0.62);
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > main {
     padding: 14px 18px 14px;
@@ -1141,6 +1173,29 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     flex: 1;
     min-height: 0;
     overflow: auto;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] > .role-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] > .role-grid > .panel:not([hidden]) {
+    flex: 1;
+    min-height: 0;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] .admin-maint-bento {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] .admin-maint-sub {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] .admin-maint-sub > button:last-child,
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="maintenance"] .admin-maint-sub > .primary:last-child {
+    margin-top: auto;
   }
   body.ui-v2[data-role="admin"] #role-view[data-admin-page="approvals"] {
     overflow: hidden;
@@ -1898,6 +1953,20 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     font-size: 12px;
     margin-top: 4px;
     opacity: 0.78;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  @media (max-height: 760px) {
+    .v2-tile {
+      min-height: 108px;
+      padding: 12px 14px;
+    }
+    .v2-tile-title {
+      font-size: 15px;
+      margin-top: 8px;
+    }
   }
   /* Pill nền đặc bo tròn chữ trắng trên thẻ sáng Mẫu 2 (chuẩn Hình 4, không icon/không khung vuông) */
   .v2-card-light .v2-pill-solid-blue,

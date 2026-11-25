@@ -42,10 +42,11 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-emergency-float { position: absolute; z-index: 3; left: 14px; bottom: calc(76px + env(safe-area-inset-bottom)); max-width: calc(100% - 96px); }
 .phone-emergency { display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #a84040; color: #a02e2e; background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(16px); border-radius: 24px; min-width: 130px; padding-inline: 18px; font-weight: 600 !important; }
 :root[data-theme=dark] .phone-emergency { color: #ef9b9b; border-color: #c97878; }
-.phone-trip-page { position: absolute; inset: 84px 0 70px; overflow-y: auto; padding: 4px 12px 18px; scrollbar-width: none; }
+.phone-trip-page { position: absolute; inset: 84px 0 70px; overflow-y: auto; padding: 4px 12px 28px; scrollbar-width: none; }
 .phone-trip-page::-webkit-scrollbar { display: none; }
 .phone-trip-card, .phone-trip-tools { border-radius: 24px; padding: 16px; }
-.phone-assignment-heading { display: flex; align-items: center; gap: 12px; }
+.phone-assignment-heading { display: flex; align-items: center; justify-content: flex-start; gap: 12px; text-align: left; }
+.phone-assignment-heading > div { flex: 1; min-width: 0; text-align: left; }
 .phone-assignment-icon { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--rim); border-radius: 14px; background: var(--nested); }
 .phone-assignment-heading h2 { margin: 0; font-size: 21px; }
 .phone-assignment-heading p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
@@ -71,7 +72,7 @@ body.driver-phone-active #main { padding: 0; margin: 0; }
 .phone-nav { --phone-nav-line: var(--action); --phone-nav-pad: 8px; --phone-nav-gap: 4px; position: absolute; z-index: 6; isolation: isolate; left: 10px; right: 10px; bottom: max(7px, env(safe-area-inset-bottom)); height: 62px; overflow: hidden; border-radius: 999px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: var(--phone-nav-gap); padding: 5px var(--phone-nav-pad); }
 .phone-nav::after { display: none; }
 .phone-nav-indicator { position: absolute; z-index: 1; top: 0; bottom: 0; left: var(--phone-nav-pad); width: calc((100% - 2 * var(--phone-nav-pad) - 2 * var(--phone-nav-gap)) / 3); pointer-events: none; transform: translate3d(calc(var(--phone-nav-index, 0) * (100% + var(--phone-nav-gap))), 0, 0); transition: none; }
-#driver-phone .phone-nav svg.phone-nav-arch { position: absolute; top: 0; bottom: 0; left: 14%; width: 72%; height: 100%; overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--phone-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
+#driver-phone .phone-nav svg.phone-nav-arch { position: absolute; top: 2px; bottom: 2px; left: 16%; width: 68%; height: calc(100% - 4px); overflow: visible; stroke: none; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--phone-nav-line) 42%, transparent)); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 98%); }
 .phone-nav-arch-fill { fill: color-mix(in srgb, var(--phone-nav-line) 15%, transparent); stroke: none; }
 .phone-nav-arch-stroke { fill: none; stroke: var(--phone-nav-line); stroke-width: 2.3px; stroke-linecap: round; stroke-linejoin: round; }
 .phone-nav.is-ready .phone-nav-indicator { transition: transform var(--phone-nav-duration, 300ms) cubic-bezier(.65, 0, .35, 1); }
