@@ -964,11 +964,22 @@
       } else {
         ticketsBtn?.classList.remove('active');
         ticketsBtn?.removeAttribute('aria-current');
+        const pageLabels = {
+          dispatch: 'Điều phối',
+          overview: 'Điều phối',
+          orders: 'Đơn hàng',
+          fleet: 'Xe & tài xế',
+          gps: 'GPS',
+          reports: 'Báo cáo',
+        };
+        const targetLabel = pageLabels[p] || 'Điều phối';
+        document.querySelectorAll('.sidebar nav button[data-page]').forEach((b) => {
+          const isMatch = b.dataset.page === targetLabel;
+          b.classList.toggle('active', isMatch);
+          if (isMatch) b.setAttribute('aria-current', 'page');
+          else b.removeAttribute('aria-current');
+        });
         if (p === 'overview') {
-          overviewBtn?.classList.remove('active');
-          overviewBtn?.removeAttribute('aria-current');
-          dispatchBtn?.classList.add('active');
-          dispatchBtn?.setAttribute('aria-current', 'page');
           const crumb = $('.crumb');
           if (crumb) crumb.innerHTML = `${icon('home')}<span>/</span>Điều phối`;
         }
@@ -1168,9 +1179,16 @@
       return;
     }
     // Bỏ focus ngay sau khi bấm chuột để :focus-within không giữ thanh menu mở sau khi chuyển trang
-    const sbBtn = e.target.closest('.sidebar nav button');
+    const sbBtn = e.target.closest('.sidebar a, .sidebar button');
     if (sbBtn && uiStyle === 'v2' && isDesktop() && e.detail > 0) {
       sbBtn.blur();
+      document.getElementById('main')?.focus({ preventScroll: true });
+      requestAnimationFrame(() => {
+        if (document.activeElement instanceof HTMLElement && document.querySelector('.sidebar')?.contains(document.activeElement)) {
+          document.activeElement.blur();
+          document.getElementById('main')?.focus({ preventScroll: true });
+        }
+      });
     }
     if (v2Phone.contains(e.target)) {
       const actBtn = e.target.closest('[data-v2-action]');
@@ -1221,6 +1239,14 @@
     }
   });
   window.FleetUIStyle = { get: () => uiStyle, set: saveStyle };
+  const sidebarEl = document.querySelector('.sidebar');
+  if (sidebarEl) {
+    sidebarEl.addEventListener('mouseleave', () => {
+      if (uiStyle === 'v2' && isDesktop() && document.activeElement instanceof HTMLElement && sidebarEl.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+    });
+  }
   window.addEventListener('fleet:role-render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:workflow-sync', () => requestAnimationFrame(sync));

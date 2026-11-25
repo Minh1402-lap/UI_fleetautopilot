@@ -96,7 +96,7 @@ body.role-home-active .ui-style-switch {
   --v2-sb-active-bg: rgba(255, 255, 255, 0.16);
   --v2-sb-active-border: rgba(255, 255, 255, 0.34);
   --v2-sb-active-icon: #ffffff;
-  --v2-logo-primary: #f1f5f9;
+  --v2-logo-primary: #ffffff;
   --v2-logo-secondary: #a9c5b4;
   --v2-light-bg: linear-gradient(145deg, rgba(226, 232, 240, 0.90), rgba(196, 206, 219, 0.82));
   --v2-light-border: rgba(255, 255, 255, 0.72);
@@ -443,6 +443,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   /* Khung ứng dụng nổi bao toàn bộ nội dung bên phải thanh menu — đẩy sang phải theo đúng animation Mẫu 1 */
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app {
     margin: 0 16px 0 108px !important;
+    height: calc(100vh - 32px);
     min-height: calc(100vh - 32px);
     border-radius: 28px;
     background: var(--v2-shell-bg);
@@ -487,11 +488,50 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     flex-shrink: 0;
   }
   /* Đảm bảo bảng dày dữ liệu ở trang con cuộn ngang an toàn, không chồng cột khi thu hẹp khung */
-  body.ui-v2 #role-view .table-wrap,
   body.ui-v2 #workspace-view .table-wrap,
+  body.ui-v2 #role-view .table-wrap,
+  body.ui-v2 #workflow-view .table-wrap,
+  body.ui-v2 #role-view,
+  body.ui-v2 .sec-table-scroll,
+  body.ui-v2 #sec-inspector {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 26%, transparent) transparent;
+  }
+  body.ui-v2 #workspace-view .table-wrap,
+  body.ui-v2 #role-view .table-wrap,
   body.ui-v2 #workflow-view .table-wrap {
     overflow-x: auto;
     max-width: 100%;
+  }
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view)::-webkit-scrollbar,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view)::-webkit-scrollbar-track,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view)::-webkit-scrollbar-thumb,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--ink) 24%, transparent);
+    border-radius: 999px;
+  }
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view)::-webkit-scrollbar-thumb:hover,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+  body.ui-v2 .v2-card-light::-webkit-scrollbar-thumb,
+  body.ui-v2 .v2-card-light *::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.24);
+  }
+  body.ui-v2 .v2-card-light::-webkit-scrollbar-thumb:hover,
+  body.ui-v2 .v2-card-light *::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.42);
+  }
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .data-table th:last-child,
+  body.ui-v2 :is(#workspace-view, #role-view, #workflow-view) .data-table td:last-child {
+    padding-right: 16px;
   }
   body.ui-v2 #role-view .role-table {
     min-width: 0;
@@ -561,7 +601,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     color: var(--v2-light-ink) !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
   }
-  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(h2, h3, h4, strong, th, td, dd, code, .panel-heading, .data-table td, .role-table td, .text-button, .distribution-row strong) {
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(h2, h2 svg, h3, h4, strong, th, td, dd, code, .panel-heading, .panel-heading svg, .data-table td, .role-table td, .text-button, .distribution-row strong) {
     color: var(--v2-light-ink) !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(.panel.v2-card-light, .admin-maint-sub.v2-card-light) :is(p, dt, small, .subtle, .section-note, .workflow-note, .workflow-source, .count-label, th, .distribution-row span, .role-row small, .bento-mini-main small) {
@@ -699,13 +739,483 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     -webkit-backdrop-filter: none !important;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > main {
-    padding: 16px 20px 14px;
+    padding: 14px 18px 14px;
     flex: 1;
+    min-height: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > main > footer {
-    padding: 14px 2px 2px;
+    display: none;
+  }
+
+  /* ===== BỐ CỤC 1 KHUNG CỐ ĐỊNH (100VH) CHO TẤT CẢ TRANG CON MẪU 2 PC ===== */
+  :where(body.ui-v2:not([data-role="driver"]):not(.role-home-active)) :is(#workspace-view, #role-view, #workflow-view) .page-heading {
+    display: none !important;
+  }
+  :where(body.ui-v2:not([data-role="driver"]):not(.role-home-active)) :is(#workspace-view, #role-view, #workflow-view):not([hidden]) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(#workspace-view, #role-view, #workflow-view) .stats.workspace-stats {
+    margin: 0 !important;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(#workspace-view, #role-view, #workflow-view) .stat {
+    padding: 9px 12px;
+  }
+  body.ui-v2:not([data-role="driver"]):not(.role-home-active) :is(#workspace-view, #role-view, #workflow-view) .workspace-actions-bar {
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  /* 1) Trang Đơn hàng: 1 bảng sổ đơn rộng thoáng toàn khung, bỏ 4 hộp nhỏ chật chội bên phải */
+  body.ui-v2 #workspace-view[data-workspace-page="orders"]:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] > .stats.workspace-stats {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] > .workspace-actions-bar {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-content: flex-end;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] > .workspace-columns.equal {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] > section.panel.v2-card-dark:last-child {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] #order-source-note,
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .results-heading,
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .section-note {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .filter-bar {
+    margin: 0;
+    gap: 8px;
+    align-items: center;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .filter-bar .field > span {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .filter-bar input,
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .filter-bar select,
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .filter-bar button {
+    height: 36px;
+    min-height: 36px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .table-pagination {
+    margin: 0;
+    padding-top: 6px;
+    flex-shrink: 0;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .data-table td {
+    padding: 9px 10px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] > section.panel.v2-card-dark:last-child > .table-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  /* 2) Trang Xe & tài xế: 1 bảng rộng thoáng theo tab Đội xe / Tài xế + 2 thẻ phân tích cân đối bên phải */
+  .v2-fleet-tabs {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .v2-fleet-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--v2-sub-nested-bg);
+    border: 1px solid var(--v2-sub-nested-border);
+    flex-shrink: 0;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .v2-fleet-tab {
+    min-height: 34px;
+    padding: 6px 14px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .v2-fleet-tab.active {
+    background: var(--v2-accent-soft);
+    border-color: var(--v2-accent);
+    color: var(--ink);
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"]:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) 340px;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .stats.workspace-stats {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-actions-bar {
+    grid-column: 2;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, auto));
+    gap: 6px;
+    align-self: center;
+    justify-content: end;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-actions-bar button {
+    padding: 7px 11px;
+    min-height: 34px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0 !important;
+    padding: 8px 14px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .panel-heading {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .filter-bar {
+    margin: 0;
+    gap: 10px;
+    align-items: center;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .field > span {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.fleet-bento-cols {
+    grid-column: 1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 0;
+    margin: 0 !important;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"][data-fleet-tab="vehicles"] > .workspace-columns.fleet-bento-cols > .panel:last-child,
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"][data-fleet-tab="drivers"] > .workspace-columns.fleet-bento-cols > .panel:first-child {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.fleet-bento-cols > .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 14px 16px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.fleet-bento-cols .table-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.equal {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 0;
+    margin: 0 !important;
+    gap: 12px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.equal > .panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    padding: 14px 16px;
+    margin: 0 !important;
+    overflow: auto;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .distribution-row {
+    margin: 6px 0;
+  }
+
+  /* 3) Trang Báo cáo: 1 bảng rộng thoáng theo tab Chi tiết / Việc theo xe + thẻ Số đơn theo vật liệu đủ cao bên phải */
+  .v2-report-tabs {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] .v2-report-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--v2-sub-nested-bg);
+    border: 1px solid var(--v2-sub-nested-border);
+    flex-shrink: 0;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] .v2-fleet-tab {
+    min-height: 34px;
+    padding: 6px 14px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] .v2-fleet-tab.active {
+    background: var(--v2-accent-soft);
+    border-color: var(--v2-accent);
+    color: var(--ink);
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"]:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) 360px;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .stats.workspace-stats {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .workspace-actions-bar {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-content: flex-end;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .report-filters {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0 !important;
+    padding: 10px 14px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .report-filters .filter-bar {
+    align-items: center;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"][data-report-tab="orders"] > section.panel.v2-card-dark:last-child {
+    grid-column: 1;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 14px 16px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"][data-report-tab="orders"] > section.panel.v2-card-dark:last-child > .table-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"][data-report-tab="vehicles"] > section.panel.v2-card-dark:last-child {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .workspace-columns.equal {
+    display: contents;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"][data-report-tab="orders"] > .workspace-columns.equal > .panel:first-child {
+    display: none;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"][data-report-tab="vehicles"] > .workspace-columns.equal > .panel:first-child {
+    grid-column: 1;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 14px 16px;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .workspace-columns.equal #month-jobs {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="reports"] > .workspace-columns.equal > .panel:last-child {
+    grid-column: 2;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 14px 16px;
+    overflow: auto;
+  }
+
+  /* 4) Trang GPS & Ticket: lấp đầy phần chiều cao còn lại */
+  body.ui-v2 #workspace-view[data-workspace-page="gps"] .gps-workspace {
+    flex: 1;
+    min-height: 0;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="gps"] .gps-workspace > .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  body.ui-v2 #workspace-view[data-workspace-page="gps"] .gps-vehicle-list,
+  body.ui-v2 #workspace-view[data-workspace-page="gps"] .workspace-map {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.ui-v2 #workflow-view:not([hidden]) {
+    overflow: hidden;
+  }
+  body.ui-v2 #workflow-view:not([hidden]) > .workflow-source,
+  body.ui-v2 #workflow-view:not([hidden]) > .filter-bar {
+    flex-shrink: 0;
+    margin: 0 !important;
+  }
+  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.4fr);
+    gap: 12px;
+  }
+  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace > .panel {
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 !important;
+  }
+
+  /* 5) Các trang con Admin & System Admin (#role-view): kéo giãn lưới chính lấp đầy khung 100vh */
+  body.ui-v2 #role-view:not([hidden]) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid {
+    flex: 1;
+    min-height: 0;
+    margin: 0 !important;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > :only-child,
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .role-wide {
+    grid-column: 1 / -1;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 !important;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) > .table-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="approvals"] {
+    overflow: hidden;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="approvals"] > .role-grid {
+    grid-template-rows: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+  body.ui-v2 #role-view .panel {
+    padding: 12px 14px !important;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  body.ui-v2 #role-view .panel-heading {
+    margin: 0 !important;
+  }
+  body.ui-v2 #role-view .panel-heading h2 {
+    font-size: 14.5px;
+  }
+  body.ui-v2 #role-view .panel > :is(.role-toolbar, .role-filters, .filter-bar, .search) {
+    flex: 0 0 auto;
+    margin: 0 !important;
+    align-items: center;
+  }
+  body.ui-v2 #role-view :is(.role-toolbar, .role-filters, .filter-bar) .search,
+  body.ui-v2 #role-view :is(.role-toolbar, .role-filters, .filter-bar) input,
+  body.ui-v2 #role-view :is(.role-toolbar, .role-filters, .filter-bar) select {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    flex: 0 0 auto;
+  }
+  body.ui-v2 #role-view :is(.role-toolbar, .role-filters, .filter-bar) input[type="search"] {
+    flex: 1 1 200px;
+  }
+  body.ui-v2[data-role="admin"] #role-view[data-admin-page="approvals"] .detail-list > div {
+    padding: 5px 0;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) > .workflow-grid {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) > .workflow-grid > .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) > .workflow-grid > .panel > button:last-child,
+  body.ui-v2 #role-view:not([hidden]) > .role-grid > .panel:not([hidden]) > .workflow-grid > .panel > .primary:last-child {
+    margin-top: auto;
+  }
+  body.ui-v2 #role-view:not([hidden]) #admin-monitoring,
+  body.ui-v2 #role-view:not([hidden]) .sec-workspace {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  body.ui-v2 #role-view:not([hidden]) #admin-monitoring > .workflow-grid {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  body.ui-v2 #role-view:not([hidden]) #admin-monitoring > .workflow-grid > .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0 !important;
+  }
+  body.ui-v2 #role-view:not([hidden]) #admin-monitoring > .workflow-grid > .panel > button:last-child,
+  body.ui-v2 #role-view:not([hidden]) #admin-monitoring > .workflow-grid > .panel > .primary:last-child {
+    margin-top: auto;
   }
 
   /* Ẩn nội dung Mẫu 1 chỉ khi đang ở màn chính có Bento Mẫu 2 */

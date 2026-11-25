@@ -111,7 +111,7 @@
     url.searchParams.set('page', 'dispatch');
     history.replaceState(null, '', url);
   }
-  let orderQuery = '', orderStatus = 'all', orderDay = '', orderPage = 1, fleetQuery = '', fleetFilter = 'all', fleetTab = 'vehicles', gpsFilter = 'all', gpsPlate = state.vehicles[0]?.plate, gpsZoom = 1, mapZoom = 1;
+  let orderQuery = '', orderStatus = 'all', orderDay = '', orderPage = 1, fleetQuery = '', fleetFilter = 'all', fleetTab = 'vehicles', reportTab = 'orders', gpsFilter = 'all', gpsPlate = state.vehicles[0]?.plate, gpsZoom = 1, mapZoom = 1;
   const orderPageSize = 5;
   let reportFrom = '2026-11-10', reportTo = sampleDay, toastTimer, onConfirm = null;
   const modal = $('#modal'), title = $('#modal-title'), copy = $('#modal-copy'), content = $('#modal-content'), confirm = $('#confirm-modal'), searchModal = $('#search-modal');
@@ -227,6 +227,7 @@
     page = next;
     if (push) {
       const url = new URL(location.href);
+      url.searchParams.delete('flow');
       url.searchParams.set('page', next);
       history.pushState(null, '', url);
     }
@@ -352,9 +353,10 @@
       ['Xe dự phòng', state.vehicles.filter((v) => v.backup).length],
     ];
 
+    const tabSwitch = `<div class="v2-fleet-tabs" role="tablist" aria-label="Chuyển bảng xe và tài xế"><button type="button" role="tab" class="v2-fleet-tab ${fleetTab === 'vehicles' ? 'active' : ''}" data-action="fleet-tab" data-id="vehicles" aria-selected="${fleetTab === 'vehicles'}">Đội xe (${vehicles.length})</button><button type="button" role="tab" class="v2-fleet-tab ${fleetTab === 'drivers' ? 'active' : ''}" data-action="fleet-tab" data-id="drivers" aria-selected="${fleetTab === 'drivers'}">Tài xế (${drivers.length})</button></div>`;
     return pageHead('NGUỒN LỰC VẬN CHUYỂN', 'Xe & tài xế', 'Phân loại Ben / Cẩu / Đầu kéo khớp loại hàng, xe dự phòng và mã thiết bị GPS Taris mẫu.', actionButton('+ Thêm xe', 'new-vehicle', null, 'primary') + actionButton('+ Thêm tài xế', 'new-driver', null, 'secondary') + actionButton('Xuất CSV xe', 'export-fleet', null, 'secondary') + actionButton('Xuất CSV tài xế', 'export-drivers', null, 'secondary'), 'truck') +
       `<div class="stats workspace-stats">${metric('Tổng đội xe', state.vehicles.length, 'truck')}${metric('Xe sẵn sàng', readyCount, 'layers')}${metric('Đang chạy / Chờ TX', activeVehCount, 'pin')}${metric('Tài xế hoạt động', activeDrvCount, 'switch-account')}</div>
-      <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('search-icon')}Bộ lọc nhanh</h2></div><div class="filter-bar"><label class="field search-field"><span>Tìm nhanh xe hoặc tài xế</span><input id="fleet-query" type="search" placeholder="Biển số, loại xe, tên tài xế hoặc số điện thoại…" value="${esc(fleetQuery)}"></label><label class="field"><span>Tình trạng xe</span><select id="fleet-status"><option value="all">Tất cả</option>${['ready', 'assigned', 'running', 'awaiting_check', 'maintenance'].map((s) => `<option value="${s}" ${fleetFilter === s ? 'selected' : ''}>${labels[s]}</option>`).join('')}</select></label></div></section>
+      <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('search-icon')}Bộ lọc nhanh</h2></div><div class="filter-bar">${tabSwitch}<label class="field search-field"><span>Tìm nhanh xe hoặc tài xế</span><input id="fleet-query" type="search" placeholder="Biển số, loại xe, tên tài xế hoặc số điện thoại…" value="${esc(fleetQuery)}"></label><label class="field"><span>Tình trạng xe</span><select id="fleet-status"><option value="all">Tất cả</option>${['ready', 'assigned', 'running', 'awaiting_check', 'maintenance'].map((s) => `<option value="${s}" ${fleetFilter === s ? 'selected' : ''}>${labels[s]}</option>`).join('')}</select></label></div></section>
       <div class="workspace-columns fleet-bento-cols">
         <section class="panel v2-card-light"><div class="panel-heading"><h2>${icon('truck')}Đội xe vận chuyển</h2><span class="count-label">${vehicles.length} xe</span></div>${vehicles.length ? `<div class="table-wrap"><table class="data-table"><thead><tr><th>Xe / loại</th><th>Hàng phù hợp & sức chứa</th><th>Tài xế</th><th>Tình trạng</th><th>GPS mẫu</th><th>Thao tác</th></tr></thead><tbody>${vehicles.map((v) => { const d = driver(v.driverId); return `<tr><td>${actionButton(esc(v.plate), 'detail-vehicle', v.plate)}<small>${esc(v.type)}${v.backup ? ' · Dự phòng' : ''}</small></td><td>${esc(v.cargoNote || '—')}<small>${esc(v.capacityText || '—')}</small></td><td>${d ? `<strong>${esc(d.name)}</strong><small>${esc(d.id)}</small>` : 'Chưa gán'}</td><td>${badge(vehicleStatus(v))}</td><td>${badge(v.gps)}</td><td>${actionButton('GPS', 'track-vehicle', v.plate)} · ${actionButton('Sửa', 'edit-vehicle', v.plate)}${v.availability === 'awaiting_check' ? ` · <button type="button" class="text-button" data-workflow-action="vehicle-ready" data-id="${esc(v.plate)}">Xác nhận sẵn sàng</button>` : ''}</td></tr>`; }).join('')}</tbody></table></div>` : empty('Không có xe phù hợp.')}</section>
         <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('switch-account')}Danh sách tài xế</h2><span class="count-label">${drivers.length} tài xế</span></div>${drivers.length ? `<div class="table-wrap"><table class="data-table"><thead><tr><th>Tài xế</th><th>Xe đang gắn</th><th>Liên hệ</th><th>Tình trạng</th><th>Thao tác</th></tr></thead><tbody>${drivers.map((d) => { const attached = state.vehicles.find((v) => v.driverId === d.id); return `<tr><td><strong>${esc(d.name)}</strong><small>${esc(d.id)}</small></td><td>${attached ? actionButton(esc(attached.plate), 'detail-vehicle', attached.plate) + `<small>${esc(attached.type)}</small>` : 'Chưa gắn xe'}</td><td>${esc(d.phone || 'Chưa có')}</td><td>${badge(d.status)}</td><td>${actionButton('Sửa', 'edit-driver', d.id)}</td></tr>`; }).join('')}</tbody></table></div>` : empty('Không có tài xế phù hợp.')}</section>
@@ -388,8 +390,9 @@
       const st = v.availability === 'awaiting_check' ? `<button type="button" class="text-button" data-workflow-action="vehicle-ready" data-id="${esc(v.plate)}">Xác nhận sẵn sàng</button>` : badge(vehicleStatus(v));
       return `<tr><td><strong>${esc(v.plate)}</strong><small>${esc(v.type)}</small></td><td>${trips} chuyến</td><td>${st}</td></tr>`;
     }).join('');
+    const reportTabs = `<div class="v2-report-tabs" role="tablist" aria-label="Chuyển bảng báo cáo"><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'orders' ? 'active' : ''}" data-action="report-tab" data-id="orders" aria-selected="${reportTab === 'orders'}">Chi tiết trong kỳ (${list.length})</button><button type="button" role="tab" class="v2-fleet-tab ${reportTab === 'vehicles' ? 'active' : ''}" data-action="report-tab" data-id="vehicles" aria-selected="${reportTab === 'vehicles'}">Việc theo xe trong tháng (${state.vehicles.length})</button></div>`;
     return pageHead('HIỆU QUẢ VẬN CHUYỂN', 'Báo cáo', 'Tổng hợp từ đơn hàng mẫu theo khoảng ngày; tách riêng từng đơn vị viên / kg / m³ (không cộng gộp sai đơn vị).', actionButton('Xuất báo cáo CSV', 'export-reports', null, 'primary'), 'chart') +
-      `<section class="panel v2-card-dark report-filters"><div class="filter-bar"><label class="field"><span>Từ ngày</span><input id="report-from" type="date" value="${esc(reportFrom)}"></label><label class="field"><span>Đến ngày</span><input id="report-to" type="date" value="${esc(reportTo)}"></label><div class="report-filter-summary"><strong>${list.length} đơn trong kỳ</strong><small>Ngày minh họa: ${date(sampleDay)} · Không suy ra doanh thu/lợi nhuận</small></div></div>${reportFrom > reportTo ? '<p class="form-error" role="alert">Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.</p>' : ''}</section>
+      `<section class="panel v2-card-dark report-filters"><div class="filter-bar">${reportTabs}<label class="field"><span>Từ ngày</span><input id="report-from" type="date" value="${esc(reportFrom)}"></label><label class="field"><span>Đến ngày</span><input id="report-to" type="date" value="${esc(reportTo)}"></label><div class="report-filter-summary"><strong>${list.length} đơn trong kỳ</strong><small>Ngày minh họa: ${date(sampleDay)} · Không suy ra doanh thu/lợi nhuận</small></div></div>${reportFrom > reportTo ? '<p class="form-error" role="alert">Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.</p>' : ''}</section>
       <div class="stats workspace-stats">${metric('Tổng đơn trong kỳ', list.length, 'order')}${metric('Đơn hoàn thành', done.length, 'layers')}${metric('Đã giao (theo đơn vị)', unitSummaryText, 'truck')}${metric('Tỷ lệ hoàn thành', list.length ? Math.round(done.length / list.length * 100) + '%' : '—', 'chart')}</div>
       <div class="workspace-columns equal"><section class="panel v2-card-light"><div class="panel-heading"><h2>${icon('truck')}Việc theo xe trong tháng</h2><span class="subtle">Tham khảo</span></div><div id="month-jobs" class="table-wrap"><table class="data-table"><thead><tr><th>Xe / loại</th><th>Hoàn thành T11</th><th>Trạng thái</th></tr></thead><tbody>${monthVehicles}</tbody></table></div><p class="section-note">Thống kê tham khảo tháng hiện tại; công thức đo công bằng còn chờ chốt.</p></section>
       <section class="panel v2-card-dark"><div class="panel-heading"><h2>${icon('layers')}Số đơn theo vật liệu</h2><span class="subtle">Tách theo đơn vị chuẩn</span></div>${materials.map((m) => { const grp = list.filter((o) => o.material === m); const u = grp[0]?.unit || 'm³'; const q = grp.reduce((n, o) => n + o.quantity, 0); return `<div class="material-row"><div><strong>${esc(m)}</strong><span>${grp.length} đơn · ${formatNum(q)} ${esc(u)}</span></div><div class="bar-track"><i style="width:${list.length ? grp.length / list.length * 100 : 0}%"></i></div></div>`; }).join('') || '<p class="subtle">Không có dữ liệu.</p>'}<p class="section-note">Không cộng gộp viên, kg và m³ thành một tổng tải trọng khi chưa có hệ số quy đổi.</p></section></div>
@@ -485,6 +488,9 @@
       (page === 'dispatch' || page === 'overview');
     $('#dispatch-view').hidden = page !== 'dispatch';
     $('#workspace-view').hidden = page === 'dispatch';
+    $('#workspace-view').dataset.workspacePage = page;
+    $('#workspace-view').dataset.fleetTab = fleetTab;
+    $('#workspace-view').dataset.reportTab = reportTab;
     if (!isBentoV2) {
       if (page === 'dispatch') renderDispatch();
       else {
@@ -763,6 +769,7 @@
       case 'new-driver': editDriver(); break;
       case 'edit-driver': editDriver(id); break;
       case 'fleet-tab': fleetTab = id; fleetQuery = ''; render(); break;
+      case 'report-tab': reportTab = id; render(); break;
       case 'track-vehicle': if (modal.open) closeModal(); gpsPlate = id; gpsFilter = 'all'; setPage('gps', { focus: true }); break;
       case 'gps-select': gpsPlate = id; render(); break;
       case 'gps-in': gpsZoom = Math.min(1.6, +(gpsZoom + 0.2).toFixed(1)); render(); break;

@@ -107,6 +107,7 @@
     history.pushState(null, '', url);
     sync();
     window.scrollTo(0, 0);
+    $('#main')?.focus({ preventScroll: true });
   }
   function leaveTickets() {
     const url = new URL(location.href);

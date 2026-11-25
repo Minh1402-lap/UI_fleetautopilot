@@ -6,8 +6,8 @@
 }
 
 :root[data-theme="dark"] {
-  --brand-mark: #93c5fd;
-  --brand-secondary: #93c5fd;
+  --brand-mark: #ffffff;
+  --brand-secondary: #ffffff;
 }
 
 :root[data-theme="amber"] {
