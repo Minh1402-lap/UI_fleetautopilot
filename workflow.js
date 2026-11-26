@@ -129,7 +129,7 @@
     const ticket = state.tickets.find((t) => t.id === ticketId) || list[0];
     if (ticket) ticketId = ticket.id;
     const leftTools = `<div class="ticket-panel-tools"><select id="ticket-filter" aria-label="Trạng thái ticket"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select>${role() === 'driver' ? btn('+ Mới', 'new-report', '', 'primary') : ''}</div>`;
-    const rightTools = `<div class="ticket-panel-tools">${btn('Quay lại', 'leave-tickets')}</div>`;
+    const rightTools = `<div class="ticket-panel-tools">${ticket && ticket.status === 'open' && role() === 'dispatch' ? `${btn('Đóng ticket', 'ticket-close', ticket.id)}${ticket.order ? btn(`Ngoại lệ ${ticket.order}`, 'trip-exception', ticket.order) : ''}` : ''}${btn('Quay lại', 'leave-tickets')}</div>`;
     screen.innerHTML = `<section class="page-heading"><span class="heading-icon">${icon('alert')}</span><h1>Sự cố, Khẩn cấp 1 nút & Ticket</h1><p>Tài xế ↔ Điều phối trao đổi; Điều phối ghi kết quả & đóng hồ sơ (chỉ đọc). Admin chỉ đọc toàn bộ.</p></section>
       <div class="workflow-grid">` +
       panel('Kênh ticket', `<div class="ticket-channels-list">${list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>#${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>'}</div>`, 'order', leftTools) +
@@ -165,18 +165,18 @@
         : role() === 'admin'
         ? '<p class="workflow-note">Admin chỉ đọc toàn bộ hồ sơ và hội thoại. Chỉ Tài xế/Điều phối trao đổi; Điều phối ghi kết quả và đóng ticket.</p>'
         : `<form id="ticket-message-form" class="ticket-compose">
-            <label for="ticket-message">Nội dung trao đổi</label>
-            <textarea id="ticket-message" name="message" maxlength="2000" placeholder="Nhập tin nhắn, hoặc gửi ảnh / ghi âm thoại...">${esc(composeDraft)}</textarea>
+            <label for="ticket-message" class="sr-only">Nội dung trao đổi</label>
             ${composeImageUrl || composeVoiceDuration ? `<div class="ticket-compose-preview">
               ${safeMediaUrl(composeImageUrl, 'data:image/') ? `<span class="ticket-preview-chip"><img src="${esc(composeImageUrl)}" alt="Xem trước ảnh"><span>${esc(composeImageName || 'Ảnh chụp')}</span><button type="button" data-workflow-action="clear-chat-image" aria-label="Bỏ ảnh">×</button></span>` : ''}
               ${composeVoiceDuration ? `<span class="ticket-preview-chip"><span>Thoại (${esc(composeVoiceDuration)})</span><button type="button" data-workflow-action="clear-chat-voice" aria-label="Bỏ ghi âm">×</button></span>` : ''}
             </div>` : ''}
-            <div class="ticket-compose-tools">
-              <label class="secondary ticket-file-btn">${icon('camera')}<span>Chọn / chụp ảnh</span><input id="ticket-chat-photo" type="file" accept="image/*" capture="environment" hidden></label>
-              <button type="button" class="${isRecording ? 'primary' : 'secondary'}" data-workflow-action="toggle-voice">${isRecording ? `Dừng ghi (${fmtDuration(recordSeconds)})` : 'Ghi âm thoại'}</button>
-              <button class="primary" type="submit">Gửi tin nhắn</button>
+            <div class="ticket-compose-bar">
+              <label class="secondary ticket-file-btn" title="Chọn hoặc chụp ảnh">${icon('camera')}<span>Ảnh</span><input id="ticket-chat-photo" type="file" accept="image/*" capture="environment" hidden></label>
+              <button type="button" class="${isRecording ? 'primary' : 'secondary'} ticket-voice-btn" data-workflow-action="toggle-voice">${isRecording ? `Dừng (${fmtDuration(recordSeconds)})` : 'Ghi âm'}</button>
+              <textarea id="ticket-message" name="message" rows="1" maxlength="2000" placeholder="Nhắn tin, gửi ảnh hoặc ghi âm...">${esc(composeDraft)}</textarea>
+              <button class="primary ticket-send-btn" type="submit">Gửi</button>
             </div>
-          </form>${role() === 'dispatch' ? `<div class="workflow-inline-actions">${btn('Ghi kết quả & đóng ticket', 'ticket-close', t.id)}${t.order ? btn('Xử lý ngoại lệ chuyến ' + t.order, 'trip-exception', t.order) : ''}</div>` : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
+          </form>${role() === 'dispatch' ? '' : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
   }
 
   function reportPage() {
