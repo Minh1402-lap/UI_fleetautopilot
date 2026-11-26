@@ -864,7 +864,14 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
 
   /* 1) Trang Đơn hàng: 1 bảng sổ đơn rộng thoáng toàn khung, bỏ 4 hộp nhỏ chật chội bên phải */
+  body.ui-v2:has(#workspace-view[data-workspace-page="orders"]:not([hidden])) #main {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 12px 12px !important;
+  }
   body.ui-v2 #workspace-view[data-workspace-page="orders"]:not([hidden]) {
+    width: 100%;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto minmax(0, 1fr);
@@ -934,11 +941,21 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     overflow-y: auto;
     overflow-x: auto;
   }
-  body.ui-v2 #workspace-view[data-workspace-page="orders"] .data-table thead th {
+  body.ui-v2 #workspace-view[data-workspace-page="orders"] .data-table thead th,
+  body.ui-v2 .v2-card-dark .data-table thead th {
     position: sticky;
     top: 0;
-    z-index: 2;
-    background: var(--v2-dark-bg, #161c24);
+    z-index: 3;
+    background: #1e2936 !important;
+  }
+  :root[data-theme="dark"] body.ui-v2 .v2-card-dark .data-table thead th {
+    background: #141a24 !important;
+  }
+  :root[data-theme="amber"] body.ui-v2 .v2-card-dark .data-table thead th {
+    background: #171a1b !important;
+  }
+  :root[data-theme="moss"] body.ui-v2 .v2-card-dark .data-table thead th {
+    background: #1a2410 !important;
   }
 
   /* 2) Trang Xe & tài xế: 1 bảng rộng thoáng theo tab Đội xe / Tài xế + 2 thẻ phân tích cân đối bên phải */
