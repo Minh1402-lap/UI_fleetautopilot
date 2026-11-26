@@ -165,7 +165,19 @@
       if (maintenancePanel) {
         const failedJobs = state.jobs.filter((j) => j.status === 'failed').length;
         const staleCount = api.snapshot().vehicles.filter((v) => v.gps !== 'fresh').length;
-        // Admin KHÔNG duyệt đổi vai trò — chỉ gửi yêu cầu bảo trì, xem ảnh hưởng vận hành & nhận thông báo khóa TK khẩn cấp
+        const roleLogs = roles
+          .snapshot()
+          .system.filter((l) => /vai trò|role/i.test(l.action || ''))
+          .slice(0, 4);
+        const roleLogsHtml = roleLogs.length
+          ? roleLogs
+              .map(
+                (l) =>
+                  `<div class="role-row"><div><strong>${esc(l.action)}</strong><small>${esc(l.before)} → ${esc(l.after)} · ${esc(l.actor)} · ${time(l.at)}</small></div></div>`
+              )
+              .join('')
+          : '';
+        // Admin KHÔNG duyệt đổi vai trò — chỉ gửi yêu cầu bảo trì, xem ảnh hưởng vận hành, xem lại yêu cầu đổi role & nhận thông báo khóa TK khẩn cấp
         maintenancePanel.innerHTML = `<div class="admin-maint-bento">
           <div class="admin-maint-sub v2-card-dark">
             <h3>Cảnh báo ảnh hưởng vận hành</h3>
@@ -180,6 +192,12 @@
           <div class="admin-maint-sub v2-card-dark">
             <h3>Thông báo khóa tài khoản khẩn cấp</h3>
             ${state.support.map((n) => `<div class="role-row"><span><strong>${esc(n.id)}</strong> · ${esc(n.text)}<small>${time(n.at)}</small></span></div>`).join('') || note('Chưa có thông báo khóa tài khoản khẩn cấp.')}
+          </div>
+          <div class="admin-maint-sub v2-card-light">
+            <h3>Yêu cầu đổi role (chỉ đọc · xem lại)</h3>
+            ${changesMarkup()}
+            ${roleLogsHtml ? `<div class="admin-role-history">${roleLogsHtml}</div>` : ''}
+            ${note('Admin chỉ xem lại để nắm thay đổi nhân sự; System Admin trực tiếp đổi role thường (Tài xế ↔ Điều phối), còn role quản trị do người công ty chỉ định duyệt.')}
           </div>
         </div>`;
       }
@@ -433,6 +451,16 @@
   window.addEventListener('fleet:role-render', render);
   window.addEventListener('fleet:reset', () => { state = seed(); save(); render(); });
 
+  window.addEventListener('storage', (e) => {
+    if (e.key !== key) return;
+    try {
+      const s = JSON.parse(localStorage.getItem(key));
+      if (s?.version === 2 && ['changes', 'recovery', 'maintenance', 'jobs', 'support', 'supportGrants'].every((k) => Array.isArray(s[k]))) {
+        state = s;
+        render();
+      }
+    } catch {}
+  });
   window.FleetGovernance = { snapshot: () => state, save, submitRecovery, resolveRecovery, requestRole, provision, editImei, openSupportGrant, log };
   render();
 })();
