@@ -461,6 +461,17 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar:focus-within ~ .app {
     margin-left: 300px !important;
   }
+  @media (max-height: 760px), (max-width: 1180px) {
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app {
+      height: auto;
+      min-height: calc(100vh - 32px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    body.ui-v2:not([data-role="driver"]):not(.role-home-active) .app > main {
+      overflow: visible;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar,
     body.ui-v2:not([data-role="driver"]):not(.role-home-active) .sidebar .brand-label,
