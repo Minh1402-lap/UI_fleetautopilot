@@ -226,8 +226,9 @@
 
   function ticketsScreen() {
     const { wf, drv, veh } = ctx();
-    const list = wf?.tickets?.() || [];
-    const activeTicket = list.find((t) => t.id === selectedTicketId) || list[0] || null;
+    const list = (wf?.tickets?.() || []).filter((t) => t.status === 'open');
+    const activeTicket = list.find((t) => t.id === selectedTicketId) || null;
+    if (ticketView === 'chat' && !activeTicket) ticketView = 'channels';
     const myOpenTicket = wf?.openTicketForDriver?.(drv?.name, veh?.plate) || null;
 
     if (ticketView === 'chat' && activeTicket) {
