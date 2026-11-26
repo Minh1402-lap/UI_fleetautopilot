@@ -1186,7 +1186,14 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     min-height: 0;
     overflow: auto;
   }
+  body.ui-v2:has(#workflow-view:not([hidden])) #main {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 12px 12px !important;
+  }
   body.ui-v2 #workflow-view:not([hidden]) {
+    width: 100%;
     flex: 1;
     min-height: 0;
     display: flex;
@@ -1203,10 +1210,11 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace,
   body.ui-v2 #workflow-view:not([hidden]) .workflow-grid {
+    width: 100%;
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(250px, 290px) minmax(0, 1fr);
+    grid-template-columns: minmax(260px, 310px) minmax(0, 1fr);
     gap: 12px;
     overflow: hidden;
     margin: 0 !important;
@@ -1219,6 +1227,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     height: 100%;
     overflow: hidden;
     margin: 0 !important;
+    padding: 14px 16px !important;
   }
 
   /* 5) Các trang con Admin & System Admin (#role-view): kéo giãn lưới chính lấp đầy khung 100vh */
