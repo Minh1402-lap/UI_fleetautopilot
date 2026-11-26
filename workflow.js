@@ -70,6 +70,41 @@
     const mime = type === 'data:image/' ? /^data:image\/(jpeg|png|webp|gif|avif);base64,/i : /^data:audio\/(webm|ogg|mp4|mpeg|wav|aac)(?:;[^,]+)*;base64,/i;
     return typeof url === 'string' && url.length <= 1400000 && mime.test(url) ? url : '';
   };
+  function formatMessageText(text) {
+    const raw = String(text ?? '');
+    const coordRe = /(-?\d{1,2}\.\d{3,6})\s*,\s*(-?\d{1,3}\.\d{3,6})/g;
+    let out = '';
+    let last = 0;
+    for (const m of raw.matchAll(coordRe)) {
+      const idx = m.index ?? 0;
+      out += esc(raw.slice(last, idx));
+      const lat = Number(m[1]);
+      const lon = Number(m[2]);
+      if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+        out += `<button type="button" class="ticket-gps-link" data-workflow-action="view-gps" data-lat="${lat}" data-lon="${lon}" title="Xem vị trí trên bản đồ">${icon('pin')}<span>${esc(m[0])}</span></button>`;
+      } else {
+        out += esc(m[0]);
+      }
+      last = idx + m[0].length;
+    }
+    return out + esc(raw.slice(last));
+  }
+  function openGpsModal(lat, lon, label = '') {
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return;
+    const q = `${nLat},${nLon}`;
+    modal(
+      `Vị trí GPS điện thoại${label ? ` · ${label}` : ''}`,
+      `${detail([['Tọa độ', q], ['Nguồn', 'GPS điện thoại tài xế (tách riêng GPS xe Taris)']])}
+      <div class="ticket-gps-map-wrap">
+        <iframe class="ticket-gps-iframe" title="Bản đồ vị trí ${esc(q)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=16&output=embed"></iframe>
+      </div>
+      <div class="workflow-inline-actions">
+        <a class="primary ticket-gmaps-link" href="https://www.google.com/maps?q=${encodeURIComponent(q)}" target="_blank" rel="noopener noreferrer">Mở trên Google Maps ↗</a>
+      </div>`
+    );
+  }
   const activeDriver = () => {
     currentTrip();
     return api.snapshot().drivers.find((driver) => driver.id === roles.activeDriver());
@@ -206,10 +241,10 @@
       <span><strong>Chuyến / xe:</strong> ${esc(t.order || '—')} · ${esc(t.plate || '—')}</span>
       <span><strong>Tài xế:</strong> ${esc(t.driver)}</span>
       <span><strong>Lúc:</strong> ${clock(t.at)}</span>
-      ${t.phoneGps ? `<span><strong>GPS ĐT:</strong> ${esc(t.phoneGps)}</span>` : ''}
+      ${t.phoneGps ? `<span><strong>GPS ĐT:</strong> ${formatMessageText(t.phoneGps)}</span>` : ''}
     </div>`;
     return metaBadges +
-      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time>${m.text ? `<p>${esc(m.text)}</p>` : ''}${renderMessageMedia(m)}</article>`).join('')}</div>` +
+      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time>${m.text ? `<p>${formatMessageText(m.text)}</p>` : ''}${renderMessageMedia(m)}</article>`).join('')}</div>` +
       (t.status === 'closed'
         ? `<div class="workflow-note">${badge('Hồ sơ chỉ đọc', 'completed')}${detail([['Kết quả xử lý', t.resolution], ['Người đóng', t.closedBy], ['Thời gian đóng', clock(t.closedAt)]])}<p>Giữ nguyên hội thoại. Đóng ticket không thay đổi trạng thái chuyến hoặc xe.</p></div>`
         : role() === 'admin'
@@ -786,6 +821,7 @@
     if (action === 'login') authPreview('login');
     if (action === 'auth-tab') authPreview(id);
     if (action === 'help-recovery') openHelpRecovery();
+    if (action === 'view-gps') openGpsModal(b.dataset.lat, b.dataset.lon, state.tickets.find((t) => t.id === ticketId)?.code || '');
     if (action === 'toggle-voice') toggleVoiceRecord();
     if (action === 'clear-chat-image') { composeImageUrl = ''; composeImageName = ''; showTickets(); }
     if (action === 'clear-chat-voice') { composeAudioUrl = ''; composeVoiceDuration = ''; showTickets(); }
@@ -877,7 +913,27 @@
     }
   });
   document.addEventListener('input', (e) => { if (e.target.id === 'ticket-message') composeDraft = e.target.value; });
-  document.addEventListener('keydown', (e) => { const marker = e.target.closest('.admin-marker'); if (marker && ['Enter', ' '].includes(e.key)) { e.preventDefault(); adminPlate = marker.dataset.id; roles.render(); } });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.id === 'ticket-message' && e.key === 'Enter' && !e.isComposing) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const el = e.target;
+        const start = el.selectionStart ?? el.value.length;
+        const end = el.selectionEnd ?? el.value.length;
+        el.value = el.value.slice(0, start) + '\n' + el.value.slice(end);
+        el.selectionStart = el.selectionEnd = start + 1;
+        composeDraft = el.value;
+        return;
+      }
+      if (!e.shiftKey) {
+        e.preventDefault();
+        e.target.form?.requestSubmit();
+        return;
+      }
+    }
+    const marker = e.target.closest('.admin-marker');
+    if (marker && ['Enter', ' '].includes(e.key)) { e.preventDefault(); adminPlate = marker.dataset.id; roles.render(); }
+  });
   document.addEventListener('change', (e) => {
     if (e.target.id === 'ticket-filter') { filter = e.target.value; gotoTickets(); }
     if (e.target.id === 'ticket-chat-photo') {
