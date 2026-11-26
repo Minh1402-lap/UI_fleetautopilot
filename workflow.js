@@ -13,7 +13,7 @@
   const role = () => roles.role(), actor = () => role() === 'driver' ? 'Tài xế' : role() === 'admin_system' ? 'Phạm Huy Hoàng' : 'Lê Hoàng Nam';
   const btn = (label, action, id = '', cls = 'secondary') => `<button type="button" class="${cls}" data-workflow-action="${action}" data-id="${esc(id)}">${label}</button>`;
   const badge = (label, type = 'pending') => `<span class="badge" data-status="${type}"><span class="status-dot" aria-hidden="true"></span>${esc(label)}</span>`;
-  const panel = (title, html, ico = 'layers') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2></div>${html}</section>`;
+  const panel = (title, html, ico = 'layers', extra = '') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2>${extra}</div>${html}</section>`;
   const detail = (rows) => `<dl class="role-details">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v ?? '—')}</dd></div>`).join('')}</dl>`;
   const input = (label, name, value = '', type = 'text', attrs = '') => `<label>${label}<input name="${name}" type="${type}" value="${esc(value)}" required maxlength="150" ${attrs}></label>`;
   const qtyText = (o) => api.qtyText ? api.qtyText(o) : `${o?.quantity || 0} ${o?.unit || 'm³'}`;
@@ -128,12 +128,12 @@
     const list = state.tickets.filter((t) => filter === 'all' || t.status === filter);
     const ticket = state.tickets.find((t) => t.id === ticketId) || list[0];
     if (ticket) ticketId = ticket.id;
+    const leftTools = `<div class="ticket-panel-tools"><select id="ticket-filter" aria-label="Trạng thái ticket"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select>${role() === 'driver' ? btn('+ Mới', 'new-report', '', 'primary') : ''}</div>`;
+    const rightTools = `<div class="ticket-panel-tools">${btn('Quay lại', 'leave-tickets')}</div>`;
     screen.innerHTML = `<section class="page-heading"><span class="heading-icon">${icon('alert')}</span><h1>Sự cố, Khẩn cấp 1 nút & Ticket</h1><p>Tài xế ↔ Điều phối trao đổi; Điều phối ghi kết quả & đóng hồ sơ (chỉ đọc). Admin chỉ đọc toàn bộ.</p></section>
-      <div class="ticket-toolbar"><label>Trạng thái <select id="ticket-filter"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select></label>${role() === 'driver' ? btn('Báo sự cố mới', 'new-report', '', 'primary') : ''}${btn('Quay lại', 'leave-tickets')}</div>
-      <p class="workflow-note">Cảnh báo Khẩn cấp 1 nút đi kèm ảnh tự chụp + metadata (tài xế, xe/chuyến, giờ, GPS điện thoại). Đóng ticket không tự hoàn thành chuyến hay giải phóng xe.</p>
       <div class="workflow-grid">` +
-      panel('Danh sách ticket', list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>', 'order') +
-      panel(ticket ? `${ticket.code} · ${ticket.emergency ? 'Khẩn cấp 1 nút' : ticket.kind}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Gửi báo cáo để mở ticket, hoặc chọn nhóm khác.</p>', 'activity') +
+      panel('Kênh ticket', `<div class="ticket-channels-list">${list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>#${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>'}</div>`, 'order', leftTools) +
+      panel(ticket ? `#${ticket.code} · ${ticket.emergency ? 'Khẩn cấp 1 nút' : ticket.kind}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Gửi báo cáo để mở ticket, hoặc chọn nhóm khác.</p>', 'activity', rightTools) +
       '</div>';
   }
 
@@ -152,14 +152,13 @@
   }
 
   function thread(t) {
-    return detail([
-      ['Loại sự cố', t.emergency ? 'Khẩn cấp 1 nút (tự chụp ảnh)' : t.kind],
-      ['Chuyến / xe', (t.order || '—') + ' · ' + (t.plate || '—')],
-      ['Người báo', t.driver],
-      ['Tạo lúc', clock(t.at)],
-      ['Ảnh đính kèm', t.filename || 'Không có'],
-      ...(t.phoneGps ? [['GPS điện thoại (bằng chứng)', t.phoneGps]] : []),
-    ]) +
+    const metaBadges = `<div class="ticket-meta-bar">
+      <span><strong>Chuyến / xe:</strong> ${esc(t.order || '—')} · ${esc(t.plate || '—')}</span>
+      <span><strong>Tài xế:</strong> ${esc(t.driver)}</span>
+      <span><strong>Lúc:</strong> ${clock(t.at)}</span>
+      ${t.phoneGps ? `<span><strong>GPS ĐT:</strong> ${esc(t.phoneGps)}</span>` : ''}
+    </div>`;
+    return metaBadges +
       `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time>${m.text ? `<p>${esc(m.text)}</p>` : ''}${renderMessageMedia(m)}</article>`).join('')}</div>` +
       (t.status === 'closed'
         ? `<div class="workflow-note">${badge('Hồ sơ chỉ đọc', 'completed')}${detail([['Kết quả xử lý', t.resolution], ['Người đóng', t.closedBy], ['Thời gian đóng', clock(t.closedAt)]])}<p>Giữ nguyên hội thoại. Đóng ticket không thay đổi trạng thái chuyến hoặc xe.</p></div>`
@@ -675,7 +674,7 @@
     if (!t || t.status !== 'open') return false;
     const next = structuredClone(state);
     Object.assign(next.tickets.find((x) => x.id === tId), { status: 'closed', resolution: clean, closedBy: actor(), closedAt: now() });
-    if (persist(next)) { filter = 'closed'; api.render(); window.dispatchEvent(new Event('fleet:workflow-sync')); return true; }
+    if (persist(next)) { api.render(); window.dispatchEvent(new Event('fleet:workflow-sync')); return true; }
     return false;
   }
 
