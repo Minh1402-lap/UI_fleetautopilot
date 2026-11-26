@@ -894,16 +894,6 @@
     const el = $('#workspace-view .stats .stat:last-child strong');
     if (el) el.textContent = String(count);
   });
-  window.addEventListener('storage', (e) => {
-    if (e.key !== key) return;
-    try {
-      const saved = JSON.parse(localStorage.getItem(key));
-      if (saved?.version === 2 && Array.isArray(saved.orders) && Array.isArray(saved.vehicles)) {
-        state = saved;
-        render();
-      }
-    } catch {}
-  });
   window.FleetPreview = { snapshot: () => state, openModal, toast, render, commit, setPage, qtyText, candidates, alerts, confirmDeleteOrder, cargoMatchesVehicle, labels, formatNum };
   render();
 })();

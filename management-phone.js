@@ -384,12 +384,6 @@
 
   phone.addEventListener('change', render);
   window.addEventListener('fleet:role-render', render);
-  window.addEventListener('fleet:commit', () => {
-    if (phone.matches && activeRole && activeScreen) mountScreen(activeRole, activeScreen);
-  });
-  window.addEventListener('fleet:workflow-sync', () => {
-    if (phone.matches && activeRole && activeScreen) mountScreen(activeRole, activeScreen);
-  });
   window.addEventListener('popstate', render);
   new MutationObserver(() => {
     const select = root.querySelector('[data-management-theme]');

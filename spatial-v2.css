@@ -1183,48 +1183,25 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     min-height: 0;
     overflow: auto;
   }
-  body.ui-v2:not(.ui-v2-bento-active):has(#workflow-view:not([hidden])) #main {
-    max-width: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 12px 12px !important;
-  }
   body.ui-v2 #workflow-view:not([hidden]) {
-    width: 100%;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     overflow: hidden;
   }
   body.ui-v2 #workflow-view:not([hidden]) > .workflow-source,
-  body.ui-v2 #workflow-view:not([hidden]) > .filter-bar,
-  body.ui-v2 #workflow-view:not([hidden]) > .ticket-toolbar,
-  body.ui-v2 #workflow-view:not([hidden]) > .workflow-note {
+  body.ui-v2 #workflow-view:not([hidden]) > .filter-bar {
     flex-shrink: 0;
     margin: 0 !important;
   }
-  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace,
-  body.ui-v2 #workflow-view:not([hidden]) .workflow-grid {
-    width: 100%;
+  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(260px, 310px) minmax(0, 1fr);
+    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.4fr);
     gap: 12px;
-    overflow: hidden;
-    margin: 0 !important;
   }
-  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace > .panel,
-  body.ui-v2 #workflow-view:not([hidden]) .workflow-grid > .panel {
-    display: flex;
-    flex-direction: column;
+  body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace > .panel {
     min-height: 0;
-    height: 100%;
-    overflow: hidden;
+    overflow-y: auto;
     margin: 0 !important;
-    padding: 14px 16px !important;
   }
 
   /* 5) Các trang con Admin & System Admin (#role-view): kéo giãn lưới chính lấp đầy khung 100vh */
@@ -2241,65 +2218,15 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     padding: 14px 15px;
     text-align: left;
   }
-  .v2-action-card-featured {
-    position: relative;
-    border: 1.5px solid color-mix(in srgb, var(--v2-accent) 72%, var(--v2-light-border)) !important;
-    box-shadow: 0 0 0 3px var(--v2-accent-soft), 0 12px 26px -12px rgba(0, 0, 0, 0.48);
-  }
   .v2-action-hd {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 6px;
-    flex-wrap: wrap;
-  }
-  .v2-action-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .v2-action-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--v2-btn-bg);
-    color: var(--v2-btn-ink);
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-  .v2-action-tools {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .v2-expand-btn {
-    padding: 4px 9px;
-    border-radius: 999px;
-    background: rgba(15, 23, 42, 0.08);
-    color: var(--v2-light-ink);
-    border: 1px solid rgba(15, 23, 42, 0.22);
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .v2-expand-btn:hover {
-    background: rgba(15, 23, 42, 0.16);
-  }
-  .v2-action-order-box {
-    margin-top: 8px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.07);
-    border: 1px solid rgba(15, 23, 42, 0.14);
-  }
-  .v2-action-order-box .v2-action-l1 {
-    margin-top: 0;
   }
   .v2-action-card h4 {
     margin: 0;
-    font-size: 15.5px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--v2-light-ink);
   }
@@ -2384,202 +2311,6 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     font-size: 13px;
     font-weight: 700;
     text-align: center;
-  }
-
-  /* Hộp thoại mở rộng không gian Điều phối nhanh */
-  .v2-qd-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 120;
-    background: rgba(6, 10, 14, 0.68);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .v2-qd-modal {
-    width: min(920px, 100%);
-    max-height: min(680px, 90vh);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 20px;
-    border-radius: 22px;
-    background: var(--v2-sub-panel-bg);
-    border: 1.5px solid color-mix(in srgb, var(--v2-accent) 45%, var(--v2-sub-panel-border));
-    color: var(--v2-dark-ink);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-    overflow: hidden;
-  }
-  :root[data-theme="light"] .v2-qd-modal {
-    color: var(--v2-light-ink);
-  }
-  .v2-qd-head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .v2-qd-title-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .v2-qd-title-row h3 {
-    margin: 0;
-    font-size: 19px;
-    font-weight: 600;
-  }
-  .v2-qd-close {
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: var(--v2-sub-nested-bg);
-    border: 1px solid var(--v2-sub-nested-border);
-    color: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .v2-qd-close:hover {
-    border-color: var(--v2-accent);
-  }
-  .v2-qd-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    gap: 16px;
-    min-height: 0;
-    flex: 1;
-  }
-  .v2-qd-col {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 0;
-    padding: 14px;
-    border-radius: 16px;
-    background: var(--v2-sub-nested-bg);
-    border: 1px solid var(--v2-sub-nested-border);
-  }
-  .v2-qd-col-hd {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .v2-qd-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-  }
-  .v2-qd-order {
-    width: 100%;
-    text-align: left;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.14);
-    border: 1px solid var(--v2-sub-nested-border);
-    color: inherit;
-  }
-  :root[data-theme="light"] .v2-qd-order {
-    background: rgba(255, 255, 255, 0.72);
-  }
-  .v2-qd-order.active,
-  .v2-qd-order:hover {
-    border-color: var(--v2-accent);
-    box-shadow: 0 0 0 2px var(--v2-accent-soft);
-  }
-  .v2-qd-order-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 13px;
-  }
-  .v2-qd-order-sub {
-    margin-top: 4px;
-    font-size: 12px;
-    opacity: 0.82;
-  }
-  .v2-qd-focus-box {
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: var(--v2-light-bg);
-    border: 1px solid var(--v2-light-border);
-    color: var(--v2-light-ink);
-    font-size: 12.5px;
-    line-height: 1.4;
-  }
-  .v2-qd-veh-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    overflow-y: auto;
-  }
-  .v2-qd-veh {
-    text-align: left;
-    padding: 10px 11px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.14);
-    border: 1px solid var(--v2-sub-nested-border);
-    color: inherit;
-  }
-  :root[data-theme="light"] .v2-qd-veh {
-    background: rgba(255, 255, 255, 0.72);
-  }
-  .v2-qd-veh[aria-pressed="true"],
-  :root[data-theme="light"] .v2-qd-veh[aria-pressed="true"] {
-    background: var(--v2-btn-bg);
-    color: var(--v2-btn-ink);
-    border-color: var(--v2-accent);
-  }
-  :root[data-theme="dark"] .v2-qd-veh[aria-pressed="true"],
-  :root[data-theme="dark"] .v2-qd-foot .v2-action-btn {
-    background: var(--v2-accent);
-    color: #ffffff !important;
-    border-color: transparent;
-  }
-  .v2-qd-veh-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    font-size: 13px;
-  }
-  .v2-qd-veh-sub {
-    margin-top: 4px;
-    font-size: 11.5px;
-    opacity: 0.85;
-  }
-  .v2-qd-foot {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  #spatial-v2-root .v2-qd-modal .v2-ai-chip {
-    background: rgba(255, 255, 255, 0.10) !important;
-    color: var(--v2-dark-ink) !important;
-    border-color: rgba(255, 255, 255, 0.24) !important;
-  }
-  #spatial-v2-root .v2-qd-modal .v2-ai-chip:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.18) !important;
-  }
-  :root[data-theme="light"] #spatial-v2-root .v2-qd-modal .v2-ai-chip {
-    background: rgba(24, 34, 44, 0.10) !important;
-    color: var(--v2-light-ink) !important;
-    border-color: rgba(24, 34, 44, 0.24) !important;
-  }
-  .v2-qd-modal .v2-ai-note {
-    color: var(--v2-dark-muted);
-  }
-  :root[data-theme="light"] .v2-qd-modal .v2-ai-note {
-    color: var(--v2-light-muted);
   }
 }
 

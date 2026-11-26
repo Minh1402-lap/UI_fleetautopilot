@@ -13,7 +13,7 @@
   const role = () => roles.role(), actor = () => role() === 'driver' ? 'Tài xế' : role() === 'admin_system' ? 'Phạm Huy Hoàng' : 'Lê Hoàng Nam';
   const btn = (label, action, id = '', cls = 'secondary') => `<button type="button" class="${cls}" data-workflow-action="${action}" data-id="${esc(id)}">${label}</button>`;
   const badge = (label, type = 'pending') => `<span class="badge" data-status="${type}"><span class="status-dot" aria-hidden="true"></span>${esc(label)}</span>`;
-  const panel = (title, html, ico = 'layers', extra = '') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2>${extra}</div>${html}</section>`;
+  const panel = (title, html, ico = 'layers') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2></div>${html}</section>`;
   const detail = (rows) => `<dl class="role-details">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v ?? '—')}</dd></div>`).join('')}</dl>`;
   const input = (label, name, value = '', type = 'text', attrs = '') => `<label>${label}<input name="${name}" type="${type}" value="${esc(value)}" required maxlength="150" ${attrs}></label>`;
   const qtyText = (o) => api.qtyText ? api.qtyText(o) : `${o?.quantity || 0} ${o?.unit || 'm³'}`;
@@ -64,9 +64,6 @@
   }
 
   let state = seedTickets(), filter = 'open', ticketId = '', lastRole = role(), composeDraft = '', adminPlate = '';
-  let composeImageUrl = '', composeImageName = '', composeAudioUrl = '', composeVoiceDuration = '', isRecording = false, recorder = null, recordStream = null, recordTimer = 0, recordSeconds = 0, recordChunks = [];
-  const safeMediaUrl = (url, prefix) => (typeof url === 'string' && url.startsWith(prefix) ? url : '');
-  const fmtDuration = (sec) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
   function read() {
     try {
       const value = JSON.parse(localStorage.getItem(key));
@@ -128,55 +125,30 @@
     const list = state.tickets.filter((t) => filter === 'all' || t.status === filter);
     const ticket = state.tickets.find((t) => t.id === ticketId) || list[0];
     if (ticket) ticketId = ticket.id;
-    const leftTools = `<div class="ticket-panel-tools"><select id="ticket-filter" aria-label="Trạng thái ticket"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select>${role() === 'driver' ? btn('+ Mới', 'new-report', '', 'primary') : ''}</div>`;
-    const rightTools = `<div class="ticket-panel-tools">${ticket && ticket.status === 'open' && role() === 'dispatch' ? `${btn('Đóng ticket', 'ticket-close', ticket.id)}${ticket.order ? btn(`Xử lý ${ticket.order}`, 'trip-exception', ticket.order) : ''}` : ''}${btn('Quay lại', 'leave-tickets')}</div>`;
     screen.innerHTML = `<section class="page-heading"><span class="heading-icon">${icon('alert')}</span><h1>Sự cố, Khẩn cấp 1 nút & Ticket</h1><p>Tài xế ↔ Điều phối trao đổi; Điều phối ghi kết quả & đóng hồ sơ (chỉ đọc). Admin chỉ đọc toàn bộ.</p></section>
+      <div class="ticket-toolbar"><label>Trạng thái <select id="ticket-filter"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select></label>${role() === 'driver' ? btn('Báo sự cố mới', 'new-report', '', 'primary') : ''}${btn('Quay lại', 'leave-tickets')}</div>
+      <p class="workflow-note">Cảnh báo Khẩn cấp 1 nút đi kèm ảnh tự chụp + metadata (tài xế, xe/chuyến, giờ, GPS điện thoại). Đóng ticket không tự hoàn thành chuyến hay giải phóng xe.</p>
       <div class="workflow-grid">` +
-      panel('Kênh ticket', `<div class="ticket-channels-list">${list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>#${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>'}</div>`, 'order', leftTools) +
-      panel(ticket ? `#${ticket.code} · ${ticket.emergency ? 'Khẩn cấp 1 nút' : ticket.kind}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Gửi báo cáo để mở ticket, hoặc chọn nhóm khác.</p>', 'activity', rightTools) +
+      panel('Danh sách ticket', list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>', 'order') +
+      panel(ticket ? `${ticket.code} · ${ticket.emergency ? 'Khẩn cấp 1 nút' : ticket.kind}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Gửi báo cáo để mở ticket, hoặc chọn nhóm khác.</p>', 'activity') +
       '</div>';
   }
 
-  function renderMessageMedia(m) {
-    const img = safeMediaUrl(m.imageUrl, 'data:image/')
-      ? `<figure class="ticket-msg-media"><img class="ticket-msg-img" src="${esc(m.imageUrl)}" alt="${esc(m.imageName || 'Ảnh đính kèm ticket')}">${m.imageName ? `<figcaption>${esc(m.imageName)}</figcaption>` : ''}</figure>`
-      : m.imageName
-      ? `<div class="ticket-msg-file">Ảnh đính kèm: ${esc(m.imageName)}</div>`
-      : '';
-    const audio = safeMediaUrl(m.audioUrl, 'data:audio/')
-      ? `<div class="ticket-msg-voice"><audio class="ticket-msg-audio" controls src="${esc(m.audioUrl)}"></audio>${m.voiceDuration ? `<small>Thoại · ${esc(m.voiceDuration)}</small>` : ''}</div>`
-      : m.voiceDuration
-      ? `<div class="ticket-msg-voice-pill"><span>Tin nhắn thoại</span><strong>${esc(m.voiceDuration)}</strong></div>`
-      : '';
-    return img + audio;
-  }
-
   function thread(t) {
-    const metaBadges = `<div class="ticket-meta-bar">
-      <span><strong>Chuyến / xe:</strong> ${esc(t.order || '—')} · ${esc(t.plate || '—')}</span>
-      <span><strong>Tài xế:</strong> ${esc(t.driver)}</span>
-      <span><strong>Lúc:</strong> ${clock(t.at)}</span>
-      ${t.phoneGps ? `<span><strong>GPS ĐT:</strong> ${esc(t.phoneGps)}</span>` : ''}
-    </div>`;
-    return metaBadges +
-      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time>${m.text ? `<p>${esc(m.text)}</p>` : ''}${renderMessageMedia(m)}</article>`).join('')}</div>` +
+    return detail([
+      ['Loại sự cố', t.emergency ? 'Khẩn cấp 1 nút (tự chụp ảnh)' : t.kind],
+      ['Chuyến / xe', (t.order || '—') + ' · ' + (t.plate || '—')],
+      ['Người báo', t.driver],
+      ['Tạo lúc', clock(t.at)],
+      ['Ảnh đính kèm', t.filename || 'Không có'],
+      ...(t.phoneGps ? [['GPS điện thoại (bằng chứng)', t.phoneGps]] : []),
+    ]) +
+      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time><p>${esc(m.text)}</p></article>`).join('')}</div>` +
       (t.status === 'closed'
         ? `<div class="workflow-note">${badge('Hồ sơ chỉ đọc', 'completed')}${detail([['Kết quả xử lý', t.resolution], ['Người đóng', t.closedBy], ['Thời gian đóng', clock(t.closedAt)]])}<p>Giữ nguyên hội thoại. Đóng ticket không thay đổi trạng thái chuyến hoặc xe.</p></div>`
         : role() === 'admin'
         ? '<p class="workflow-note">Admin chỉ đọc toàn bộ hồ sơ và hội thoại. Chỉ Tài xế/Điều phối trao đổi; Điều phối ghi kết quả và đóng ticket.</p>'
-        : `<form id="ticket-message-form" class="ticket-compose">
-            <label for="ticket-message" class="sr-only">Nội dung trao đổi</label>
-            ${composeImageUrl || composeVoiceDuration ? `<div class="ticket-compose-preview">
-              ${safeMediaUrl(composeImageUrl, 'data:image/') ? `<span class="ticket-preview-chip"><img src="${esc(composeImageUrl)}" alt="Xem trước ảnh"><span>${esc(composeImageName || 'Ảnh chụp')}</span><button type="button" data-workflow-action="clear-chat-image" aria-label="Bỏ ảnh">×</button></span>` : ''}
-              ${composeVoiceDuration ? `<span class="ticket-preview-chip"><span>Thoại (${esc(composeVoiceDuration)})</span><button type="button" data-workflow-action="clear-chat-voice" aria-label="Bỏ ghi âm">×</button></span>` : ''}
-            </div>` : ''}
-            <div class="ticket-compose-bar">
-              <label class="secondary ticket-file-btn" title="Chọn hoặc chụp ảnh">${icon('camera')}<span>Ảnh</span><input id="ticket-chat-photo" type="file" accept="image/*" capture="environment" hidden></label>
-              <button type="button" class="${isRecording ? 'primary' : 'secondary'} ticket-voice-btn" data-workflow-action="toggle-voice">${isRecording ? `Dừng (${fmtDuration(recordSeconds)})` : 'Ghi âm'}</button>
-              <textarea id="ticket-message" name="message" rows="1" maxlength="2000" placeholder="Nhắn tin, gửi ảnh hoặc ghi âm...">${esc(composeDraft)}</textarea>
-              <button class="primary ticket-send-btn" type="submit">Gửi</button>
-            </div>
-          </form>${role() === 'dispatch' ? '' : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
+        : `<form id="ticket-message-form" class="ticket-compose"><label for="ticket-message">Nội dung trao đổi</label><textarea id="ticket-message" name="message" required maxlength="2000" placeholder="Nhập nội dung...">${esc(composeDraft)}</textarea><button class="primary" type="submit">Gửi tin nhắn</button></form>${role() === 'dispatch' ? `<div class="workflow-inline-actions">${btn('Ghi kết quả & đóng ticket', 'ticket-close', t.id)}${t.order ? btn('Xử lý ngoại lệ chuyến ' + t.order, 'trip-exception', t.order) : ''}</div>` : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
   }
 
   function reportPage() {
@@ -571,98 +543,17 @@
     );
   }
 
-  function sendMessage(tId, payload) {
+  function sendMessage(tId, text) {
     if (!['dispatch', 'driver'].includes(role())) return false;
-    const isObj = payload && typeof payload === 'object';
-    const clean = String(isObj ? payload.text || '' : payload || '').trim();
-    const imageUrl = isObj ? safeMediaUrl(payload.imageUrl, 'data:image/') : '';
-    const imageName = isObj ? String(payload.imageName || '').trim() : '';
-    const audioUrl = isObj ? safeMediaUrl(payload.audioUrl, 'data:audio/') : '';
-    const voiceDuration = isObj ? String(payload.voiceDuration || '').trim() : '';
-    if (!clean && !imageUrl && !imageName && !audioUrl && !voiceDuration) return false;
+    const clean = String(text || '').trim();
+    if (!clean) return false;
     read();
     const t = state.tickets.find((x) => x.id === tId);
     if (!t || t.status !== 'open') { api.toast('Ticket đã đóng. Chỉ có thể đọc hồ sơ.'); return false; }
     const next = structuredClone(state);
-    next.tickets.find((x) => x.id === tId).messages.push({
-      id: uid('M'),
-      by: actor(),
-      role: role(),
-      text: clean,
-      ...(imageUrl ? { imageUrl } : {}),
-      ...(imageName ? { imageName } : {}),
-      ...(audioUrl ? { audioUrl } : {}),
-      ...(voiceDuration ? { voiceDuration } : {}),
-      at: now(),
-    });
-    if (persist(next)) {
-      composeDraft = '';
-      composeImageUrl = '';
-      composeImageName = '';
-      composeAudioUrl = '';
-      composeVoiceDuration = '';
-      api.render();
-      window.dispatchEvent(new Event('fleet:workflow-sync'));
-      return true;
-    }
+    next.tickets.find((x) => x.id === tId).messages.push({ id: uid('M'), by: actor(), role: role(), text: clean, at: now() });
+    if (persist(next)) { composeDraft = ''; api.render(); return true; }
     return false;
-  }
-
-  function stopVoiceRecord(apply = true) {
-    clearInterval(recordTimer);
-    recordTimer = 0;
-    const dur = fmtDuration(Math.max(1, recordSeconds));
-    isRecording = false;
-    if (recorder && recorder.state !== 'inactive') {
-      try { recorder.stop(); } catch {}
-    } else if (apply) {
-      composeVoiceDuration = dur;
-      showTickets();
-    }
-    if (recordStream) {
-      recordStream.getTracks().forEach((tr) => tr.stop());
-      recordStream = null;
-    }
-  }
-
-  async function toggleVoiceRecord() {
-    if (isRecording) {
-      stopVoiceRecord(true);
-      return;
-    }
-    recordSeconds = 0;
-    isRecording = true;
-    composeAudioUrl = '';
-    composeVoiceDuration = '';
-    showTickets();
-    recordTimer = window.setInterval(() => {
-      recordSeconds += 1;
-      const btnEl = document.querySelector('[data-workflow-action="toggle-voice"]');
-      if (btnEl) btnEl.textContent = `Dừng ghi (${fmtDuration(recordSeconds)})`;
-    }, 1000);
-    if (navigator.mediaDevices?.getUserMedia && window.MediaRecorder) {
-      try {
-        recordStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        recordChunks = [];
-        recorder = new MediaRecorder(recordStream);
-        recorder.ondataavailable = (ev) => { if (ev.data?.size) recordChunks.push(ev.data); };
-        recorder.onstop = () => {
-          const dur = fmtDuration(Math.max(1, recordSeconds));
-          const blob = new Blob(recordChunks, { type: recorder?.mimeType || 'audio/webm' });
-          const reader = new FileReader();
-          reader.onload = () => {
-            composeAudioUrl = typeof reader.result === 'string' ? reader.result : '';
-            composeVoiceDuration = dur;
-            showTickets();
-          };
-          reader.readAsDataURL(blob);
-        };
-        recorder.start();
-      } catch {
-        recorder = null;
-        api.toast('Chưa có quyền micro; đang dùng chế độ ghi âm mẫu.');
-      }
-    }
   }
 
   function closeTicket(tId, resolution) {
@@ -674,81 +565,8 @@
     if (!t || t.status !== 'open') return false;
     const next = structuredClone(state);
     Object.assign(next.tickets.find((x) => x.id === tId), { status: 'closed', resolution: clean, closedBy: actor(), closedAt: now() });
-    if (persist(next)) { api.render(); window.dispatchEvent(new Event('fleet:workflow-sync')); return true; }
+    if (persist(next)) { filter = 'closed'; api.render(); return true; }
     return false;
-  }
-
-  function openTicketForDriver(driver, plate) {
-    read();
-    return state.tickets.find((t) => t.status === 'open' && ((plate && t.plate === plate) || (driver && t.driver === driver))) || null;
-  }
-
-  function makeEmergencySnapshot(plate, order, phoneGps) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="270" viewBox="0 0 480 270"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1619"/><stop offset="1" stop-color="#141922"/></linearGradient></defs><rect width="480" height="270" rx="14" fill="url(#g)"/><rect x="18" y="18" width="444" height="234" rx="10" fill="none" stroke="#f87171" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="6 4"/><text x="36" y="64" fill="#f87171" font-family="sans-serif" font-size="18" font-weight="700">ẢNH CHỤP KHẨN CẤP 1 NÚT</text><text x="36" y="106" fill="#f1f5f9" font-family="sans-serif" font-size="22" font-weight="700">${esc(plate || 'Chưa gắn xe')} · ${esc(order || 'Ngoài chuyến')}</text><text x="36" y="148" fill="#cbd5e1" font-family="sans-serif" font-size="14">${esc(phoneGps || 'GPS điện thoại đã ghi nhận')}</text><text x="36" y="216" fill="#94a3b8" font-family="sans-serif" font-size="13">${esc(clock(now()))} · Camera đã tự động tắt sau khi chụp</text></svg>`;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
-
-  function createTicket({ kind = 'Xe', emergency = false, description, order = '', plate = '', driver = 'Tài xế', filename = '', imageUrl = '', phoneGps = '' }) {
-    const clean = String(description || '').trim();
-    if (!clean) return null;
-    read();
-    const existing = openTicketForDriver(driver, plate);
-    const resolvedImg = safeMediaUrl(imageUrl, 'data:image/') || (emergency ? makeEmergencySnapshot(plate, order, phoneGps) : '');
-    if (existing) {
-      if (emergency) {
-        const next = structuredClone(state);
-        const target = next.tickets.find((x) => x.id === existing.id);
-        target.messages.push({
-          id: uid('M'),
-          by: 'Hệ thống (Khẩn cấp 1 nút)',
-          role: 'driver',
-          text: `${clean}${phoneGps ? ` (${phoneGps})` : ''}`,
-          ...(resolvedImg ? { imageUrl: resolvedImg } : {}),
-          ...(filename ? { imageName: filename } : {}),
-          at: now(),
-        });
-        if (persist(next)) {
-          api.commit(`Khẩn cấp 1 nút · ${existing.code}`, `${plate || 'Chưa rõ xe'} · Đã gửi ảnh vào ticket đang mở`, driver);
-          window.dispatchEvent(new Event('fleet:workflow-sync'));
-          return Object.assign({}, target, { _reused: true });
-        }
-      }
-      api.toast(`Đang có ticket ${existing.code} chưa đóng. Vui lòng trao đổi tại ticket này tới khi Điều phối đóng.`);
-      return null;
-    }
-
-    const code = 'TK-' + String(state.tickets.length + 1).padStart(4, '0');
-    const ticket = {
-      id: uid('T'),
-      code,
-      kind,
-      emergency: Boolean(emergency),
-      description: clean,
-      order,
-      plate,
-      driver,
-      filename,
-      phoneGps,
-      status: 'open',
-      at: now(),
-      messages: [
-        {
-          id: uid('M'),
-          by: emergency ? 'Hệ thống (Khẩn cấp 1 nút)' : driver,
-          role: 'driver',
-          text: emergency ? `${clean}${phoneGps ? ` (${phoneGps})` : ''}` : clean,
-          ...(resolvedImg ? { imageUrl: resolvedImg } : {}),
-          ...(filename ? { imageName: filename } : {}),
-          at: now(),
-        },
-      ],
-    };
-    const next = structuredClone(state);
-    next.tickets.unshift(ticket);
-    if (!persist(next)) return null;
-    api.commit(`${emergency ? 'Khẩn cấp 1 nút' : 'Ticket sự cố'} · ${code}`, `${plate || 'Chưa rõ xe'} · ${order || 'Ngoài chuyến'}`, driver);
-    window.dispatchEvent(new Event('fleet:workflow-sync'));
-    return ticket;
   }
 
   document.addEventListener('click', (e) => {
@@ -766,9 +584,6 @@
     if (action === 'login') authPreview('login');
     if (action === 'auth-tab') authPreview(id);
     if (action === 'help-recovery') openHelpRecovery();
-    if (action === 'toggle-voice') toggleVoiceRecord();
-    if (action === 'clear-chat-image') { composeImageUrl = ''; composeImageName = ''; showTickets(); }
-    if (action === 'clear-chat-voice') { composeAudioUrl = ''; composeVoiceDuration = ''; showTickets(); }
     if (action === 'ticket-close' && role() === 'dispatch') {
       modal('Đóng ticket', `<form class="role-form"><label>Kết quả / lý do đóng<textarea name="resolution" required maxlength="1000"></textarea></label><p class="workflow-note">Lưu hồ sơ chỉ đọc và khóa hội thoại. Không tự hoàn thành chuyến hoặc giải phóng xe.</p><button class="primary">Đóng & lưu hồ sơ</button></form>`, (f) => closeTicket(id, f.get('resolution')));
     }
@@ -837,8 +652,7 @@
     }
     if (e.target.id === 'ticket-message-form') {
       e.preventDefault(); e.stopImmediatePropagation();
-      if (isRecording) stopVoiceRecord(true);
-      if (sendMessage(ticketId, { text: e.target.message.value, imageUrl: composeImageUrl, imageName: composeImageName, audioUrl: composeAudioUrl, voiceDuration: composeVoiceDuration })) showTickets();
+      if (sendMessage(ticketId, e.target.message.value)) showTickets();
     }
   }, true);
 
@@ -854,27 +668,13 @@
   });
   document.addEventListener('input', (e) => { if (e.target.id === 'ticket-message') composeDraft = e.target.value; });
   document.addEventListener('keydown', (e) => { const marker = e.target.closest('.admin-marker'); if (marker && ['Enter', ' '].includes(e.key)) { e.preventDefault(); adminPlate = marker.dataset.id; roles.render(); } });
-  document.addEventListener('change', (e) => {
-    if (e.target.id === 'ticket-filter') { filter = e.target.value; ticketId = ''; showTickets(); }
-    if (e.target.id === 'ticket-chat-photo') {
-      const file = e.target.files?.[0];
-      if (!file || !file.type.startsWith('image/')) return;
-      if (file.size > 2 * 1024 * 1024) { api.toast('Chọn ảnh tối đa 2 MB để lưu trong trình duyệt.'); return; }
-      const reader = new FileReader();
-      reader.onload = () => {
-        composeImageUrl = typeof reader.result === 'string' ? reader.result : '';
-        composeImageName = file.name;
-        showTickets();
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+  document.addEventListener('change', (e) => { if (e.target.id === 'ticket-filter') { filter = e.target.value; ticketId = ''; showTickets(); } });
   document.addEventListener('click', (e) => { const completion = e.target.closest('[data-action="complete-order"],[data-action="start-order"]'); if (completion) { e.preventDefault(); e.stopImmediatePropagation(); tripReview(api.snapshot().orders.find((o) => o.id === completion.dataset.id)); } }, true);
   window.addEventListener('fleet:role-render', sync);
   window.addEventListener('popstate', sync);
   window.addEventListener('storage', (e) => { if (e.key === key) sync(); });
   window.addEventListener('fleet:reset', () => { persist(seedTickets()); ticketId = ''; composeDraft = ''; sync(); });
 
-  window.FleetWorkflow = { tickets: () => structuredClone(state.tickets), sync, sendMessage, closeTicket, createTicket, openTicketForDriver, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
+  window.FleetWorkflow = { tickets: () => structuredClone(state.tickets), sync, sendMessage, closeTicket, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
   sync();
 })();

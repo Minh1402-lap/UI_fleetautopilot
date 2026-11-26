@@ -28,8 +28,6 @@
   let adminChartMonths = 6;
   let selectedAdminMonth = '';
   let selectedVehiclePlate = '';
-  let quickModalOpen = false;
-  let quickModalReturnFocus = null;
 
   function readInitialStyle() {
     const param = new URLSearchParams(location.search).get('ui');
@@ -250,77 +248,6 @@
       }`;
   }
 
-  function renderQuickDispatchModal(s, pendingOrders, assignedOrders, activeOrders, focusOrder, readyVehicles) {
-    if (!quickModalOpen) return '';
-    const driverById = new Map((s.drivers || []).map((d) => [d.id, d]));
-    const chosenPlate = s.selectedVehicle || readyVehicles[0]?.plate || '';
-    const ordersHtml =
-      pendingOrders
-        .map((o) => {
-          const isFocused = focusOrder?.id === o.id;
-          return `<button type="button" class="v2-qd-order ${isFocused ? 'active' : ''}" data-v2-action="focus-order" data-id="${esc(o.id)}" aria-pressed="${isFocused}">
-            <div class="v2-qd-order-top">
-              <strong>${esc(o.id)} · ${esc(o.material)} (${esc(qtyText(o))})</strong>
-              <span class="v2-tag v2-tag-amber">Chờ phân xe</span>
-            </div>
-            <div class="v2-qd-order-sub">${esc(o.customerGroup || 'Khách')} · ${esc(o.from)} → ${esc(o.to)}${o.distanceKm ? ` · ${o.distanceKm} km` : ''}</div>
-          </button>`;
-        })
-        .join('') || '<div class="v2-item-sub">Không có đơn chờ phân xe.</div>';
-
-    const vehiclesHtml =
-      readyVehicles
-        .map((v) => {
-          const drv = driverById.get(v.driverId);
-          const isChosen = chosenPlate === v.plate;
-          return `<button type="button" class="v2-qd-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">
-            <div class="v2-qd-veh-top">
-              <strong>${esc(v.plate)}</strong>
-              <span class="v2-tag v2-tag-green">${esc(v.type)}</span>
-            </div>
-            <div class="v2-qd-veh-sub">${esc(drv?.name || 'Chưa gán tài xế')} · Sẵn sàng</div>
-          </button>`;
-        })
-        .join('') || '<div class="v2-item-sub">Không có xe sẵn sàng phù hợp đơn này.</div>';
-
-    return `<div class="v2-qd-backdrop" role="dialog" aria-modal="true" aria-labelledby="v2-qd-title" data-v2-action="close-quick-modal-backdrop">
-      <div class="v2-qd-modal">
-        <div class="v2-qd-head">
-          <div>
-            <div class="v2-qd-title-row">
-              <h3 id="v2-qd-title">Điều phối nhanh</h3>
-              <span class="v2-tag v2-tag-amber">${pendingOrders.length} đơn chờ</span>
-              <span class="v2-tag v2-tag-blue">${readyVehicles.length} xe phù hợp</span>
-            </div>
-            <div class="v2-hd-sub">Chọn đơn chờ và xe đủ điều kiện để duyệt phân công V1</div>
-          </div>
-          <button type="button" class="v2-qd-close" data-v2-action="close-quick-modal" aria-label="Đóng không gian điều phối">Đóng ✕</button>
-        </div>
-        <div class="v2-qd-grid">
-          <section class="v2-qd-col">
-            <div class="v2-qd-col-hd">1. Chọn đơn chờ phân xe</div>
-            <div class="v2-qd-list">${ordersHtml}</div>
-          </section>
-          <section class="v2-qd-col v2-qd-col-right">
-            <div class="v2-qd-col-hd">
-              <span>2. Chọn xe & Duyệt phân công</span>
-              <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
-            </div>
-            <div class="v2-qd-focus-box">
-              <strong>${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)} (${esc(qtyText(focusOrder))})` : 'Chưa có đơn chờ'}</strong>
-              <div>${focusOrder ? `${esc(focusOrder.customerGroup || '')} · ${esc(focusOrder.from)} → ${esc(focusOrder.to)}${focusOrder.distanceKm ? ` · ${focusOrder.distanceKm} km` : ''}` : 'Tạo đơn mới để bắt đầu phân xe'}</div>
-            </div>
-            <div class="v2-qd-veh-grid">${vehiclesHtml}</div>
-            <div class="v2-qd-foot">
-              <div class="v2-ai-note">Công bằng trước, tuyến sau (chưa chốt công thức) · ${assignedOrders.length} đơn chờ TX xác nhận · Mọi phân công V1 do Điều phối duyệt</div>
-              <button type="button" class="v2-action-btn" data-v2-action="quick-assign" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>Duyệt phân công</button>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>`;
-  }
-
   function renderDispatchBento() {
     const s = api.snapshot();
     const openTickets = readTickets().filter((t) => t.status === 'open');
@@ -366,13 +293,14 @@
           : v.availability === 'maintenance'
           ? 'Bảo trì'
           : 'Sẵn sàng';
-        const tagCls = ord ? 'v2-tag-blue' : v.availability === 'maintenance' ? 'v2-tag-amber' : 'v2-tag-green';
+        const pillCls = ord ? 'v2-pill-solid-blue' : v.availability === 'maintenance' ? 'v2-pill-solid-amber' : 'v2-pill-solid-green';
+        const dotCls = v.gps === 'offline' ? 'v2-dot-red' : v.gps === 'stale' || v.availability === 'maintenance' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
         const subText = ord ? `${ord.id} · ${ord.to}` : v.gps === 'stale' ? 'Chưa cập nhật GPS mẫu' : 'Sẵn sàng nhận đơn';
         const isSelected = mapFocusPlate === v.plate;
         return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
-            <span class="v2-tile-ico">${icon('truck')}</span>
-            <span class="v2-tag ${tagCls}">${stText}</span>
+            <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
+            ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-dot ${dotCls}" title="${esc(stText)}" aria-label="${esc(stText)}"></span>`}
           </div>
           <div>
             <div class="v2-tile-title">${esc(v.plate)}</div>
@@ -462,24 +390,25 @@
           <div class="v2-clock-time">${currentClock()}</div>
           <div class="v2-clock-sub">Điều phối vận hành</div>
         </div>
-        <div class="v2-action-card v2-action-card-featured v2-card-light">
+        <div class="v2-rw-box">
+          <div class="v2-rw-head"><span>Cần chú ý ngay</span><span class="v2-rw-count">${attentionItems.length} mục</span></div>
+          ${attentionHtml}
+        </div>
+        <div class="v2-flt-row">
+          <button type="button" class="v2-flt-btn active" data-action="new-order">${icon('order')}<span>+ Nhận đơn</span></button>
+          <button type="button" class="v2-flt-btn" data-workflow-action="trip-list">${icon('truck')}<span>Bằng chứng</span></button>
+          <button type="button" class="v2-flt-btn" data-workflow-action="help-recovery">${icon('switch-account')}<span>Quên MK</span></button>
+        </div>
+        <div class="v2-action-card v2-card-light">
           <div class="v2-action-hd">
-            <div class="v2-action-title-wrap">
-              <h4>Điều phối nhanh</h4>
-              <span class="v2-tag v2-tag-amber">${pendingOrders.length} chờ</span>
-            </div>
-            <div class="v2-action-tools">
-              <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
-              <button type="button" class="v2-expand-btn" data-v2-action="expand-dispatch" title="Mở rộng không gian điều phối">Mở rộng ↗</button>
-            </div>
+            <h4>Điều phối nhanh</h4>
+            <button type="button" class="v2-ai-chip" data-v2-action="ai-suggest" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>${icon('spark')}Đề xuất AI</button>
           </div>
-          <div class="v2-action-order-box">
-            <div class="v2-action-l1">${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)} (${esc(qtyText(focusOrder))})` : 'Chưa có đơn chờ'}</div>
-            <div class="v2-action-l2">${focusOrder ? `${esc(focusOrder.customerGroup || '')} · ${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Tạo đơn mới bằng nút + Nhận đơn'}</div>
-          </div>
+          <div class="v2-action-l1">${focusOrder ? `${esc(focusOrder.id)} · ${esc(focusOrder.material)} (${esc(qtyText(focusOrder))})` : 'Chưa có đơn chờ'}</div>
+          <div class="v2-action-l2">${focusOrder ? `${esc(focusOrder.customerGroup || '')} · ${esc(focusOrder.from)} → ${esc(focusOrder.to)}` : 'Tạo đơn mới bằng nút + Nhận đơn'}</div>
           <div class="v2-ai-picks">${readyVehicles
             .slice(0, 3)
-            .map((v) => {
+            .map((v, idx) => {
               const isChosen = (s.selectedVehicle || readyVehicles[0]?.plate) === v.plate;
               return `<button type="button" class="v2-ai-veh" data-v2-action="pick-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isChosen}">${esc(v.plate)}<small>${esc(v.type)}</small></button>`;
             })
@@ -487,17 +416,7 @@
           <div class="v2-ai-note">Công bằng trước, tuyến sau (chưa chốt công thức) · ${assignedOrders.length} đơn chờ TX xác nhận</div>
           <button type="button" class="v2-action-btn" data-v2-action="quick-assign" ${focusOrder && focusOrder.status === 'pending' ? '' : 'disabled'}>Duyệt phân công</button>
         </div>
-        <div class="v2-flt-row">
-          <button type="button" class="v2-flt-btn active" data-action="new-order">${icon('order')}<span>+ Nhận đơn</span></button>
-          <button type="button" class="v2-flt-btn" data-workflow-action="trip-list">${icon('truck')}<span>Bằng chứng</span></button>
-          <button type="button" class="v2-flt-btn" data-workflow-action="help-recovery">${icon('switch-account')}<span>Quên MK</span></button>
-        </div>
-        <div class="v2-rw-box">
-          <div class="v2-rw-head"><span>Cần chú ý ngay</span><span class="v2-rw-count">${attentionItems.length} mục</span></div>
-          ${attentionHtml}
-        </div>
-      </aside>
-      ${renderQuickDispatchModal(s, pendingOrders, assignedOrders, activeOrders, focusOrder, readyVehicles)}`;
+      </aside>`;
   }
 
   function renderAdminBento() {
@@ -506,7 +425,7 @@
     const pendingOrders = s.orders.filter((o) => o.status === 'pending');
     const activeOrders = s.orders.filter((o) => ['assigned', 'running'].includes(o.status));
     const openTickets = readTickets().filter((t) => t.status === 'open');
-    const pendingChanges = (gov.changes || []).filter((c) => ['pending', 'designated'].includes(c.status));
+    const pendingChanges = (gov.changes || []).filter((c) => c.status === 'pending');
     const pendingMaint = (gov.maintenance || []).filter((m) => m.status === 'approved');
 
     // Tính dữ liệu biểu đồ 6/12 tháng trực tiếp từ danh sách đơn hàng mẫu (không đoán số)
@@ -615,19 +534,19 @@
         </div>
         <div class="v2-bottom-row">
           <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="approvals">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-tag v2-tag-blue">Chỉ đọc</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-pill-solid-blue">Chỉ đọc</span></div>
             <div><div class="v2-tile-title">Nhật ký & Hoạt động</div><div class="v2-tile-sub">${roles.snapshot().audit.length} thao tác Điều phối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="tickets">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-tag v2-tag-blue">Chỉ đọc</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-dot v2-dot-blue" title="Chỉ đọc" aria-label="Chỉ đọc"></span></div>
             <div><div class="v2-tile-title">Hồ sơ Ticket</div><div class="v2-tile-sub">${openTickets.length} sự cố đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-tag v2-tag-amber">Kỹ thuật</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-pill-solid-amber">Kỹ thuật</span></div>
             <div><div class="v2-tile-title">Yêu cầu bảo trì</div><div class="v2-tile-sub">${pendingMaint.length} phiếu gửi System Admin</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-amber">Cảnh báo</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-amber" title="Cảnh báo" aria-label="Cảnh báo"></span></div>
             <div><div class="v2-tile-title">Cảnh báo hệ thống</div><div class="v2-tile-sub">${lockAlerts.length} thông báo khóa TK</div></div>
           </button>
         </div>
@@ -647,10 +566,10 @@
           <button type="button" class="v2-flt-btn" data-v2-action="admin-page" data-id="tickets">${icon('alert')}<span>Ticket (${openTickets.length})</span></button>
         </div>
         <div class="v2-action-card v2-card-light">
-          <h4>Bảo trì, Khóa TK & Đổi role</h4>
-          <div class="v2-action-l1">${pendingChanges.length ? `${pendingChanges.length} yêu cầu đổi role chờ xem lại` : lockAlerts[0] ? esc(lockAlerts[0].id) : 'Giám sát vận hành toàn công ty'}</div>
-          <div class="v2-action-l2">${pendingChanges[0] ? `${esc(pendingChanges[0].name)} (${esc(pendingChanges[0].id)}) · Chỉ đọc` : lockAlerts[0] ? esc(lockAlerts[0].text) : 'Phân quyền role do System Admin phụ trách'}</div>
-          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Xem Bảo trì & Yêu cầu đổi role</button>
+          <h4>Bảo trì & Thông báo khóa TK</h4>
+          <div class="v2-action-l1">${lockAlerts[0] ? esc(lockAlerts[0].id) : 'Giám sát vận hành toàn công ty'}</div>
+          <div class="v2-action-l2">${lockAlerts[0] ? esc(lockAlerts[0].text) : 'Phân quyền role do System Admin phụ trách'}</div>
+          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Mở Bảo trì & Cảnh báo</button>
         </div>
       </aside>`;
   }
@@ -745,19 +664,19 @@
         </div>
         <div class="v2-bottom-row">
           <button type="button" class="v2-tile v2-card-light" data-v2-action="system-page" data-id="accounts">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('switch-account')}</span><span class="v2-tag v2-tag-amber">Nội bộ</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('switch-account')}</span><span class="v2-pill-solid-amber">Nội bộ</span></div>
             <div><div class="v2-tile-title">Tài khoản & khôi phục</div><div class="v2-tile-sub">${activeUsers.length} tài khoản hoạt động</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="changes">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-tag v2-tag-blue">Phân quyền</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-dot v2-dot-blue" title="Phân quyền" aria-label="Phân quyền"></span></div>
             <div><div class="v2-tile-title">Thay đổi quyền</div><div class="v2-tile-sub">${pendingChanges.length} yêu cầu đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="system-page" data-id="connections">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('pin')}</span><span class="v2-tag v2-tag-green">Kết nối</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('pin')}</span><span class="v2-pill-solid-green">Kết nối</span></div>
             <div><div class="v2-tile-title">Đồng bộ GPS Taris</div><div class="v2-tile-sub">Chu kỳ 10 phút · Kiểm tra kết nối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="security">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-red">An ninh</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-red" title="An ninh" aria-label="An ninh"></span></div>
             <div><div class="v2-tile-title">An ninh & nhật ký</div><div class="v2-tile-sub">Đối chiếu cảnh báo & bằng chứng</div></div>
           </button>
         </div>
@@ -1217,27 +1136,7 @@
       return;
     }
     if (action === 'quick-assign') {
-      if (quickModalOpen) {
-        quickModalOpen = false;
-        sync();
-      }
       $('#assign')?.click();
-      return;
-    }
-    if (action === 'expand-dispatch') {
-      quickModalReturnFocus = btn;
-      quickModalOpen = true;
-      sync();
-      requestAnimationFrame(() => {
-        v2Root.querySelector('.v2-qd-close')?.focus();
-      });
-      return;
-    }
-    if (action === 'close-quick-modal' || (action === 'close-quick-modal-backdrop' && e.target === btn)) {
-      quickModalOpen = false;
-      sync();
-      quickModalReturnFocus?.focus?.();
-      quickModalReturnFocus = null;
       return;
     }
     if (action === 'admin-page') {
@@ -1358,14 +1257,6 @@
       }
     });
   }
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && quickModalOpen) {
-      quickModalOpen = false;
-      sync();
-      quickModalReturnFocus?.focus?.();
-      quickModalReturnFocus = null;
-    }
-  });
   window.addEventListener('fleet:role-render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:render', () => requestAnimationFrame(sync));
   window.addEventListener('fleet:workflow-sync', () => requestAnimationFrame(sync));
