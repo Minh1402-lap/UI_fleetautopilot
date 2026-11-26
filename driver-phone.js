@@ -15,6 +15,7 @@
   let feedbackText = '';
   let rejectOpen = false;
   let selectedTicketId = '';
+  let ticketView = 'channels';
   let newTicketOpen = false;
   let demoPhotoName = '';
   let phoneGps = null;
@@ -211,59 +212,71 @@
   }
 
   function ticketsScreen() {
-    const { wf, o, drv, veh } = ctx();
+    const { wf } = ctx();
     const list = wf?.tickets?.() || [];
     const activeTicket = list.find((t) => t.id === selectedTicketId) || list[0] || null;
 
-    const listHtml = list
-      .map(
-        (t) => `<button type="button" class="phone-ticket-item ${activeTicket?.id === t.id ? 'active' : ''}" data-phone-action="select-ticket" data-id="${esc(t.id)}">
-          <div class="phone-ticket-row"><strong>${esc(t.code)} · ${esc(t.kind)}</strong><span class="badge" data-status="${t.status === 'open' ? 'pending' : 'completed'}">${t.status === 'open' ? 'Đang mở' : 'Đã đóng'}</span></div>
-          <small>${esc(t.plate || '—')}</small>
-        </button>`
-      )
-      .join('');
+    if (ticketView === 'chat' && activeTicket) {
+      const msgsHtml = activeTicket.messages
+        .map((m) => {
+          const img = safeMedia(m.imageUrl, 'data:image/')
+            ? `<img class="phone-msg-img" src="${esc(m.imageUrl)}" alt="${esc(m.imageName || 'Ảnh ticket')}">`
+            : m.imageName
+            ? `<div class="phone-msg-file">Ảnh: ${esc(m.imageName)}</div>`
+            : '';
+          const audio = safeMedia(m.audioUrl, 'data:audio/')
+            ? `<audio class="phone-msg-audio" controls src="${esc(m.audioUrl)}"></audio>`
+            : m.voiceDuration
+            ? `<div class="phone-voice-pill">Thoại · ${esc(m.voiceDuration)}</div>`
+            : '';
+          return `<div class="phone-msg ${m.role === 'driver' ? 'is-me' : ''}"><div class="phone-msg-head"><strong>${esc(m.by)}</strong></div>${m.text ? `<p>${esc(m.text)}</p>` : ''}${img}${audio}</div>`;
+        })
+        .join('');
 
-    const detailHtml = activeTicket
-      ? `<div class="phone-ticket-thread">
-          <div class="phone-ticket-meta"><strong>${esc(activeTicket.code)} · ${esc(activeTicket.kind)}</strong><span class="badge" data-status="${activeTicket.status === 'open' ? 'pending' : 'completed'}">${activeTicket.status === 'open' ? 'Đang mở' : 'Đã đóng'}</span></div>
-          <div class="phone-ticket-msgs">
-            ${activeTicket.messages
-              .map((m) => {
-                const img = safeMedia(m.imageUrl, 'data:image/')
-                  ? `<img class="phone-msg-img" src="${esc(m.imageUrl)}" alt="${esc(m.imageName || 'Ảnh ticket')}">`
-                  : m.imageName
-                  ? `<div class="phone-msg-file">Ảnh: ${esc(m.imageName)}</div>`
-                  : '';
-                const audio = safeMedia(m.audioUrl, 'data:audio/')
-                  ? `<audio class="phone-msg-audio" controls src="${esc(m.audioUrl)}"></audio>`
-                  : m.voiceDuration
-                  ? `<div class="phone-voice-pill">Thoại · ${esc(m.voiceDuration)}</div>`
-                  : '';
-                return `<div class="phone-msg ${m.role === 'driver' ? 'is-me' : ''}"><small>${esc(m.by)}</small>${m.text ? `<p>${esc(m.text)}</p>` : ''}${img}${audio}</div>`;
-              })
-              .join('')}
+      const composerHtml =
+        activeTicket.status === 'open'
+          ? `<form id="phone-ticket-reply" class="phone-reply-box" data-id="${esc(activeTicket.id)}">
+              ${chatImageUrl || chatVoiceDuration ? `<div class="phone-reply-preview">
+                ${safeMedia(chatImageUrl, 'data:image/') ? `<span class="phone-preview-chip"><img src="${esc(chatImageUrl)}" alt="Xem trước">${esc(chatImageName || 'Ảnh')}<button type="button" data-phone-action="clear-chat-img">×</button></span>` : ''}
+                ${chatVoiceDuration ? `<span class="phone-preview-chip">Thoại ${esc(chatVoiceDuration)}<button type="button" data-phone-action="clear-chat-voice">×</button></span>` : ''}
+              </div>` : ''}
+              <div class="phone-reply-tools">
+                <label class="phone-mini-btn phone-file-lbl">${camera}<span>Chụp / ảnh</span><input id="phone-ticket-photo" type="file" accept="image/*" capture="environment" hidden></label>
+                <button type="button" class="phone-mini-btn ${chatRecording ? 'is-rec' : ''}" data-phone-action="ticket-voice">${chatRecording ? `Dừng (${fmtDur(chatSeconds)})` : 'Ghi âm'}</button>
+              </div>
+              <div class="phone-reply-row">
+                <input name="message" maxlength="400" placeholder="Nhắn vào #${esc(activeTicket.code)}…">
+                <button type="submit" class="phone-accept">Gửi</button>
+              </div>
+            </form>`
+          : '<p class="phone-waiting">Ticket đã đóng (chỉ đọc).</p>';
+
+      return `<section class="phone-secondary phone-chat-shell phone-glass">
+        <div class="phone-chat-head">
+          <button type="button" class="phone-mini-btn" data-phone-action="back-channels">← Kênh</button>
+          <div class="phone-chat-title"><strong>#${esc(activeTicket.code)} · ${esc(activeTicket.kind)}</strong><small>${esc(activeTicket.plate || '—')}</small></div>
+          <span class="badge" data-status="${activeTicket.status === 'open' ? 'pending' : 'completed'}">${activeTicket.status === 'open' ? 'Đang mở' : 'Đã đóng'}</span>
+        </div>
+        <div class="phone-chat-scroll" role="log" aria-label="Nội dung trao đổi">${msgsHtml}</div>
+        ${composerHtml}
+        <p class="phone-feedback" role="status" id="phone-feedback">${esc(feedbackText)}</p>
+      </section>`;
+    }
+
+    const listHtml = list
+      .map((t) => {
+        const lastMsg = t.messages[t.messages.length - 1];
+        const preview = lastMsg ? `${lastMsg.by}: ${lastMsg.text || (lastMsg.imageUrl ? '[Ảnh]' : '[Thoại]')}` : t.description;
+        return `<button type="button" class="phone-channel-item" data-phone-action="select-ticket" data-id="${esc(t.id)}">
+          <div class="phone-ticket-row">
+            <strong>#${esc(t.code)} · ${esc(t.kind)}</strong>
+            <span class="badge" data-status="${t.status === 'open' ? 'pending' : 'completed'}">${t.status === 'open' ? 'Đang mở' : 'Đã đóng'}</span>
           </div>
-          ${
-            activeTicket.status === 'open'
-              ? `<form id="phone-ticket-reply" class="phone-reply-box" data-id="${esc(activeTicket.id)}">
-                  ${chatImageUrl || chatVoiceDuration ? `<div class="phone-reply-preview">
-                    ${safeMedia(chatImageUrl, 'data:image/') ? `<span class="phone-preview-chip"><img src="${esc(chatImageUrl)}" alt="Xem trước">${esc(chatImageName || 'Ảnh')}<button type="button" data-phone-action="clear-chat-img">×</button></span>` : ''}
-                    ${chatVoiceDuration ? `<span class="phone-preview-chip">Thoại ${esc(chatVoiceDuration)}<button type="button" data-phone-action="clear-chat-voice">×</button></span>` : ''}
-                  </div>` : ''}
-                  <div class="phone-reply-tools">
-                    <label class="phone-mini-btn phone-file-lbl">${camera}<span>Chụp / ảnh</span><input id="phone-ticket-photo" type="file" accept="image/*" capture="environment" hidden></label>
-                    <button type="button" class="phone-mini-btn ${chatRecording ? 'is-rec' : ''}" data-phone-action="ticket-voice">${chatRecording ? `Dừng (${fmtDur(chatSeconds)})` : 'Ghi âm'}</button>
-                  </div>
-                  <div class="phone-reply-row">
-                    <input name="message" maxlength="400" placeholder="Nhắn tin, hoặc gửi ảnh / thoại…">
-                    <button type="submit" class="phone-accept">Gửi</button>
-                  </div>
-                </form>`
-              : '<p class="phone-waiting">Ticket đã đóng (chỉ đọc).</p>'
-          }
-        </div>`
-      : '<p>Chưa có ticket nào.</p>';
+          <div class="phone-channel-preview">${esc(preview)}</div>
+          <small>${esc(t.plate || '—')} · ${t.messages.length} tin nhắn · Bấm để vào chat ›</small>
+        </button>`;
+      })
+      .join('');
 
     const newFormHtml = newTicketOpen
       ? `<form id="phone-new-ticket-form" class="phone-inline-form">
@@ -271,18 +284,18 @@
           <label>Mô tả gửi Điều phối<textarea name="description" rows="2" required maxlength="400" placeholder="VD: Xe gặp sự cố hoặc đường ngập"></textarea></label>
           <div class="phone-assignment-actions">
             <button type="button" data-phone-action="toggle-new-ticket">Hủy</button>
-            <button type="submit" class="phone-accept">Gửi ticket</button>
+            <button type="submit" class="phone-accept">Mở kênh & Gửi</button>
           </div>
         </form>`
       : '';
 
     return `<section class="phone-secondary phone-secondary-scroll phone-glass">
       <div class="phone-ticket-hd">
-        <h2>Ticket (${list.length})</h2>
+        <h2>Kênh Ticket (${list.length})</h2>
         <button type="button" class="phone-mini-btn" data-phone-action="toggle-new-ticket">${newTicketOpen ? 'Đóng' : '+ Báo sự cố'}</button>
       </div>
       ${newFormHtml}
-      ${list.length ? `<div class="phone-ticket-list">${listHtml}</div>${detailHtml}` : '<p>Chưa có ticket sự cố nào.</p>'}
+      ${list.length ? `<div class="phone-channel-list">${listHtml}</div>` : '<p>Chưa có kênh ticket nào.</p>'}
       ${emergency()}
       <p class="phone-feedback" role="status" id="phone-feedback">${esc(feedbackText)}</p>
     </section>`;
@@ -655,8 +668,9 @@
       });
       if (t) {
         selectedTicketId = t.id;
+        ticketView = 'chat';
         newTicketOpen = false;
-        feedbackText = `Đã mở ticket ${t.code} gửi Điều phối.`;
+        feedbackText = `Đã mở kênh ${t.code} gửi Điều phối.`;
         render(true);
       }
     }
@@ -724,6 +738,10 @@
       render(true);
     } else if (action === 'select-ticket') {
       selectedTicketId = button.dataset.id || '';
+      ticketView = 'chat';
+      render(true);
+    } else if (action === 'back-channels') {
+      ticketView = 'channels';
       render(true);
     } else if (action === 'toggle-new-ticket') {
       newTicketOpen = !newTicketOpen;
