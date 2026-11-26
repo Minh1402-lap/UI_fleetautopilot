@@ -864,7 +864,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
 
   /* 1) Trang Đơn hàng: 1 bảng sổ đơn rộng thoáng toàn khung, bỏ 4 hộp nhỏ chật chội bên phải */
-  body.ui-v2:has(#workspace-view[data-workspace-page="orders"]:not([hidden])) #main {
+  body.ui-v2:not(.ui-v2-bento-active):has(#workspace-view[data-workspace-page="orders"]:not([hidden])) #main {
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1203,7 +1203,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     min-height: 0;
     overflow: auto;
   }
-  body.ui-v2:has(#workflow-view:not([hidden])) #main {
+  body.ui-v2:not(.ui-v2-bento-active):has(#workflow-view:not([hidden])) #main {
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
