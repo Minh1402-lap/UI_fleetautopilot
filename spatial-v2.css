@@ -974,7 +974,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   body.ui-v2 #workspace-view[data-workspace-page="fleet"]:not([hidden]) {
     display: grid;
     grid-template-columns: minmax(0, 1.55fr) 340px;
-    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
     gap: 12px;
     overflow: hidden;
   }
@@ -997,26 +997,18 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     font-size: 12.5px;
     white-space: nowrap;
   }
-  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type {
-    grid-column: 1;
-    grid-row: 2;
-    margin: 0 !important;
-    padding: 8px 14px;
-  }
-  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .panel-heading {
-    display: none;
-  }
-  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .filter-bar {
-    margin: 0;
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .fleet-inline-filter {
+    margin: 0 0 10px;
     gap: 10px;
     align-items: center;
+    flex-shrink: 0;
   }
-  body.ui-v2 #workspace-view[data-workspace-page="fleet"] > section.panel.v2-card-dark:first-of-type .field > span {
+  body.ui-v2 #workspace-view[data-workspace-page="fleet"] .fleet-inline-filter .field > span {
     display: none;
   }
   body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.fleet-bento-cols {
     grid-column: 1;
-    grid-row: 3;
+    grid-row: 2;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr);
@@ -1041,7 +1033,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
   }
   body.ui-v2 #workspace-view[data-workspace-page="fleet"] > .workspace-columns.equal {
     grid-column: 2;
-    grid-row: 2 / 4;
+    grid-row: 2;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
