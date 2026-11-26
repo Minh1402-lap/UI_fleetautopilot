@@ -366,14 +366,13 @@
           : v.availability === 'maintenance'
           ? 'Bảo trì'
           : 'Sẵn sàng';
-        const pillCls = ord ? 'v2-pill-solid-blue' : v.availability === 'maintenance' ? 'v2-pill-solid-amber' : 'v2-pill-solid-green';
-        const dotCls = v.gps === 'offline' ? 'v2-dot-red' : v.gps === 'stale' || v.availability === 'maintenance' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
+        const tagCls = ord ? 'v2-tag-blue' : v.availability === 'maintenance' ? 'v2-tag-amber' : 'v2-tag-green';
         const subText = ord ? `${ord.id} · ${ord.to}` : v.gps === 'stale' ? 'Chưa cập nhật GPS mẫu' : 'Sẵn sàng nhận đơn';
         const isSelected = mapFocusPlate === v.plate;
         return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
             <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
-            ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-dot ${dotCls}" title="${esc(stText)}" aria-label="${esc(stText)}"></span>`}
+            <span class="v2-tag ${tagCls}">${stText}</span>
           </div>
           <div>
             <div class="v2-tile-title">${esc(v.plate)}</div>
@@ -616,19 +615,19 @@
         </div>
         <div class="v2-bottom-row">
           <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="approvals">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-pill-solid-blue">Chỉ đọc</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('activity')}</span><span class="v2-tag v2-tag-blue">Chỉ đọc</span></div>
             <div><div class="v2-tile-title">Nhật ký & Hoạt động</div><div class="v2-tile-sub">${roles.snapshot().audit.length} thao tác Điều phối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="tickets">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-dot v2-dot-blue" title="Chỉ đọc" aria-label="Chỉ đọc"></span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('message')}</span><span class="v2-tag v2-tag-blue">Chỉ đọc</span></div>
             <div><div class="v2-tile-title">Hồ sơ Ticket</div><div class="v2-tile-sub">${openTickets.length} sự cố đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-pill-solid-amber">Kỹ thuật</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('gear')}</span><span class="v2-tag v2-tag-amber">Kỹ thuật</span></div>
             <div><div class="v2-tile-title">Yêu cầu bảo trì</div><div class="v2-tile-sub">${pendingMaint.length} phiếu gửi System Admin</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="admin-page" data-id="maintenance">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-amber" title="Cảnh báo" aria-label="Cảnh báo"></span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-amber">Cảnh báo</span></div>
             <div><div class="v2-tile-title">Cảnh báo hệ thống</div><div class="v2-tile-sub">${lockAlerts.length} thông báo khóa TK</div></div>
           </button>
         </div>
@@ -746,19 +745,19 @@
         </div>
         <div class="v2-bottom-row">
           <button type="button" class="v2-tile v2-card-light" data-v2-action="system-page" data-id="accounts">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('switch-account')}</span><span class="v2-pill-solid-amber">Nội bộ</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('switch-account')}</span><span class="v2-tag v2-tag-amber">Nội bộ</span></div>
             <div><div class="v2-tile-title">Tài khoản & khôi phục</div><div class="v2-tile-sub">${activeUsers.length} tài khoản hoạt động</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="changes">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-dot v2-dot-blue" title="Phân quyền" aria-label="Phân quyền"></span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('layers')}</span><span class="v2-tag v2-tag-blue">Phân quyền</span></div>
             <div><div class="v2-tile-title">Thay đổi quyền</div><div class="v2-tile-sub">${pendingChanges.length} yêu cầu đang theo dõi</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-light" data-v2-action="system-page" data-id="connections">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('pin')}</span><span class="v2-pill-solid-green">Kết nối</span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('pin')}</span><span class="v2-tag v2-tag-green">Kết nối</span></div>
             <div><div class="v2-tile-title">Đồng bộ GPS Taris</div><div class="v2-tile-sub">Chu kỳ 10 phút · Kiểm tra kết nối</div></div>
           </button>
           <button type="button" class="v2-tile v2-card-dark" data-v2-action="system-page" data-id="security">
-            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-dot v2-dot-red" title="An ninh" aria-label="An ninh"></span></div>
+            <div class="v2-tile-top"><span class="v2-tile-ico">${icon('alert')}</span><span class="v2-tag v2-tag-red">An ninh</span></div>
             <div><div class="v2-tile-title">An ninh & nhật ký</div><div class="v2-tile-sub">Đối chiếu cảnh báo & bằng chứng</div></div>
           </button>
         </div>
