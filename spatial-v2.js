@@ -293,14 +293,13 @@
           : v.availability === 'maintenance'
           ? 'Bảo trì'
           : 'Sẵn sàng';
-        const pillCls = ord ? 'v2-pill-solid-blue' : v.availability === 'maintenance' ? 'v2-pill-solid-amber' : 'v2-pill-solid-green';
-        const dotCls = v.gps === 'offline' ? 'v2-dot-red' : v.gps === 'stale' || v.availability === 'maintenance' ? 'v2-dot-amber' : ord ? 'v2-dot-blue' : 'v2-dot-green';
+        const tagCls = ord ? 'v2-tag-blue' : v.availability === 'maintenance' ? 'v2-tag-amber' : 'v2-tag-green';
         const subText = ord ? `${ord.id} · ${ord.to}` : v.gps === 'stale' ? 'Chưa cập nhật GPS mẫu' : 'Sẵn sàng nhận đơn';
         const isSelected = mapFocusPlate === v.plate;
         return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
             <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
-            ${isLight ? `<span class="${pillCls}">${stText}</span>` : `<span class="v2-dot ${dotCls}" title="${esc(stText)}" aria-label="${esc(stText)}"></span>`}
+            <span class="v2-tag ${tagCls}">${stText}</span>
           </div>
           <div>
             <div class="v2-tile-title">${esc(v.plate)}</div>
@@ -569,7 +568,7 @@
           <h4>Bảo trì & Thông báo khóa TK</h4>
           <div class="v2-action-l1">${lockAlerts[0] ? esc(lockAlerts[0].id) : 'Giám sát vận hành toàn công ty'}</div>
           <div class="v2-action-l2">${lockAlerts[0] ? esc(lockAlerts[0].text) : 'Phân quyền role do System Admin phụ trách'}</div>
-          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Mở Bảo trì & Cảnh báo</button>
+          <button type="button" class="v2-action-btn" data-v2-action="admin-page" data-id="maintenance">Bảo trì & Yêu cầu đổi vai trò</button>
         </div>
       </aside>`;
   }

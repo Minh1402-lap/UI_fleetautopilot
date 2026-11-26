@@ -2,8 +2,23 @@
 body[data-workflow=tickets] #dispatch-view,body[data-workflow=tickets] #workspace-view,body[data-workflow=tickets] #role-view{display:none!important}
 .workflow-grid{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);gap:20px;margin-bottom:20px}.workflow-grid>*{min-width:0}
 .ticket-card{display:block;width:100%;padding:14px 10px;text-align:left;border-bottom:1px solid var(--line);min-height:72px}.ticket-card[aria-current=true]{background:var(--nested)}.ticket-card strong,.ticket-card small{display:block}.ticket-card small{color:var(--muted);font-size:11px;margin-top:6px}.ticket-card .badge{min-width:0;justify-content:flex-start}
-.ticket-messages{max-height:460px;overflow-y:auto;padding:6px 0;display:grid;gap:16px;margin:20px 0}.ticket-message{padding:12px 14px;border:1px solid var(--line);border-radius:7px;background:var(--nested);max-width:90%;font-size:13px;overflow-wrap:anywhere}.ticket-message.own{margin-left:auto}.ticket-message strong{font-size:11px}.ticket-message time{font-size:10px;color:var(--muted);margin-left:8px}.ticket-message p{white-space:pre-wrap;line-height:1.8;margin:8px 0 0}
-.ticket-compose{display:grid;gap:12px}.ticket-compose textarea{font:inherit;min-height:84px;width:100%;resize:vertical;border:1px solid var(--line);border-radius:6px;background:var(--nested);color:var(--ink);padding:12px}.ticket-compose .primary{justify-self:end;min-width:110px}.ticket-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.ticket-toolbar select{padding:10px;border:1px solid var(--line);background:var(--nested);border-radius:6px;color:var(--ink);font:inherit}
+.ticket-panel-tools{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.ticket-panel-tools select{padding:6px 10px;min-height:34px;border:1px solid var(--line);background:var(--nested);border-radius:8px;color:var(--ink);font:inherit;font-size:12px;font-weight:600}
+.ticket-panel-tools button{min-height:34px;padding:6px 12px;font-size:12px}
+#workflow-view .panel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ticket-channels-list{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
+.ticket-meta-bar{display:flex;flex-wrap:wrap;gap:8px 16px;padding:8px 12px;border-radius:8px;background:var(--nested);border:1px solid var(--line);font-size:12px;color:var(--muted);flex-shrink:0}
+.ticket-meta-bar strong{color:var(--ink)}
+.ticket-messages{flex:1;min-height:0;overflow-y:auto;padding:6px 4px 6px 0;display:flex;flex-direction:column;gap:12px;margin:10px 0}.ticket-message{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--nested);max-width:86%;font-size:13px;overflow-wrap:anywhere}.ticket-message.own{margin-left:auto}.ticket-message strong{font-size:11px}.ticket-message time{font-size:10px;color:var(--muted);margin-left:8px}.ticket-message p{white-space:pre-wrap;line-height:1.8;margin:8px 0 0}
+.ticket-compose{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.ticket-compose-bar{display:flex;align-items:center;gap:6px}
+.ticket-compose-bar textarea{font:inherit;height:38px;min-height:38px;max-height:90px;flex:1;min-width:0;resize:none;border:1px solid var(--line);border-radius:10px;background:var(--nested);color:var(--ink);padding:8px 12px;font-size:13px;line-height:1.35}
+.ticket-file-btn,.ticket-voice-btn,.ticket-send-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:38px;min-height:38px !important;padding:0 12px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.ticket-file-btn{border:1px solid var(--line);cursor:pointer}
+.ticket-file-btn svg{width:16px;height:16px}
+.ticket-compose-preview{display:flex;gap:8px;flex-wrap:wrap}.ticket-preview-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--nested);font-size:12px}.ticket-preview-chip img{width:34px;height:34px;object-fit:cover;border-radius:6px}.ticket-preview-chip button{min-height:24px;padding:0 6px;border-radius:6px}
+.ticket-msg-media{margin:8px 0 0}.ticket-msg-img{max-width:240px;max-height:180px;width:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}.ticket-msg-media figcaption{font-size:11px;color:var(--muted);margin-top:4px}
+.ticket-msg-voice{margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ticket-msg-audio{max-width:240px;height:34px}.ticket-msg-voice-pill{margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:12px}.ticket-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.ticket-toolbar select{padding:10px;border:1px solid var(--line);background:var(--nested);border-radius:6px;color:var(--ink);font:inherit}
 .workflow-note{font-size:11px;line-height:1.8;color:var(--muted);margin:14px 0}.workflow-inline-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.workflow-inline-actions button{min-height:44px}.workflow-check{display:flex!important;align-items:flex-start;gap:10px!important}.workflow-check input{width:18px!important;min-height:18px!important;margin:3px 0}
 .workflow-steps{list-style:none;margin:16px 0;padding:0;display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.workflow-steps li{padding:7px 0;border-bottom:2px solid var(--line)}.workflow-steps [aria-current=step]{color:var(--ink);border-bottom-color:var(--action)}
 .workflow-candidate-note{display:block;flex-basis:100%;margin-left:32px;text-align:left;color:var(--muted);font-size:10px;line-height:1.6}.vehicle:has(.workflow-candidate-note){flex-wrap:wrap;row-gap:0;padding-block:9px}.workflow-source{font-size:11px;color:var(--muted);margin-bottom:18px}
@@ -19,3 +34,38 @@ body[data-role=driver] .incident-kinds input[type=radio]{width:18px;height:18px;
 @media(min-width:601px) and (max-width:1100px){body:not([data-role=driver]) header{height:auto;min-height:80px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}body:not([data-role=driver]) header .crumb{flex-basis:100%}body:not([data-role=driver]) .header-actions{width:100%;min-width:0;flex-wrap:wrap;gap:8px;justify-content:flex-end}body:not([data-role=driver]) header .search{flex:1;min-width:120px;width:auto}}
 #role-view [data-admin-content][hidden],#role-view .stats[hidden]{display:none!important}
 #role-view[data-admin-page=maintenance] .role-grid>[data-admin-content=maintenance]{grid-column:1/-1}
+
+/* Danh sách kênh và lịch sử chat cuộn độc lập trong cùng khung Ticket. */
+.ticket-workspace > .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.ticket-workspace .ticket-message { flex: none; align-self: flex-start; }
+.ticket-workspace .ticket-message.own { align-self: flex-end; }
+.ticket-workspace .ticket-msg-audio { width: min(100%, 260px); }
+.ticket-workspace .ticket-msg-img { object-fit: contain; }
+.ticket-workspace .ticket-panel-tools { flex-shrink: 1; flex-wrap: wrap; }
+.ticket-file-btn:focus-within,
+.phone-file-lbl:focus-within { outline: 2px solid var(--action); outline-offset: 2px; }
+.ticket-workspace .ticket-messages { max-height: none; }
+@media (min-width: 760px) {
+  #workflow-view:not([hidden]) .ticket-workspace {
+    grid-template-columns: minmax(210px, .72fr) minmax(0, 2fr);
+    min-height: 320px;
+    height: calc(100dvh - 185px);
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 759px) {
+  [data-phone-ticket-workspace] { height: 100%; }
+  [data-phone-ticket-workspace] > .page-heading { display: none; }
+  [data-phone-ticket-workspace] .ticket-workspace { height: 100%; margin: 0; }
+  [data-phone-ticket-workspace] .ticket-workspace > .panel { padding: 12px; overflow: hidden; }
+  [data-phone-ticket-workspace] .ticket-thread-open > .panel:first-child,
+  [data-phone-ticket-workspace] .ticket-workspace:not(.ticket-thread-open) > .panel:last-child { display: none; }
+  [data-phone-ticket-workspace] .ticket-meta-bar { font-size: 11px; gap: 4px 10px; }
+  [data-phone-ticket-workspace] .ticket-compose-bar button,
+  [data-phone-ticket-workspace] .ticket-file-btn { width: auto; min-width: 0; padding-inline: 7px; }
+}

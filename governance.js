@@ -165,7 +165,19 @@
       if (maintenancePanel) {
         const failedJobs = state.jobs.filter((j) => j.status === 'failed').length;
         const staleCount = api.snapshot().vehicles.filter((v) => v.gps !== 'fresh').length;
-        // Admin KHÔNG duyệt đổi vai trò — chỉ gửi yêu cầu bảo trì, xem ảnh hưởng vận hành & nhận thông báo khóa TK khẩn cấp
+        const roleLogs = roles
+          .snapshot()
+          .system.filter((l) => /vai trò|role/i.test(l.action || ''))
+          .slice(0, 4);
+        const roleLogsHtml = roleLogs.length
+          ? roleLogs
+              .map(
+                (l) =>
+                  `<div class="role-row"><div><strong>${esc(l.action)}</strong><small>${esc(l.before)} → ${esc(l.after)} · ${esc(l.actor)} · ${time(l.at)}</small></div></div>`
+              )
+              .join('')
+          : '';
+        // Admin KHÔNG duyệt đổi vai trò — chỉ gửi yêu cầu bảo trì, xem ảnh hưởng vận hành, xem lại yêu cầu đổi role & nhận thông báo khóa TK khẩn cấp
         maintenancePanel.innerHTML = `<div class="admin-maint-bento">
           <div class="admin-maint-sub v2-card-dark">
             <h3>Cảnh báo ảnh hưởng vận hành</h3>
@@ -181,10 +193,16 @@
             <h3>Thông báo khóa tài khoản khẩn cấp</h3>
             ${state.support.map((n) => `<div class="role-row"><span><strong>${esc(n.id)}</strong> · ${esc(n.text)}<small>${time(n.at)}</small></span></div>`).join('') || note('Chưa có thông báo khóa tài khoản khẩn cấp.')}
           </div>
+          <div class="admin-maint-sub v2-card-light" id="admin-role-review">
+            <h3>Yêu cầu đổi vai trò</h3>
+            ${changesMarkup()}
+            ${roleLogsHtml ? `<div class="admin-role-history">${roleLogsHtml}</div>` : ''}
+            ${note('Quản lý vận hành xem ở chế độ chỉ đọc. Role quản trị cần người công ty chỉ định duyệt.')}
+          </div>
         </div>`;
       }
       const nav = $('#admin-nav-maintenance');
-      if (nav) { nav.title = 'Bảo trì & Cảnh báo'; nav.querySelector('.nav-label').textContent = nav.title; }
+      if (nav) { nav.title = 'Bảo trì & Đổi vai trò'; nav.querySelector('.nav-label').textContent = nav.title; }
       const overview = $('#role-view [data-admin-content=overview]');
       if (overview && !$('#admin-map-shortcut')) overview.insertAdjacentHTML('beforeend', '<div id="admin-map-shortcut" class="workflow-inline-actions"><button class="secondary" data-workflow-action="admin-page" data-id="fleet">Xem bản đồ xe & tài xế</button></div>');
     }
@@ -192,6 +210,7 @@
 
   // System Admin đổi vai trò: role thường thực hiện trực tiếp + ghi log; role quản trị chuyển cổng duyệt riêng (cấm tự duyệt)
   function requestRole(u) {
+    if (roles.role() !== 'admin_system' || !u || u.id === 'U4') return;
     modal('Đổi vai trò tài khoản · ' + u.name,
       `<form class="role-form">
         ${details([['Tài khoản', `${u.name} (${u.username || u.id})`], ['Vai trò hiện tại', names[u.role]]])}
@@ -202,7 +221,7 @@
       </form>`,
       (f) => {
         const after = f.get('role'), reason = String(f.get('reason') || '').trim();
-        if (!names[after] || after === u.role || !reason || u.id === 'U4') return false;
+        if (roles.role() !== 'admin_system' || !names[after] || after === u.role || !reason || u.id === 'U4') return false;
         const before = u.role;
         if (ordinary(after) && ordinary(before)) {
           u.role = after;
@@ -433,6 +452,17 @@
   window.addEventListener('fleet:role-render', render);
   window.addEventListener('fleet:reset', () => { state = seed(); save(); render(); });
 
-  window.FleetGovernance = { snapshot: () => state, save, submitRecovery, resolveRecovery, requestRole, provision, editImei, openSupportGrant, log };
+  window.addEventListener('storage', (e) => {
+    if (e.key !== key) return;
+    try {
+      const s = JSON.parse(localStorage.getItem(key));
+      if (s?.version === 2 && ['changes', 'recovery', 'maintenance', 'jobs', 'support', 'supportGrants'].every((k) => Array.isArray(s[k]))) {
+        state = s;
+        render();
+        window.dispatchEvent(new Event('fleet:governance-render'));
+      }
+    } catch {}
+  });
+  window.FleetGovernance = { snapshot: () => state, save, submitRecovery, resolveRecovery, requestRole, provision, editImei, openSupportGrant, log, adminRoleReview: () => roles.role() === 'admin' ? changesMarkup() : '' };
   render();
 })();

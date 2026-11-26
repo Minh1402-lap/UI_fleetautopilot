@@ -614,8 +614,9 @@
     ));
   }
 
-  function confirmAssignment() {
-    const o = selectedOrder(), v = vehicle(state.selectedVehicle);
+  function confirmAssignment(orderId = selectedOrder()?.id, plate = state.selectedVehicle) {
+    if (document.body.dataset.role !== 'dispatch') return;
+    const o = order(orderId), v = vehicle(plate);
     if (!o) { toast('Chưa có đơn hàng để phân xe.'); return; }
     if (o.status !== 'pending') { details(o); return; }
     if (!v || !candidates(o).includes(v)) { toast('Vui lòng chọn xe sẵn sàng phù hợp loại hàng.'); return; }
@@ -628,11 +629,12 @@
     fragment.querySelectorAll('.review-route strong')[1].textContent = o.to;
     fragment.querySelector('[data-review-plate]').textContent = `${v.plate} · ${v.type}`;
     openModal('Duyệt phân công (V1)', 'Mọi phân công do Điều phối duyệt. Sau duyệt, đơn chuyển sang "Chờ tài xế xác nhận" (không tự hết hạn).', fragment, () => {
-      if (o.status !== 'pending' || !candidates(o).includes(v)) { toast('Dữ liệu mẫu đã thay đổi. Chọn lại xe.'); return false; }
-      o.status = 'assigned';
-      o.workflowStage = 'awaiting';
-      o.plate = v.plate;
-      commit('Đã duyệt phân công ' + v.plate + ' cho ' + o.id, `${qtyText(o)} · ${o.from} → ${o.to}`);
+      const latest = order(orderId), selected = vehicle(plate);
+      if (document.body.dataset.role !== 'dispatch' || latest?.status !== 'pending' || !selected || !candidates(latest).includes(selected)) { toast('Dữ liệu mẫu đã thay đổi. Chọn lại xe.'); return false; }
+      latest.status = 'assigned';
+      latest.workflowStage = 'awaiting';
+      latest.plate = plate;
+      commit('Đã duyệt phân công ' + plate + ' cho ' + latest.id, `${qtyText(latest)} · ${latest.from} → ${latest.to}`);
       toast('Đã lưu phân công mẫu (Chờ tài xế xác nhận).');
     });
     modal.classList.add('assignment-review');
@@ -848,7 +850,7 @@
     }
   });
   $('#dispatch-order').onchange = (e) => { state.selectedOrder = e.target.value; save(); renderDispatch(); };
-  $('#assign').onclick = confirmAssignment;
+  $('#assign').onclick = () => confirmAssignment();
   $('#suggest').onclick = () => {
     const options = candidates(selectedOrder());
     if (options.length) {
@@ -894,6 +896,17 @@
     const el = $('#workspace-view .stats .stat:last-child strong');
     if (el) el.textContent = String(count);
   });
-  window.FleetPreview = { snapshot: () => state, openModal, toast, render, commit, setPage, qtyText, candidates, alerts, confirmDeleteOrder, cargoMatchesVehicle, labels, formatNum };
+  window.addEventListener('storage', (e) => {
+    if (e.key !== key) return;
+    try {
+      // Dùng cùng bộ kiểm tra snapshot v3 như lúc tải trang.
+      const saved = JSON.parse(localStorage.getItem(key));
+      if (valid(saved)) {
+        state = saved;
+        render();
+      }
+    } catch {}
+  });
+  window.FleetPreview = { snapshot: () => state, openModal, toast, render, commit, setPage, qtyText, candidates, alerts, confirmAssignment, confirmDeleteOrder, cargoMatchesVehicle, labels, formatNum };
   render();
 })();

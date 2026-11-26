@@ -1195,7 +1195,7 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(210px, 0.72fr) minmax(0, 2fr);
     gap: 12px;
   }
   body.ui-v2 #workflow-view:not([hidden]) .ticket-workspace > .panel {
@@ -1995,6 +1995,14 @@ html:has(body.ui-v2-phone:not([data-role="driver"]):not(.role-home-active)) {
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+  }
+  /* Nền đặc giữ chữ trạng thái dễ đọc trên cả thẻ xe sáng và tối. */
+  .v2-tile[data-v2-action="select-vehicle"] .v2-tag {
+    min-height: 24px;
+    padding: 4px 12px;
+    font-size: 11px;
+    background: color-mix(in srgb, var(--tag-c) 17%, #141922);
+    border-color: color-mix(in srgb, var(--tag-c) 46%, #141922);
   }
   .v2-tile-ico {
     width: 34px;

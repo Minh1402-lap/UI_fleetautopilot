@@ -1,4 +1,4 @@
-/* UI Phone cho Điều phối và hai vai trò quản trị; chỉ trình bày trạng thái rỗng khi dịch vụ chưa kết nối. */
+/* UI Phone dùng cùng dữ liệu mẫu với bản PC để thử bàn giao giữa các vai trò. */
 (() => {
   'use strict';
 
@@ -15,6 +15,9 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
   const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const snapshot = () => window.FleetPreview.snapshot();
+  const ticketWorkspace = () => '<div data-phone-ticket-workspace></div>';
   const themes = [
     ['light', 'Sáng'],
     ['dark', 'Tối'],
@@ -37,7 +40,7 @@
     admin: {
       title: 'Tổng quan vận hành',
       subtitle: 'Quản lý vận hành',
-      screens: ['overview', 'activity', 'fleet', 'more', 'tickets', 'maintenance', 'reports'],
+      screens: ['overview', 'activity', 'fleet', 'more', 'tickets', 'maintenance', 'reports', 'role-review'],
       navigation: [
         ['overview', 'home', 'Tổng quan'],
         ['activity', 'activity', 'Nhật ký'],
@@ -68,7 +71,8 @@
   }
 
   function screenFromUrl(role) {
-    const requested = new URL(location.href).searchParams.get('phone_view');
+    const params = new URL(location.href).searchParams;
+    const requested = params.get('phone_view') || (params.get('flow') === 'tickets' ? 'tickets' : '');
     return roleConfig[role].screens.includes(requested) ? requested : 'overview';
   }
 
@@ -78,8 +82,8 @@
     </section>`;
   }
 
-  function metric(label) {
-    return `<div><strong>—</strong><span>${label}</span></div>`;
+  function metric(label, value = '—') {
+    return `<div><strong>${value}</strong><span>${label}</span></div>`;
   }
 
   function actionRow(screen, iconName, label, meta = 'Chưa kết nối') {
@@ -110,19 +114,37 @@
   }
 
   function adminOverview() {
-    const metrics = `<div class="management-metrics">${metric('Đơn trong kỳ')}${metric('Xe hoạt động')}${metric('Ticket mở')}</div>`;
+    const { orders } = snapshot();
+    const metrics = `<div class="management-metrics">${metric('Đơn mẫu', orders.length)}${metric('Chuyến đang chạy', orders.filter(o => o.status === 'running').length)}${metric('Ticket mở', window.FleetWorkflow.tickets().filter(t => t.status === 'open').length)}</div>`;
     const work = `<div class="management-rows">${actionRow('activity', 'activity', 'Nhật ký hoạt động Điều phối')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì & Khóa TK')}${actionRow('tickets', 'alert', 'Ticket chỉ đọc')}</div>`;
     return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Giám sát vận hành', work, 'layers')}${glassCard('Bản đồ đội xe', routeMap(), 'pin')}`;
   }
 
   function dispatchOverview() {
-    const metrics = `<div class="management-metrics">${metric('Đơn chờ')}${metric('Chờ TX / Chạy')}${metric('Xe sẵn sàng')}</div>`;
+    const { orders, vehicles } = snapshot();
+    const active = orders.filter(o => ['assigned', 'running'].includes(o.status));
+    const metrics = `<div class="management-metrics">${metric('Đơn chờ', orders.filter(o => o.status === 'pending').length)}${metric('Chờ TX / Chạy', active.length)}${metric('Xe sẵn sàng', vehicles.filter(v => v.availability === 'ready' && !active.some(o => o.plate === v.plate)).length)}</div>`;
     const work = `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('assignment', 'truck', 'Duyệt phân công (V1)')}${actionRow('evidence', 'camera', 'Bằng chứng 2 đầu & Ngoại lệ')}${actionRow('tickets', 'alert', 'Khẩn cấp 1 nút & Ticket')}</div>`;
     return `${glassCard('Hôm nay', metrics, 'chart')}${glassCard('Công việc chính', work, 'layers')}${glassCard('Theo dõi hành trình', routeMap(), 'pin')}`;
   }
 
   function dispatchOrders() {
-    return glassCard('Đơn hàng', `<div class="management-rows">${actionRow('new-order', 'order', 'Tiếp nhận đơn từ Sale')}${actionRow('orders', 'search-icon', 'Danh sách đơn hàng', 'Chưa có dữ liệu')}</div><p class="management-copy management-card-note">Đơn vị chuẩn: viên (gạch), kg (cát/đá nhà máy), m³ (thông thường) · Phạm vi ≤100 km.</p>`, 'order');
+    return glassCard('Đơn hàng mẫu', '<button type="button" class="secondary" data-action="new-order">Tiếp nhận đơn</button>' + orderRows(snapshot().orders, true), 'order');
+  }
+
+  function orderRows(orders, dispatch = false) {
+    const labels = window.FleetPreview.labels;
+    return orders.map(o => `<div class="role-row"><div><strong>${esc(o.id)} · ${esc(o.material)}</strong><small>${esc(o.from)} → ${esc(o.to)}</small></div><span class="badge" data-status="${esc(o.status)}">${esc(labels[o.status])}</span>${dispatch && ['assigned', 'running'].includes(o.status) ? `<button type="button" class="secondary" data-workflow-action="trip-review" data-id="${esc(o.id)}">Kiểm chuyến</button>` : ''}</div>`).join('') || '<p>Chưa có đơn phù hợp.</p>';
+  }
+
+  function dispatchAssignment() {
+    const api = window.FleetPreview;
+    const { orders } = snapshot();
+    const forms = orders.filter(o => o.status === 'pending').map(o => {
+      const options = api.candidates(o);
+      return `<form class="role-form" data-phone-assignment="${esc(o.id)}"><strong>${esc(o.id)} · ${esc(o.material)}</strong>${options.length ? `<label>Xe đủ điều kiện<select name="plate" required><option value="">Chọn xe</option>${options.map(v => `<option value="${esc(v.plate)}">${esc(v.plate)} · ${esc(v.type)}</option>`).join('')}</select></label><button class="secondary" type="submit">Xem phân công</button>` : '<p>Chưa có xe đủ điều kiện.</p>'}</form>`;
+    });
+    return glassCard('Chờ phân xe', forms.join('') || '<p>Chưa có đơn chờ phân xe.</p>', 'truck') + glassCard('Chuyến đang theo dõi', orderRows(orders.filter(o => ['assigned', 'running'].includes(o.status)), true), 'order');
   }
 
   function dispatchMore() {
@@ -132,6 +154,10 @@
   function dispatchScreen(screen) {
     if (screen === 'overview') return dispatchOverview();
     if (screen === 'orders') return dispatchOrders();
+    if (screen === 'new-order') return glassCard('Tiếp nhận đơn', '<button type="button" class="primary" data-action="new-order">Mở biểu mẫu</button>', 'order');
+    if (screen === 'assignment') return dispatchAssignment();
+    if (screen === 'tickets') return ticketWorkspace();
+    if (screen === 'evidence') return glassCard('Kiểm bằng chứng', orderRows(snapshot().orders.filter(o => ['assigned', 'running'].includes(o.status)), true), 'camera');
     if (screen === 'gps') return `${glassCard('Theo dõi GPS', routeMap(), 'pin', 'management-map-card')}${glassCard('Trạng thái kết nối', '<p class="management-copy">Chưa có nguồn GPS Taris (chu kỳ 10 phút) để hiển thị xe hoặc hành trình.</p>', 'activity')}`;
     if (screen === 'more') return dispatchMore();
     const pages = {
@@ -151,13 +177,17 @@
   }
 
   function adminMore() {
-    return glassCard('Chức năng quản lý', `<div class="management-rows">${actionRow('reports', 'chart', 'Báo cáo 6T/12T & Tra cứu đơn')}${actionRow('tickets', 'alert', 'Hồ sơ Ticket (Chỉ đọc)')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì & Khóa TK')}</div>`, 'gear');
+    return glassCard('Chức năng quản lý', `<div class="management-rows">${actionRow('reports', 'chart', 'Tra cứu đơn mẫu', 'Chỉ đọc')}${actionRow('tickets', 'alert', 'Hồ sơ Ticket', 'Chỉ đọc')}${actionRow('role-review', 'switch-account', 'Yêu cầu đổi vai trò', 'Chỉ đọc')}${actionRow('maintenance', 'gear', 'Yêu cầu bảo trì & Khóa TK')}</div>`, 'gear');
   }
 
   function adminScreen(screen) {
     if (screen === 'overview') return adminOverview();
     if (screen === 'fleet') return adminFleet();
     if (screen === 'more') return adminMore();
+    if (screen === 'tickets') return ticketWorkspace();
+    if (screen === 'role-review') return glassCard('Yêu cầu đổi vai trò', window.FleetGovernance.adminRoleReview(), 'switch-account');
+    if (screen === 'reports') return glassCard('Tra cứu đơn mẫu', orderRows(snapshot().orders), 'order');
+    if (screen === 'activity') return glassCard('Nhật ký vận hành', snapshot().activity.map(a => `<div class="role-row"><div><strong>${esc(a.text)}</strong><small>${esc(a.actor)} · ${esc(a.detail)}</small></div></div>`).join('') || '<p>Chưa có hoạt động.</p>', 'activity');
     const pages = {
       activity: ['Nhật ký hoạt động Điều phối', 'Lịch sử phân công và hoàn thành của Điều phối viên (chỉ đọc). Admin không duyệt phân công hay đổi role tài khoản.', 'activity', 'overview'],
       reports: ['Báo cáo 6T/12T & Tra cứu đơn', 'Thống kê đơn theo tháng và tra cứu toàn công ty (chỉ đọc, không suy ra doanh thu).', 'chart', 'more'],
@@ -198,7 +228,7 @@
     const moreScreens = role === 'dispatch'
       ? ['fleet', 'gps', 'reports', 'tickets', 'evidence', 'help-recovery']
       : role === 'admin'
-        ? ['reports', 'tickets', 'maintenance']
+        ? ['reports', 'tickets', 'maintenance', 'role-review']
         : ['recovery', 'connections', 'data', 'controls', 'backups', 'logs'];
     if (moreScreens.includes(screen)) return 'more';
     if (role === 'dispatch' && screen === 'new-order') return 'orders';
@@ -247,6 +277,7 @@
       <span class="management-nav-indicator" aria-hidden="true"><svg class="management-nav-arch" viewBox="0 0 100 60" preserveAspectRatio="none"><path class="management-nav-arch-fill" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5 Z"/><path class="management-nav-arch-stroke" d="M0 58.5 C16 58.5 18 5.5 50 5.5 C82 5.5 84 58.5 100 58.5" vector-effect="non-scaling-stroke"/></svg></span>${navigation(role, screen)}
     </nav>`;
 
+    if (screen === 'tickets') window.FleetWorkflow.mountTicketWorkspace();
     requestAnimationFrame(() => root.querySelector('.management-nav')?.classList.add('is-ready'));
   }
 
@@ -284,6 +315,7 @@
     const content = root.querySelector('.management-content');
     if (!content) return;
     content.innerHTML = `<div class="management-page is-current" data-management-page="${screen}">${screenContent(role, screen)}</div>`;
+    if (screen === 'tickets') window.FleetWorkflow.mountTicketWorkspace();
   }
 
   function transitionPage(role, previousScreen, screen) {
@@ -321,6 +353,7 @@
     current.classList.add('is-outgoing');
     incoming.classList.remove('is-incoming');
     incoming.classList.add('is-current');
+    if (screen === 'tickets') window.FleetWorkflow.mountTicketWorkspace();
 
     const finishTransition = () => {
       if (generation !== transitionGeneration) return;
@@ -370,9 +403,18 @@
     if (!button) return;
     const url = new URL(location.href);
     url.searchParams.delete('flow');
+    url.searchParams.delete('ticket');
     url.searchParams.set('phone_view', button.dataset.managementScreen);
     history.pushState(null, '', url);
     render();
+    window.FleetWorkflow.sync();
+  });
+
+  root.addEventListener('submit', event => {
+    const form = event.target;
+    if (!form.matches('[data-phone-assignment]') || currentRole() !== 'dispatch') return;
+    event.preventDefault();
+    window.FleetPreview.confirmAssignment(form.dataset.phoneAssignment, new FormData(form).get('plate'));
   });
 
   root.addEventListener('change', event => {
@@ -384,6 +426,15 @@
 
   phone.addEventListener('change', render);
   window.addEventListener('fleet:role-render', render);
+  function refresh() {
+    render();
+    if (root.hidden || !activeScreen) return;
+    if (activeScreen === 'tickets') window.FleetWorkflow.mountTicketWorkspace();
+    else replacePage(activeRole, activeScreen);
+  }
+  window.addEventListener('fleet:render', refresh);
+  window.addEventListener('fleet:workflow-sync', refresh);
+  window.addEventListener('fleet:governance-render', refresh);
   window.addEventListener('popstate', render);
   new MutationObserver(() => {
     const select = root.querySelector('[data-management-theme]');

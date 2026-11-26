@@ -13,7 +13,7 @@
   const role = () => roles.role(), actor = () => role() === 'driver' ? 'Tài xế' : role() === 'admin_system' ? 'Phạm Huy Hoàng' : 'Lê Hoàng Nam';
   const btn = (label, action, id = '', cls = 'secondary') => `<button type="button" class="${cls}" data-workflow-action="${action}" data-id="${esc(id)}">${label}</button>`;
   const badge = (label, type = 'pending') => `<span class="badge" data-status="${type}"><span class="status-dot" aria-hidden="true"></span>${esc(label)}</span>`;
-  const panel = (title, html, ico = 'layers') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2></div>${html}</section>`;
+  const panel = (title, html, ico = 'layers', extra = '') => `<section class="panel"><div class="panel-heading"><h2>${icon(ico)}${title}</h2>${extra}</div>${html}</section>`;
   const detail = (rows) => `<dl class="role-details">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v ?? '—')}</dd></div>`).join('')}</dl>`;
   const input = (label, name, value = '', type = 'text', attrs = '') => `<label>${label}<input name="${name}" type="${type}" value="${esc(value)}" required maxlength="150" ${attrs}></label>`;
   const qtyText = (o) => api.qtyText ? api.qtyText(o) : `${o?.quantity || 0} ${o?.unit || 'm³'}`;
@@ -29,16 +29,16 @@
           code: 'TK-0002',
           kind: 'Khẩn cấp',
           emergency: true,
-          description: 'Cảnh báo Khẩn cấp 1 nút từ tài xế: tự mở camera, chụp ảnh sự cố lốp/đường và gửi thẳng về Điều phối (kèm GPS điện thoại).',
+          description: 'Hồ sơ mẫu để xem cách nhận biết một kênh Khẩn cấp.',
           order: 'ĐH-1044',
           plate: '51C-481.66',
           driver: 'Tài xế Dũng (mẫu)',
-          filename: 'emergency-51C-481.66-1035.jpg',
-          phoneGps: '10.7884, 106.7521 (±12m · GPS điện thoại)',
+          filename: '',
+          phoneGps: '',
           status: 'open',
           at: '2026-11-16T03:35:00.000Z',
           messages: [
-            { id: 'M-201', by: 'Hệ thống (Khẩn cấp 1 nút)', role: 'driver', text: 'Đã tự chụp ảnh emergency-51C-481.66-1035.jpg và gửi kèm vị trí điện thoại (10.7884, 106.7521). Camera đã tự tắt.', at: '2026-11-16T03:35:00.000Z' },
+            { id: 'M-201', by: 'Hệ thống (Khẩn cấp 1 nút)', role: 'driver', text: 'Hồ sơ minh họa, chưa có ảnh chụp từ thiết bị.', at: '2026-11-16T03:35:00.000Z' },
           ],
         },
         {
@@ -64,11 +64,40 @@
   }
 
   let state = seedTickets(), filter = 'open', ticketId = '', lastRole = role(), composeDraft = '', adminPlate = '';
+  let composeImageUrl = '', composeImageName = '', composeAudioUrl = '', composeVoiceDuration = '';
+  let voiceSession = null, stopVoice = null, shownTicketId = '';
+  const safeMediaUrl = (url, type) => {
+    const mime = type === 'data:image/' ? /^data:image\/(jpeg|png|webp|gif|avif);base64,/i : /^data:audio\/(webm|ogg|mp4|mpeg|wav|aac)(?:;[^,]+)*;base64,/i;
+    return typeof url === 'string' && url.length <= 1400000 && mime.test(url) ? url : '';
+  };
+  const activeDriver = () => {
+    currentTrip();
+    return api.snapshot().drivers.find((driver) => driver.id === roles.activeDriver());
+  };
+  const belongsToDriver = (ticket, driver) => Boolean(driver && (ticket.driverId ? ticket.driverId === driver.id : ticket.driver === driver.name));
+  const serializeTicketWrite = (action) => navigator.locks ? navigator.locks.request(key, action) : Promise.resolve().then(action);
+
+  function mergeLegacyOpenTickets() {
+    // Giữ hội thoại cũ khi phiên bản trước đã mở nhiều kênh cho cùng tài xế.
+    const current = new Map();
+    const open = state.tickets.filter((ticket) => ticket.status === 'open').sort((a, b) => Number(b.emergency) - Number(a.emergency));
+    for (const ticket of open) {
+      const owner = ticket.driverId || api.snapshot().drivers.find((driver) => driver.name === ticket.driver)?.id || ticket.driver;
+      if (!owner) continue;
+      const first = current.get(owner);
+      if (!first) { current.set(owner, ticket); continue; }
+      const ids = new Set(first.messages.map((message) => message.id));
+      first.messages.push(...ticket.messages.filter((message) => !ids.has(message.id)));
+      first.messages.sort((a, b) => String(a.at).localeCompare(String(b.at)));
+      Object.assign(ticket, { status: 'closed', resolution: `Lịch sử đã chuyển vào ${first.code}` });
+    }
+  }
   function read() {
     try {
       const value = JSON.parse(localStorage.getItem(key));
       if (value?.version === 2 && Array.isArray(value.tickets) && value.tickets.every((t) => t && typeof t.id === 'string' && ['open', 'closed'].includes(t.status) && Array.isArray(t.messages))) state = value;
     } catch {}
+    mergeLegacyOpenTickets();
   }
   function persist(next) {
     try { localStorage.setItem(key, JSON.stringify(next)); state = next; return true; }
@@ -100,9 +129,11 @@
   }
 
   function gotoTickets(id = '') {
-    ticketId = id; composeDraft = '';
+    if (ticketId !== id) resetCompose();
+    ticketId = id;
     const url = new URL(location.href);
-    url.searchParams.set('flow', 'tickets');
+    if (phoneTicketsMount()) url.searchParams.set('phone_view', 'tickets');
+    else url.searchParams.set('flow', 'tickets');
     if (role() === 'admin') url.searchParams.set('admin_page', 'tickets');
     if (id) url.searchParams.set('ticket', id); else url.searchParams.delete('ticket');
     history.pushState(null, '', url);
@@ -111,44 +142,91 @@
     $('#main')?.focus({ preventScroll: true });
   }
   function leaveTickets() {
+    resetCompose();
     const url = new URL(location.href);
     url.searchParams.delete('flow');
     url.searchParams.delete('ticket');
     if (url.searchParams.get('admin_page') === 'tickets') url.searchParams.set('admin_page', 'overview');
+    if (phoneTicketsMount()) url.searchParams.set('phone_view', 'more');
     history.replaceState(null, '', url);
     document.body.removeAttribute('data-workflow');
     screen.hidden = true;
   }
 
+  function phoneTicketsMount() {
+    return document.querySelector('#management-phone:not([hidden]) .management-page.is-current [data-phone-ticket-workspace]');
+  }
+
   function showTickets() {
     read();
-    const list = state.tickets.filter((t) => filter === 'all' || t.status === filter);
-    const ticket = state.tickets.find((t) => t.id === ticketId) || list[0];
-    if (ticket) ticketId = ticket.id;
-    screen.innerHTML = `<section class="page-heading"><span class="heading-icon">${icon('alert')}</span><h1>Sự cố, Khẩn cấp 1 nút & Ticket</h1><p>Tài xế ↔ Điều phối trao đổi; Điều phối ghi kết quả & đóng hồ sơ (chỉ đọc). Admin chỉ đọc toàn bộ.</p></section>
-      <div class="ticket-toolbar"><label>Trạng thái <select id="ticket-filter"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select></label>${role() === 'driver' ? btn('Báo sự cố mới', 'new-report', '', 'primary') : ''}${btn('Quay lại', 'leave-tickets')}</div>
-      <p class="workflow-note">Cảnh báo Khẩn cấp 1 nút đi kèm ảnh tự chụp + metadata (tài xế, xe/chuyến, giờ, GPS điện thoại). Đóng ticket không tự hoàn thành chuyến hay giải phóng xe.</p>
-      <div class="workflow-grid">` +
-      panel('Danh sách ticket', list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>', 'order') +
-      panel(ticket ? `${ticket.code} · ${ticket.emergency ? 'Khẩn cấp 1 nút' : ticket.kind}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Gửi báo cáo để mở ticket, hoặc chọn nhóm khác.</p>', 'activity') +
+    const mount = phoneTicketsMount();
+    const view = mount || screen;
+    const driver = role() === 'driver' ? activeDriver() : null;
+    const list = state.tickets.filter((t) => (role() !== 'driver' || belongsToDriver(t, driver)) && (filter === 'all' || t.status === filter));
+    list.sort((a, b) => Number(b.emergency && b.status === 'open') - Number(a.emergency && a.status === 'open'));
+    const ticket = list.find((t) => t.id === ticketId) || (mount ? null : list[0]);
+    if (shownTicketId !== (ticket?.id || '') || ticket?.status === 'closed') resetCompose();
+    shownTicketId = ticket?.id || '';
+    ticketId = shownTicketId;
+    const leftTools = `<div class="ticket-panel-tools"><select id="ticket-filter" aria-label="Trạng thái ticket"><option value="open" ${filter === 'open' ? 'selected' : ''}>Đang mở</option><option value="closed" ${filter === 'closed' ? 'selected' : ''}>Đã đóng</option><option value="all" ${filter === 'all' ? 'selected' : ''}>Tất cả</option></select>${role() === 'driver' ? btn('+ Mới', 'new-report', '', 'primary') : ''}</div>`;
+    const rightTools = `<div class="ticket-panel-tools">${ticket && ticket.status === 'open' && role() === 'dispatch' ? `${btn('Đóng ticket', 'ticket-close', ticket.id)}${ticket.order ? btn(`Xử lý ${ticket.order}`, 'trip-exception', ticket.order) : ''}` : ''}${btn('Quay lại', 'leave-tickets')}</div>`;
+    const back = mount && ticket ? btn('← Kênh', 'ticket-select') : '';
+    const scroll = view.querySelector('.ticket-messages');
+    const wasAtEnd = !scroll || scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight < 30;
+    const scrollTop = scroll?.scrollTop || 0;
+    const editor = view.querySelector('#ticket-message');
+    const selection = editor && editor === document.activeElement ? [editor.selectionStart, editor.selectionEnd] : null;
+    view.innerHTML = `<section class="page-heading"><span class="heading-icon">${icon('alert')}</span><h1>Sự cố & Ticket</h1></section>
+      <div class="workflow-grid ticket-workspace ${ticket ? 'ticket-thread-open' : ''}">` +
+      panel('Kênh ticket', `<div class="ticket-channels-list">${list.map((t) => `<button type="button" class="ticket-card" data-workflow-action="ticket-select" data-id="${esc(t.id)}" aria-current="${ticket?.id === t.id}"><strong>#${esc(t.code)} · ${t.emergency ? 'KHẨN CẤP 1 NÚT' : esc(t.kind)}</strong><small>${esc(t.description.slice(0, 95))}</small><small>${esc(t.order || 'Không gắn chuyến')} · ${esc(t.plate || 'Chưa có xe')}</small>${badge(t.status === 'closed' ? 'Đã đóng' : t.emergency ? 'Khẩn cấp · Mở' : 'Đang mở', t.status === 'closed' ? 'completed' : t.emergency ? 'neutral' : 'pending')}</button>`).join('') || '<p class="empty">Chưa có ticket trong nhóm này.</p>'}</div>`, 'order', leftTools) +
+      panel(ticket ? `#${esc(ticket.code)} · ${ticket.emergency ? 'Khẩn cấp' : esc(ticket.kind)}` : 'Trao đổi', ticket ? thread(ticket) : '<p class="empty">Chọn một kênh để xem hội thoại.</p>', 'activity', back + rightTools) +
       '</div>';
+    const messages = view.querySelector('.ticket-messages');
+    if (messages) messages.scrollTop = wasAtEnd ? messages.scrollHeight : scrollTop;
+    const nextEditor = view.querySelector('#ticket-message');
+    if (selection && nextEditor) { nextEditor.focus({ preventScroll: true }); nextEditor.setSelectionRange(...selection); }
+  }
+
+  function renderMessageMedia(m) {
+    const img = safeMediaUrl(m.imageUrl, 'data:image/')
+      ? `<figure class="ticket-msg-media"><img class="ticket-msg-img" src="${esc(m.imageUrl)}" alt="${esc(m.imageName || 'Ảnh đính kèm ticket')}">${m.imageName ? `<figcaption>${esc(m.imageName)}</figcaption>` : ''}</figure>`
+      : m.imageName
+      ? `<div class="ticket-msg-file">Ảnh đính kèm: ${esc(m.imageName)}</div>`
+      : '';
+    const audio = safeMediaUrl(m.audioUrl, 'data:audio/')
+      ? `<div class="ticket-msg-voice"><audio class="ticket-msg-audio" controls src="${esc(m.audioUrl)}"></audio>${m.voiceDuration ? `<small>Thoại · ${esc(m.voiceDuration)}</small>` : ''}</div>`
+      : m.voiceDuration
+      ? `<div class="ticket-msg-voice-pill"><span>Tin nhắn thoại</span><strong>${esc(m.voiceDuration)}</strong></div>`
+      : '';
+    return img + audio;
   }
 
   function thread(t) {
-    return detail([
-      ['Loại sự cố', t.emergency ? 'Khẩn cấp 1 nút (tự chụp ảnh)' : t.kind],
-      ['Chuyến / xe', (t.order || '—') + ' · ' + (t.plate || '—')],
-      ['Người báo', t.driver],
-      ['Tạo lúc', clock(t.at)],
-      ['Ảnh đính kèm', t.filename || 'Không có'],
-      ...(t.phoneGps ? [['GPS điện thoại (bằng chứng)', t.phoneGps]] : []),
-    ]) +
-      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time><p>${esc(m.text)}</p></article>`).join('')}</div>` +
+    const metaBadges = `<div class="ticket-meta-bar">
+      <span><strong>Chuyến / xe:</strong> ${esc(t.order || '—')} · ${esc(t.plate || '—')}</span>
+      <span><strong>Tài xế:</strong> ${esc(t.driver)}</span>
+      <span><strong>Lúc:</strong> ${clock(t.at)}</span>
+      ${t.phoneGps ? `<span><strong>GPS ĐT:</strong> ${esc(t.phoneGps)}</span>` : ''}
+    </div>`;
+    return metaBadges +
+      `<div class="ticket-messages" role="log" aria-label="Lịch sử trao đổi">${t.messages.map((m) => `<article class="ticket-message ${m.role === role() ? 'own' : ''}"><strong>${esc(m.by)}</strong><time>${clock(m.at)}</time>${m.text ? `<p>${esc(m.text)}</p>` : ''}${renderMessageMedia(m)}</article>`).join('')}</div>` +
       (t.status === 'closed'
         ? `<div class="workflow-note">${badge('Hồ sơ chỉ đọc', 'completed')}${detail([['Kết quả xử lý', t.resolution], ['Người đóng', t.closedBy], ['Thời gian đóng', clock(t.closedAt)]])}<p>Giữ nguyên hội thoại. Đóng ticket không thay đổi trạng thái chuyến hoặc xe.</p></div>`
         : role() === 'admin'
         ? '<p class="workflow-note">Admin chỉ đọc toàn bộ hồ sơ và hội thoại. Chỉ Tài xế/Điều phối trao đổi; Điều phối ghi kết quả và đóng ticket.</p>'
-        : `<form id="ticket-message-form" class="ticket-compose"><label for="ticket-message">Nội dung trao đổi</label><textarea id="ticket-message" name="message" required maxlength="2000" placeholder="Nhập nội dung...">${esc(composeDraft)}</textarea><button class="primary" type="submit">Gửi tin nhắn</button></form>${role() === 'dispatch' ? `<div class="workflow-inline-actions">${btn('Ghi kết quả & đóng ticket', 'ticket-close', t.id)}${t.order ? btn('Xử lý ngoại lệ chuyến ' + t.order, 'trip-exception', t.order) : ''}</div>` : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
+        : `<form id="ticket-message-form" class="ticket-compose">
+            <label for="ticket-message" class="sr-only">Nội dung trao đổi</label>
+            ${composeImageUrl || composeVoiceDuration ? `<div class="ticket-compose-preview">
+              ${safeMediaUrl(composeImageUrl, 'data:image/') ? `<span class="ticket-preview-chip"><img src="${esc(composeImageUrl)}" alt="Xem trước ảnh"><span>${esc(composeImageName || 'Ảnh chụp')}</span><button type="button" data-workflow-action="clear-chat-image" aria-label="Bỏ ảnh">×</button></span>` : ''}
+              ${composeVoiceDuration ? `<span class="ticket-preview-chip"><span>Thoại (${esc(composeVoiceDuration)})</span><button type="button" data-workflow-action="clear-chat-voice" aria-label="Bỏ ghi âm">×</button></span>` : ''}
+            </div>` : ''}
+            <div class="ticket-compose-bar">
+              <label class="secondary ticket-file-btn" title="Chọn hoặc chụp ảnh">${icon('camera')}<span>Ảnh</span><input class="sr-only" id="ticket-chat-photo" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" capture="environment"></label>
+              <button type="button" class="secondary ticket-voice-btn" data-workflow-action="toggle-voice" ${voiceSession && !stopVoice ? 'disabled' : ''}>${stopVoice ? 'Dừng ghi' : voiceSession ? 'Đang xử lý…' : 'Ghi âm'}</button>
+              <textarea id="ticket-message" name="message" rows="1" maxlength="2000" placeholder="Nhắn tin, gửi ảnh hoặc ghi âm...">${esc(composeDraft)}</textarea>
+              <button class="primary ticket-send-btn" type="submit" ${voiceSession ? 'disabled' : ''}>Gửi</button>
+            </div>
+          </form>${role() === 'dispatch' ? '' : '<p class="workflow-note">Điều phối ghi kết quả và đóng ticket sau khi xử lý.</p>'}`);
   }
 
   function reportPage() {
@@ -287,10 +365,14 @@
 
   function sync() {
     const r = role();
-    if (lastRole !== r) { composeDraft = ''; lastRole = r; }
+    const params = new URLSearchParams(location.search);
+    if (lastRole !== r) { resetCompose(); ticketId = ''; lastRole = r; }
     read();
     enhance();
-    const show = (new URLSearchParams(location.search).get('flow') === 'tickets' || (r === 'admin' && adminPage() === 'tickets')) && ['dispatch', 'driver', 'admin'].includes(r);
+    const phone = matchMedia('(max-width: 759px)').matches;
+    const show = !phone && (params.get('flow') === 'tickets' || (r === 'admin' && adminPage() === 'tickets')) && ['dispatch', 'driver', 'admin'].includes(r);
+    if (!show && !(phone && params.get('phone_view') === 'tickets')) resetCompose();
+    if (show || (phone && params.get('phone_view') === 'tickets')) ticketId = params.get('ticket') || '';
     screen.hidden = !show;
     if (show) {
       document.body.dataset.workflow = 'tickets';
@@ -316,7 +398,7 @@
 
   // Kiểm bằng chứng 2 đầu (đầu nhận + đầu giao + GPS điện thoại vs GPS Taris)
   function tripReview(o) {
-    if (!o) return;
+    if (!o || !['admin', 'dispatch'].includes(role())) return;
     const allEv = roles.snapshot().evidence.filter((e) => e.order === o.id);
     const pickupEv = allEv.filter((e) => e.kind === 'pickup');
     const deliveryEv = allEv.filter((e) => e.kind === 'delivery');
@@ -466,6 +548,25 @@
 
   function changeTrip(o, action, update) { update(); api.commit(o.id + ': ' + action, o.plate || '', actor()); }
 
+  function respondToTrip(orderId, decision, reason = '') {
+    if (role() !== 'driver' || !['accept', 'decline'].includes(decision)) return false;
+    const o = currentTrip();
+    const driver = activeDriver();
+    if (!driver || o?.id !== orderId || o.status !== 'assigned') return false;
+    const plate = o.plate;
+    if (decision === 'accept') {
+      o.status = 'running';
+      o.workflowStage = 'accepted';
+      api.commit(`${o.id}: Tài xế nhận chuyến`, plate, driver.name);
+    } else {
+      const note = String(reason).trim();
+      if (!note || note.length > 500) return false;
+      Object.assign(o, { status: 'pending', workflowStage: 'awaiting', previousPlate: plate, plate: '' });
+      api.commit(`${o.id}: Từ chối chuyến · ${note}`, plate, driver.name);
+    }
+    return true;
+  }
+
   function openException(o) {
     if (!o || role() !== 'dispatch' || !['assigned', 'running'].includes(o.status)) return;
     const supportCandidates = api.snapshot().vehicles.filter((v) => v.plate !== o.plate && v.availability === 'ready' && !api.snapshot().orders.some((x) => x.plate === v.plate && ['assigned', 'running'].includes(x.status)));
@@ -543,17 +644,69 @@
     );
   }
 
-  function sendMessage(tId, text) {
+  function sendMessage(tId, payload) {
     if (!['dispatch', 'driver'].includes(role())) return false;
-    const clean = String(text || '').trim();
-    if (!clean) return false;
+    const isObj = payload && typeof payload === 'object';
+    const clean = String(isObj ? payload.text || '' : payload || '').trim();
+    const imageUrl = isObj ? safeMediaUrl(payload.imageUrl, 'data:image/') : '';
+    const imageName = isObj ? String(payload.imageName || '').trim() : '';
+    const audioUrl = isObj ? safeMediaUrl(payload.audioUrl, 'data:audio/') : '';
+    const voiceDuration = isObj ? String(payload.voiceDuration || '').trim() : '';
+    if (clean.length > 2000 || (!clean && !imageUrl && !audioUrl)) return false;
     read();
     const t = state.tickets.find((x) => x.id === tId);
     if (!t || t.status !== 'open') { api.toast('Ticket đã đóng. Chỉ có thể đọc hồ sơ.'); return false; }
+    const driver = role() === 'driver' ? activeDriver() : null;
+    if (role() === 'driver' && !belongsToDriver(t, driver)) return false;
     const next = structuredClone(state);
-    next.tickets.find((x) => x.id === tId).messages.push({ id: uid('M'), by: actor(), role: role(), text: clean, at: now() });
-    if (persist(next)) { composeDraft = ''; api.render(); return true; }
+    next.tickets.find((x) => x.id === tId).messages.push({
+      id: uid('M'),
+      by: driver?.name || actor(),
+      role: role(),
+      text: clean,
+      ...(imageUrl ? { imageUrl } : {}),
+      ...(imageUrl && imageName ? { imageName: imageName.slice(0, 120) } : {}),
+      ...(audioUrl ? { audioUrl } : {}),
+      ...(audioUrl && voiceDuration ? { voiceDuration: voiceDuration.slice(0, 12) } : {}),
+      at: now(),
+    });
+    if (persist(next)) {
+      resetCompose();
+      api.render();
+      window.dispatchEvent(new Event('fleet:workflow-sync'));
+      return true;
+    }
     return false;
+  }
+
+  function resetCompose() {
+    voiceSession?.abort();
+    voiceSession = stopVoice = null;
+    composeDraft = composeImageUrl = composeImageName = composeAudioUrl = composeVoiceDuration = '';
+  }
+
+  async function toggleVoiceRecord() {
+    if (!['dispatch', 'driver'].includes(role()) || !document.querySelector('#ticket-message-form')) return;
+    if (stopVoice) { stopVoice(); stopVoice = null; showTickets(); return; }
+    if (voiceSession) return;
+    composeAudioUrl = composeVoiceDuration = '';
+    const session = new AbortController();
+    voiceSession = session;
+    showTickets();
+    const finish = () => { voiceSession = stopVoice = null; showTickets(); };
+    const fail = () => {
+      if (session.signal.aborted) return;
+      finish();
+      api.toast('Không ghi được âm thanh. Kiểm tra quyền micro hoặc thử lại.');
+    };
+    try {
+      const stop = await window.FleetTicketMedia.recordVoice(session.signal, (audio, duration) => {
+        composeAudioUrl = audio;
+        composeVoiceDuration = duration;
+        finish();
+      }, fail);
+      if (voiceSession === session) { stopVoice = stop; showTickets(); }
+    } catch { fail(); }
   }
 
   function closeTicket(tId, resolution) {
@@ -565,8 +718,57 @@
     if (!t || t.status !== 'open') return false;
     const next = structuredClone(state);
     Object.assign(next.tickets.find((x) => x.id === tId), { status: 'closed', resolution: clean, closedBy: actor(), closedAt: now() });
-    if (persist(next)) { filter = 'closed'; api.render(); return true; }
+    if (persist(next)) { api.render(); window.dispatchEvent(new Event('fleet:workflow-sync')); return true; }
     return false;
+  }
+
+  function driverTickets() {
+    if (role() !== 'driver') return [];
+    read();
+    const driver = activeDriver();
+    return structuredClone(state.tickets.filter((ticket) => belongsToDriver(ticket, driver)));
+  }
+
+  function createTicket(options) {
+    const driverId = role() === 'driver' ? activeDriver()?.id : '';
+    if (!driverId) return Promise.resolve(null);
+    return serializeTicketWrite(() => createDriverTicket(options, driverId));
+  }
+
+  function createDriverTicket({ kind, emergency = false, description, imageName = '', imageUrl = '' }, driverId) {
+    const driver = activeDriver();
+    const clean = String(description || '').trim();
+    const image = safeMediaUrl(imageUrl, 'data:image/');
+    if (role() !== 'driver' || driver?.id !== driverId || !clean || clean.length > 500 || (emergency && !image)) return null;
+    if (!emergency && !['Xe', 'Đường'].includes(kind)) return null;
+    read();
+    const existing = state.tickets.find((ticket) => ticket.status === 'open' && belongsToDriver(ticket, driver));
+    if (existing && !emergency) {
+      api.toast('Vui lòng trao đổi trong kênh đang mở cho tới khi Điều phối đóng.');
+      return null;
+    }
+    const order = currentTrip();
+    const vehicles = api.snapshot().vehicles.filter((item) => item.driverId === driver.id);
+    const vehicle = vehicles.find((item) => item.plate === order?.plate) || vehicles[0];
+    const message = { id: uid('M'), by: driver.name, role: 'driver', text: clean, at: now(),
+      ...(image ? { imageUrl: image, imageName: String(imageName).slice(0, 120) } : {}) };
+    const next = structuredClone(state);
+    let ticket = next.tickets.find((item) => item.id === existing?.id);
+    if (ticket) {
+      // Nâng mức ưu tiên của kênh hiện có và giữ nguyên lịch sử.
+      Object.assign(ticket, { emergency: true, kind: 'Khẩn cấp', driverId });
+      ticket.messages.push(message);
+    } else {
+      const lastCode = Math.max(0, ...state.tickets.map((item) => Number(String(item.code).split('-').at(-1)) || 0));
+      ticket = { id: uid('T'), code: 'TK-' + String(lastCode + 1).padStart(4, '0'),
+        kind: emergency ? 'Khẩn cấp' : kind, emergency, description: clean, order: order?.id || '',
+        plate: vehicle?.plate || '', driver: driver.name, driverId, status: 'open', at: message.at, messages: [message] };
+      next.tickets.unshift(ticket);
+    }
+    if (!persist(next)) return null;
+    api.commit((emergency ? 'Khẩn cấp · ' : 'Ticket sự cố · ') + ticket.code, (vehicle?.plate || 'Chưa gắn xe') + ' · ' + (order?.id || 'Ngoài chuyến'), driver.name);
+    window.dispatchEvent(new Event('fleet:workflow-sync'));
+    return ticket;
   }
 
   document.addEventListener('click', (e) => {
@@ -579,21 +781,23 @@
     if (action === 'admin-page' && role() === 'admin') navigateAdmin(id);
     if (action === 'admin-vehicle' && role() === 'admin') { adminPlate = id; roles.render(); }
     if (action === 'admin-map' || action === 'admin-activity') navigateAdmin(action === 'admin-map' ? 'fleet' : 'activity');
-    if (action === 'leave-tickets') { leaveTickets(); api.render(); }
-    if (action === 'new-report') { leaveTickets(); roles.openIncidents(); }
+    if (action === 'leave-tickets') { leaveTickets(); api.render(); window.dispatchEvent(new Event('fleet:workflow-sync')); }
+    if (action === 'new-report' && role() === 'driver' && !driverTickets().some((ticket) => ticket.status === 'open')) { leaveTickets(); roles.openIncidents(); }
     if (action === 'login') authPreview('login');
     if (action === 'auth-tab') authPreview(id);
     if (action === 'help-recovery') openHelpRecovery();
+    if (action === 'toggle-voice') toggleVoiceRecord();
+    if (action === 'clear-chat-image') { composeImageUrl = ''; composeImageName = ''; showTickets(); }
+    if (action === 'clear-chat-voice') { composeAudioUrl = ''; composeVoiceDuration = ''; showTickets(); }
     if (action === 'ticket-close' && role() === 'dispatch') {
       modal('Đóng ticket', `<form class="role-form"><label>Kết quả / lý do đóng<textarea name="resolution" required maxlength="1000"></textarea></label><p class="workflow-note">Lưu hồ sơ chỉ đọc và khóa hội thoại. Không tự hoàn thành chuyến hoặc giải phóng xe.</p><button class="primary">Đóng & lưu hồ sơ</button></form>`, (f) => closeTicket(id, f.get('resolution')));
     }
-    if (action === 'trip-accept' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'assigned') changeTrip(o, 'Tài xế nhận chuyến', () => { o.status = 'running'; o.workflowStage = 'accepted'; });
+    if (action === 'trip-accept') respondToTrip(id, 'accept');
     if (action === 'trip-decline' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'assigned') {
       modal('Từ chối chuyến ' + o.id, `<form class="role-form"><label>Lý do từ chối<textarea name="reason" required maxlength="500"></textarea></label><label>Gõ "TU CHOI" để xác nhận chủ ý<input name="confirmWord" required placeholder="TU CHOI"></label><p id="dec-err" class="form-error" hidden></p><button class="primary">Gửi phản hồi</button></form>`, (f, form) => {
         const reason = String(f.get('reason') || '').trim(), word = String(f.get('confirmWord') || '').trim().toUpperCase();
         if (word !== 'TU CHOI' && word !== 'TỪ CHỐI') { form.querySelector('#dec-err').hidden = false; form.querySelector('#dec-err').textContent = 'Vui lòng gõ "TU CHOI" để xác nhận.'; return false; }
-        if (!reason) return false;
-        changeTrip(o, 'Từ chối chuyến · ' + reason, () => { o.status = 'pending'; o.workflowStage = 'awaiting'; o.previousPlate = o.plate; o.plate = ''; });
+        return respondToTrip(id, 'decline', reason);
       });
     }
     if (action === 'trip-pickup' && role() === 'driver' && o?.id === currentTrip()?.id && o.status === 'running' && stage(o) === 'accepted') {
@@ -638,21 +842,27 @@
   document.addEventListener('submit', (e) => {
     if (e.target.id === 'incident-form') {
       e.preventDefault(); e.stopImmediatePropagation();
-      const form = e.target; if (!form.reportValidity()) return;
-      const f = new FormData(form), description = String(f.get('description')).trim();
-      if (!description) return;
-      read();
-      const o = currentTrip();
-      const ticket = { id: uid('T'), code: 'TK-' + String(state.tickets.length + 1).padStart(4, '0'), kind: f.get('kind'), emergency: false, description, order: o?.id || '', plate: o?.plate || '', driver: api.snapshot().drivers.find((d) => d.id === api.snapshot().vehicles.find((v) => v.plate === o?.plate)?.driverId)?.name || 'Tài xế', filename: f.get('photo')?.name || '', phoneGps: '', status: 'open', at: now(), messages: [{ id: uid('M'), by: 'Tài xế', role: 'driver', text: description, at: now() }] };
-      const next = structuredClone(state);
-      next.tickets.unshift(ticket);
-      if (!persist(next)) return;
-      gotoTickets(ticket.id);
-      api.toast('Đã mở ticket và lưu báo cáo mẫu.');
+      const form = e.target;
+      if (role() !== 'driver' || !form.reportValidity() || form.dataset.sending) return;
+      const data = new FormData(form);
+      const driverId = activeDriver()?.id;
+      form.dataset.sending = 'true';
+      (async () => {
+        try {
+          const file = data.get('photo');
+          const photo = file?.size ? await window.FleetTicketMedia.readPhoto(file) : {};
+          if (role() !== 'driver' || activeDriver()?.id !== driverId) return;
+          const ticket = await createTicket({ kind: data.get('kind'), description: data.get('description'), ...photo });
+          if (ticket) gotoTickets(ticket.id);
+        } catch (error) { api.toast(error.message || 'Không đọc được ảnh.'); }
+        finally { delete form.dataset.sending; }
+      })();
     }
+
     if (e.target.id === 'ticket-message-form') {
       e.preventDefault(); e.stopImmediatePropagation();
-      if (sendMessage(ticketId, e.target.message.value)) showTickets();
+      if (voiceSession) return;
+      if (sendMessage(ticketId, { text: e.target.message.value, imageUrl: composeImageUrl, imageName: composeImageName, audioUrl: composeAudioUrl, voiceDuration: composeVoiceDuration })) showTickets();
     }
   }, true);
 
@@ -668,13 +878,35 @@
   });
   document.addEventListener('input', (e) => { if (e.target.id === 'ticket-message') composeDraft = e.target.value; });
   document.addEventListener('keydown', (e) => { const marker = e.target.closest('.admin-marker'); if (marker && ['Enter', ' '].includes(e.key)) { e.preventDefault(); adminPlate = marker.dataset.id; roles.render(); } });
-  document.addEventListener('change', (e) => { if (e.target.id === 'ticket-filter') { filter = e.target.value; ticketId = ''; showTickets(); } });
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'ticket-filter') { filter = e.target.value; gotoTickets(); }
+    if (e.target.id === 'ticket-chat-photo') {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const channel = ticketId;
+      const sender = role();
+      window.FleetTicketMedia.readPhoto(file).then(({ imageUrl, imageName }) => {
+        if (channel !== ticketId || sender !== role() || !e.target.isConnected) return;
+        composeImageUrl = imageUrl;
+        composeImageName = imageName;
+        showTickets();
+      }).catch((error) => api.toast(error.message || 'Không đọc được ảnh.'));
+    }
+  });
   document.addEventListener('click', (e) => { const completion = e.target.closest('[data-action="complete-order"],[data-action="start-order"]'); if (completion) { e.preventDefault(); e.stopImmediatePropagation(); tripReview(api.snapshot().orders.find((o) => o.id === completion.dataset.id)); } }, true);
   window.addEventListener('fleet:role-render', sync);
   window.addEventListener('popstate', sync);
+  window.addEventListener('pagehide', resetCompose);
   window.addEventListener('storage', (e) => { if (e.key === key) sync(); });
   window.addEventListener('fleet:reset', () => { persist(seedTickets()); ticketId = ''; composeDraft = ''; sync(); });
 
-  window.FleetWorkflow = { tickets: () => structuredClone(state.tickets), sync, sendMessage, closeTicket, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
+  function visibleTickets() {
+    if (role() === 'driver') return driverTickets();
+    if (!['dispatch', 'admin'].includes(role())) return [];
+    read();
+    return structuredClone(state.tickets);
+  }
+
+  window.FleetWorkflow = { tickets: visibleTickets, sync, sendMessage, closeTicket, createTicket, driverTickets, mountTicketWorkspace: showTickets, respondToTrip, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
   sync();
 })();
