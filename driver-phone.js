@@ -149,8 +149,21 @@
   }
 
   function mapScreen() {
-    const { o } = ctx();
-    return `${routeMap(o)}<div class="phone-emergency-float">${emergency()}<p class="phone-feedback" role="status" id="phone-feedback">${esc(feedbackText)}</p></div>`;
+    const { o, qty } = ctx();
+    const noticeHtml =
+      o && o.status === 'assigned'
+        ? `<div class="phone-trip-notice phone-glass" role="status" aria-live="polite">
+            <div class="phone-trip-notice-main">
+              <div class="phone-trip-notice-top">
+                <strong>${icon('bell')}Có chuyến mới · ${esc(o.id)}</strong>
+                <span class="badge" data-status="pending">Chờ phản hồi</span>
+              </div>
+              <small>${esc(o.material)} (${esc(qty)}) · ${esc(o.from)} → ${esc(o.to)}</small>
+            </div>
+            <button type="button" class="phone-trip-notice-btn" data-phone-screen="trip">Xem chuyến ›</button>
+          </div>`
+        : '';
+    return `${routeMap(o)}${noticeHtml}<div class="phone-emergency-float">${emergency()}<p class="phone-feedback" role="status" id="phone-feedback">${esc(feedbackText)}</p></div>`;
   }
 
   function tripScreen() {
@@ -212,9 +225,10 @@
   }
 
   function ticketsScreen() {
-    const { wf } = ctx();
+    const { wf, drv, veh } = ctx();
     const list = wf?.tickets?.() || [];
     const activeTicket = list.find((t) => t.id === selectedTicketId) || list[0] || null;
+    const myOpenTicket = wf?.openTicketForDriver?.(drv?.name, veh?.plate) || null;
 
     if (ticketView === 'chat' && activeTicket) {
       const msgsHtml = activeTicket.messages
@@ -278,8 +292,9 @@
       })
       .join('');
 
-    const newFormHtml = newTicketOpen
-      ? `<form id="phone-new-ticket-form" class="phone-inline-form">
+    const newFormHtml =
+      newTicketOpen && !myOpenTicket
+        ? `<form id="phone-new-ticket-form" class="phone-inline-form">
           <label>Loại sự cố<select name="kind"><option value="Xe">Xe</option><option value="Đường">Đường</option></select></label>
           <label>Mô tả gửi Điều phối<textarea name="description" rows="2" required maxlength="400" placeholder="VD: Xe gặp sự cố hoặc đường ngập"></textarea></label>
           <div class="phone-assignment-actions">
@@ -287,13 +302,18 @@
             <button type="submit" class="phone-accept">Mở kênh & Gửi</button>
           </div>
         </form>`
-      : '';
+        : '';
 
     return `<section class="phone-secondary phone-secondary-scroll phone-glass">
       <div class="phone-ticket-hd">
         <h2>Kênh Ticket (${list.length})</h2>
-        <button type="button" class="phone-mini-btn" data-phone-action="toggle-new-ticket">${newTicketOpen ? 'Đóng' : '+ Báo sự cố'}</button>
+        ${
+          myOpenTicket
+            ? `<button type="button" class="phone-mini-btn" data-phone-action="select-ticket" data-id="${esc(myOpenTicket.id)}">Vào #${esc(myOpenTicket.code)} ›</button>`
+            : `<button type="button" class="phone-mini-btn" data-phone-action="toggle-new-ticket">${newTicketOpen ? 'Đóng' : '+ Báo sự cố'}</button>`
+        }
       </div>
+      ${myOpenTicket ? `<p class="phone-open-rule">Đang có kênh #${esc(myOpenTicket.code)} chưa đóng. Trao đổi tại đây tới khi Điều phối đóng mới mở được ticket mới.</p>` : ''}
       ${newFormHtml}
       ${list.length ? `<div class="phone-channel-list">${listHtml}</div>` : '<p>Chưa có kênh ticket nào.</p>'}
       ${emergency()}
@@ -720,15 +740,28 @@
       const t = wf.createTicket({
         kind: 'Khẩn cấp',
         emergency: true,
-        description: 'Cảnh báo Khẩn cấp 1 nút từ tài xế: tự chụp ảnh sự cố và gửi thẳng về Điều phối.',
+        description: 'Cảnh báo Khẩn cấp 1 nút từ tài xế: đã chụp ảnh sự cố và gửi thẳng về Điều phối.',
         order: o?.id || '',
         plate: veh?.plate || '',
         driver: drv?.name || 'Tài xế',
         filename: `emergency-${veh?.plate || 'TX'}-${Date.now().toString().slice(-4)}.jpg`,
         phoneGps: '10.7884, 106.7521 (±12m · GPS điện thoại)',
       });
-      feedbackText = t ? `Đã gửi khẩn cấp & mở ticket ${t.code} cho Điều phối.` : 'Chưa tạo được ticket khẩn cấp.';
-      render(true);
+      if (t) {
+        selectedTicketId = t.id;
+        ticketView = 'chat';
+        feedbackText = t._reused
+          ? `Đã gửi ảnh khẩn cấp vào kênh #${t.code} đang mở.`
+          : `Đã chụp ảnh & mở kênh khẩn cấp #${t.code} cho Điều phối.`;
+        const url = new URL(location.href);
+        url.searchParams.delete('flow');
+        url.searchParams.set('phone_view', 'tickets');
+        history.pushState(null, '', url);
+        render(true);
+      } else {
+        feedbackText = 'Chưa tạo được ticket khẩn cấp.';
+        render(true);
+      }
     } else if (action === 'demo-photo') {
       const kind = button.dataset.kind || 'pickup';
       demoPhotoName = `anh-${kind === 'pickup' ? 'dau-nhan' : 'dau-giao'}-${o?.id || 'mau'}.jpg`;

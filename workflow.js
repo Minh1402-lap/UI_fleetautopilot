@@ -679,10 +679,45 @@
     return false;
   }
 
-  function createTicket({ kind = 'Xe', emergency = false, description, order = '', plate = '', driver = 'Tài xế', filename = '', phoneGps = '' }) {
+  function openTicketForDriver(driver, plate) {
+    read();
+    return state.tickets.find((t) => t.status === 'open' && ((plate && t.plate === plate) || (driver && t.driver === driver))) || null;
+  }
+
+  function makeEmergencySnapshot(plate, order, phoneGps) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="270" viewBox="0 0 480 270"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1619"/><stop offset="1" stop-color="#141922"/></linearGradient></defs><rect width="480" height="270" rx="14" fill="url(#g)"/><rect x="18" y="18" width="444" height="234" rx="10" fill="none" stroke="#f87171" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="6 4"/><text x="36" y="64" fill="#f87171" font-family="sans-serif" font-size="18" font-weight="700">ẢNH CHỤP KHẨN CẤP 1 NÚT</text><text x="36" y="106" fill="#f1f5f9" font-family="sans-serif" font-size="22" font-weight="700">${esc(plate || 'Chưa gắn xe')} · ${esc(order || 'Ngoài chuyến')}</text><text x="36" y="148" fill="#cbd5e1" font-family="sans-serif" font-size="14">${esc(phoneGps || 'GPS điện thoại đã ghi nhận')}</text><text x="36" y="216" fill="#94a3b8" font-family="sans-serif" font-size="13">${esc(clock(now()))} · Camera đã tự động tắt sau khi chụp</text></svg>`;
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  function createTicket({ kind = 'Xe', emergency = false, description, order = '', plate = '', driver = 'Tài xế', filename = '', imageUrl = '', phoneGps = '' }) {
     const clean = String(description || '').trim();
     if (!clean) return null;
     read();
+    const existing = openTicketForDriver(driver, plate);
+    const resolvedImg = safeMediaUrl(imageUrl, 'data:image/') || (emergency ? makeEmergencySnapshot(plate, order, phoneGps) : '');
+    if (existing) {
+      if (emergency) {
+        const next = structuredClone(state);
+        const target = next.tickets.find((x) => x.id === existing.id);
+        target.messages.push({
+          id: uid('M'),
+          by: 'Hệ thống (Khẩn cấp 1 nút)',
+          role: 'driver',
+          text: `${clean}${phoneGps ? ` (${phoneGps})` : ''}`,
+          ...(resolvedImg ? { imageUrl: resolvedImg } : {}),
+          ...(filename ? { imageName: filename } : {}),
+          at: now(),
+        });
+        if (persist(next)) {
+          api.commit(`Khẩn cấp 1 nút · ${existing.code}`, `${plate || 'Chưa rõ xe'} · Đã gửi ảnh vào ticket đang mở`, driver);
+          window.dispatchEvent(new Event('fleet:workflow-sync'));
+          return Object.assign({}, target, { _reused: true });
+        }
+      }
+      api.toast(`Đang có ticket ${existing.code} chưa đóng. Vui lòng trao đổi tại ticket này tới khi Điều phối đóng.`);
+      return null;
+    }
+
     const code = 'TK-' + String(state.tickets.length + 1).padStart(4, '0');
     const ticket = {
       id: uid('T'),
@@ -702,7 +737,9 @@
           id: uid('M'),
           by: emergency ? 'Hệ thống (Khẩn cấp 1 nút)' : driver,
           role: 'driver',
-          text: emergency ? `${clean}${filename ? ` · Đã đính kèm ${filename}` : ''}${phoneGps ? ` (${phoneGps})` : ''}` : clean,
+          text: emergency ? `${clean}${phoneGps ? ` (${phoneGps})` : ''}` : clean,
+          ...(resolvedImg ? { imageUrl: resolvedImg } : {}),
+          ...(filename ? { imageName: filename } : {}),
           at: now(),
         },
       ],
@@ -839,6 +876,6 @@
   window.addEventListener('storage', (e) => { if (e.key === key) sync(); });
   window.addEventListener('fleet:reset', () => { persist(seedTickets()); ticketId = ''; composeDraft = ''; sync(); });
 
-  window.FleetWorkflow = { tickets: () => structuredClone(state.tickets), sync, sendMessage, closeTicket, createTicket, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
+  window.FleetWorkflow = { tickets: () => structuredClone(state.tickets), sync, sendMessage, closeTicket, createTicket, openTicketForDriver, openAuthPreview: authPreview, openTripReview: tripReview, openException, openHelpRecovery, stage, stageNames };
   sync();
 })();
