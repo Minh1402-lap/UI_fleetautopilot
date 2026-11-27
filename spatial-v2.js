@@ -298,7 +298,7 @@
         const isSelected = mapFocusPlate === v.plate;
         return `<button type="button" class="v2-tile ${isLight ? 'v2-card-light' : 'v2-card-dark'}" data-v2-action="select-vehicle" data-id="${esc(v.plate)}" aria-pressed="${isSelected}">
           <div class="v2-tile-top">
-            <span class="v2-tile-ico">${icon(v.gps === 'stale' ? 'alert' : 'truck')}</span>
+            <span class="v2-tile-ico">${icon('truck')}</span>
             <span class="v2-tag ${tagCls}">${stText}</span>
           </div>
           <div>
